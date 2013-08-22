@@ -26,7 +26,7 @@ public class DeviceController {
 	Logger logger = Logger.getLogger(getClass());
 
 	@Autowired
-    private DeviceService personService;
+    private DeviceService deviceService;
 
 	@Autowired
 	private Neo4jTemplate template;
@@ -52,6 +52,28 @@ public class DeviceController {
 		//return new ModelAndView("redirect:/device.html");
 		return new ModelAndView("devicesList", model);
 	}
+	
+	@RequestMapping(value = "/add", method = RequestMethod.GET)
+    @Transactional
+    public String addRequest() {
+
+    	logger.info("Routing user to addDevice.jsp page!");
+    	
+    	//deviceService.save(device);
+
+        return "addDevice";
+    }
+	
+	@RequestMapping(value = "/addDevice", method = RequestMethod.POST)
+    @Transactional
+    public String addDevice(@ModelAttribute("device") Devices device) {
+
+    	logger.info("Adding few dummy devices in the neo4j-graph-db");
+    	
+    	//deviceService.save(device);
+
+        return "devicesList";
+    }
 
     @RequestMapping("/")
     public String index(Map<String, Object> map) {
@@ -64,20 +86,11 @@ public class DeviceController {
         return "index";
     }
 
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
-    @Transactional
-    public String addPerson(@ModelAttribute("person") Devices person) {
-
-        personService.save(person);
-
-        return "redirect:/people/";
-    }
-
     @RequestMapping("/delete/{personId}")
     @Transactional
     public String deletePerson(@PathVariable("personId") Long personId) {
 
-        personService.delete(personId);
+    	deviceService.delete(personId);
 
         return "redirect:/people/";
     }

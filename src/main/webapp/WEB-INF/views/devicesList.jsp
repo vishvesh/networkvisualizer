@@ -9,6 +9,6 @@
 			<br />
 		</c:forEach>
 	</c:if>
- 
+ <a href = "add">Add Device</a>
  </body>
 </html>
