@@ -32,20 +32,20 @@ public class PersonController {
 	private Neo4jTemplate template;
 
 	@RequestMapping(value = "/firstblood", method = RequestMethod.GET)
-	public ModelAndView listAllDevices(@ModelAttribute Person person, BindingResult result) {
+	public ModelAndView listAllDevices() {
 
 		logger.info("Comes in inside listAllDevices()");
 
 		List<Person> persons = new ArrayList<Person>();
 		
 		Person person1 = new Person();
-		person.setFirstName("Vishvesh");
-		person.setLastName("Deshmukh");
+		person1.setFirstName("Vishvesh");
+		person1.setLastName("Deshmukh");
 		persons.add(person1);
 		
 		Person newPerson = new Person();
-		person.setFirstName("Karthi");
-		person.setLastName("Subramaniam");
+		newPerson.setFirstName("Karthi");
+		newPerson.setLastName("Subramaniam");
 		persons.add(newPerson);
 		
 		Map<String, Object> model = new HashMap<String, Object>();
