@@ -17,16 +17,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.adaranet.model.Person;
-import com.adaranet.service.PersonService;
+import com.adaranet.model.Devices;
+import com.adaranet.service.DeviceService;
 
 @Controller
-public class PersonController {
+public class DeviceController {
 
 	Logger logger = Logger.getLogger(getClass());
 
 	@Autowired
-    private PersonService personService;
+    private DeviceService personService;
 
 	@Autowired
 	private Neo4jTemplate template;
@@ -36,20 +36,18 @@ public class PersonController {
 
 		logger.info("Comes in inside listAllDevices()");
 
-		List<Person> persons = new ArrayList<Person>();
+		List<Devices> devices = new ArrayList<Devices>();
 		
-		Person person1 = new Person();
-		person1.setFirstName("Vishvesh");
-		person1.setLastName("Deshmukh");
-		persons.add(person1);
+		Devices device1 = new Devices();
+		device1.setDeviceName("Orion");
+		devices.add(device1);
 		
-		Person newPerson = new Person();
-		newPerson.setFirstName("Karthi");
-		newPerson.setLastName("Subramaniam");
-		persons.add(newPerson);
+		Devices device2 = new Devices();
+		device2.setDeviceName("Polaris");
+		devices.add(device2);
 		
 		Map<String, Object> model = new HashMap<String, Object>();
-		model.put("persons", persons);
+		model.put("devices", devices);
 		//deviceService.addDevice(device);
 		//return new ModelAndView("redirect:/device.html");
 		return new ModelAndView("devicesList", model);
@@ -68,7 +66,7 @@ public class PersonController {
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     @Transactional
-    public String addPerson(@ModelAttribute("person") Person person) {
+    public String addPerson(@ModelAttribute("person") Devices person) {
 
         personService.save(person);
 

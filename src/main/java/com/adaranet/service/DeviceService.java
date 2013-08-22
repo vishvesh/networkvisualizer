@@ -1,9 +1,9 @@
 package com.adaranet.service;
 
-import com.adaranet.model.Person;
+import com.adaranet.model.Devices;
 import org.springframework.data.neo4j.repository.GraphRepository;
 
-public interface PersonService extends GraphRepository<Person> {
+public interface DeviceService extends GraphRepository<Devices> {
 
     
 }
