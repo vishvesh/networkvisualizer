@@ -35,6 +35,7 @@ public class DeviceController {
 	private Neo4jTemplate template;
 
 	@RequestMapping(value = "/listAllDevices", method = RequestMethod.GET)
+	@Transactional
 	public ModelAndView listAllDevices() throws Exception {
 
 		logger.info("Comes in inside listAllDevices()");
@@ -63,18 +64,34 @@ public class DeviceController {
     			logger.info("Device Name found from the DB : Using deviceService.findAll() : "+device.getDeviceName());
     			devices.add(device);
     		}
+    		//logger.info("Deleting all the Nodes from Neo4j");
     		//deviceService.deleteAll(); //TODO: Need to Delete this....
     		
-    		Device orion = deviceService.findByPropertyValue("deviceName", "Orion");
+    		Iterable<Device> result = deviceService.findAll();
+    		if(result.iterator().hasNext()) {
+    			logger.info("RESULT FOUND");
+    		} else {
+    			logger.info("NO RESULT FOUND");
+    		}
+    		
+    		/*Device orion = deviceService.findByPropertyValue("deviceName", "Orion");
+    		
     		Device polaris = deviceService.findByPropertyValue("deviceName", "Polaris");
+    		
+    		if((orion != null)) {
+    			logger.info("Orion & Polaris are not Null!");
+    		}
+    		else {
+    			logger.info("Orion & Polaris are NULL!");
+    		}*/
+    		
     		
     		//TODO: Look into this JIRA Issue : http://stackoverflow.com/questions/10861588/spring-data-neo4j-relationshiptype-issues
     		//template.createRelationshipBetween(orion, polaris, RelationshipTypes.CONNECTS_TO, null);
     		
-    		logger.info("deviceService.findByPropertyValue : "+orion.getDeviceName());
     		model.put("devices", devices);
     	} else {
-    		logger.info("No devices persisted in Neo4j!");
+    		logger.info("No devices found/persisted in Neo4j!");
     	}
 		
 		//deviceService.addDevice(device);
@@ -94,7 +111,7 @@ public class DeviceController {
     }
 	
 	@RequestMapping(value = "/addDevice", method = RequestMethod.POST)
-    @Neo4jTransactional
+	@Transactional
     public String addDevice(@RequestParam("deviceName") String deviceName) throws Exception {
 		//public String addDevice(@ModelAttribute("device") Device device) {}
 		
@@ -109,6 +126,12 @@ public class DeviceController {
 	    	
 	    	Device theDevice = deviceService.findOne(newDevice.getId());
 	    	logger.info("Retrieved Device name from Neo4j : using deviceService.findOne() : "+theDevice.getDeviceName());
+	    	
+	    	/*Device newDevice1 = deviceService.findByPropertyValue("deviceName", "AC");
+	    	if(newDevice1 != null)
+	    		logger.info("RETRIEVING PROPERTY BY VSALUE : "+newDevice1.getDeviceName());
+	    	else
+	    		logger.info("NO Property Value Node found with AC");*/
 	    	
 	    	Iterable<Device> devices = deviceService.findAll();
 	    	
