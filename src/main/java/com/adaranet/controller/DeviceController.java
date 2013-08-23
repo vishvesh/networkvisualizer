@@ -110,6 +110,26 @@ public class DeviceController {
         return "addDevice";
     }
 	
+	@RequestMapping(value = "/deleteAllDevices", method = RequestMethod.GET)
+	@Transactional
+	public String deleteAllDevices() throws Exception {
+
+		logger.info("Comes in inside listAllDevices()");
+		Iterable<Device> allDevicesFromDb = deviceService.findAll();
+    	
+    	if(allDevicesFromDb.iterator().hasNext()) {
+    		logger.info("Deleting all the Nodes from Neo4j");
+    		deviceService.deleteAll(); //TODO: Need to Delete this....
+    		
+    		logger.info("Deleted all the devices from Neo4j.");
+    		
+    	} else {
+    		logger.info("No devices Found/Persisted in Neo4j that are to be deleted!");
+    	}
+    	
+		return "redirect:/listAllDevices";
+	}
+	
 	@RequestMapping(value = "/addDevice", method = RequestMethod.POST)
 	@Transactional
     public String addDevice(@RequestParam("deviceName") String deviceName) throws Exception {

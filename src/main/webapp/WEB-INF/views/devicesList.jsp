@@ -12,5 +12,6 @@
 		</c:forEach>
 	</c:if>
  <a href = "add">Add Device</a>
+ <a href = "deleteAllDevices">Delete All Devices</a>
  </body>
 </html>
