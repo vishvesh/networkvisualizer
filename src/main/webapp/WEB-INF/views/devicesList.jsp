@@ -1,6 +1,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
+<!doctype>
 <html>
-<body>
+<body style="text-align: center;">
 	<h1>Devices:</h1>
 	
  	<c:if test="${!empty devices}">
