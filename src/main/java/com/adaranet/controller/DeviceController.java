@@ -15,9 +15,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.adaranet.model.Devices;
+import com.adaranet.model.Device;
 import com.adaranet.service.DeviceService;
 
 @Controller
@@ -36,13 +37,13 @@ public class DeviceController {
 
 		logger.info("Comes in inside listAllDevices()");
 
-		List<Devices> devices = new ArrayList<Devices>();
+		List<Device> devices = new ArrayList<Device>();
 		
-		Devices device1 = new Devices();
+		Device device1 = new Device();
 		device1.setDeviceName("Orion");
 		devices.add(device1);
 		
-		Devices device2 = new Devices();
+		Device device2 = new Device();
 		device2.setDeviceName("Polaris");
 		devices.add(device2);
 		
@@ -66,11 +67,23 @@ public class DeviceController {
 	
 	@RequestMapping(value = "/addDevice", method = RequestMethod.POST)
     @Transactional
-    public String addDevice(@ModelAttribute("device") Devices device) {
-
+    public String addDevice(@RequestParam("deviceName") String deviceName) {
+		//public String addDevice(@ModelAttribute("device") Device device) {}
+		
     	logger.info("Adding few dummy devices in the neo4j-graph-db");
     	
-    	//deviceService.save(device);
+    	//Device newDevice = template.save(new Device(deviceName));
+    	Device newDevice = new Device(deviceName);
+    		
+    	deviceService.save(newDevice);
+    	
+    	Device theDevice = deviceService.findOne(newDevice.getId());
+    	logger.info("Retrieved Device name from Neo4j : using deviceService.findOne() : "+theDevice.getDeviceName());
+    	
+    	Iterable<Device> devices = deviceService.findAll();
+    	for (Device device : devices) {
+			logger.info("Device Name found from the DB : Using deviceService.findAll() : "+device.getDeviceName());
+		}
 
         return "devicesList";
     }

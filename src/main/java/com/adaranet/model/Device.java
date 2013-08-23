@@ -9,7 +9,7 @@ import org.springframework.data.neo4j.annotation.RelatedTo;
 import org.springframework.data.neo4j.support.index.IndexType;
 
 @NodeEntity
-public class Devices {
+public class Device {
 
     @GraphId
     private Long id;
@@ -18,7 +18,15 @@ public class Devices {
     private String deviceName;
 
     @RelatedTo(type = "CONNECTS_TO")
-    private Set<Devices> connectedDevices;
+    private Set<Device> connectedDevices;
+    
+    public Device() {
+    	
+	}
+    
+    public Device(String deviceName) {
+		this.deviceName = deviceName;
+	}
 
     public Long getId() {
         return id;
@@ -36,11 +44,11 @@ public class Devices {
         this.deviceName = deviceName;
     }
     
-    public void setConnectedDevices(Set<Devices> connectedDevices) {
+    public void setConnectedDevices(Set<Device> connectedDevices) {
 		this.connectedDevices = connectedDevices;
 	}
     
-    public Set<Devices> getConnectedDevices() {
+    public Set<Device> getConnectedDevices() {
 		return connectedDevices;
 	}
 
