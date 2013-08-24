@@ -1,5 +1,6 @@
 package com.adaranet.model;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.GeneratedValue;
@@ -24,16 +25,29 @@ public class Device {
 
     @Indexed(indexType = IndexType.FULLTEXT, indexName = "searchByDeviceName")
     private String deviceName;
-
+    
     @Fetch
-    @RelatedToVia(type = "CONNECTS_TO", direction = Direction.BOTH)
+    @RelatedToVia(type = "CONNECTED_TO_DEVICE", direction = Direction.OUTGOING)
+    private Set<Device> connectedDevices = new HashSet<Device>();
+
+    public void connectToDevice(Device endPoint) {
+    	this.connectedDevices.add(endPoint);
+    }
+
+    /*@Fetch
+    @RelatedToVia(type = "CONNECTED_TO", direction = Direction.BOTH)
     private Set<ConnectedDevices> connectedDevices;
     
     public ConnectedDevices connectsTo(Device endDevice, String connectionProperty) {
+    	System.out.println(this.getDeviceName() + " : "+endDevice.getDeviceName() + " : "+connectionProperty);
+    	
     	ConnectedDevices connectedDevices = new ConnectedDevices(this, endDevice, connectionProperty);
+    	
+    	System.out.println(connectedDevices.getConnectionProperty());
     	this.connectedDevices.add(connectedDevices);
     	return connectedDevices;
-    }
+    }*/
+    
     
     public Device() {
     	
@@ -59,13 +73,21 @@ public class Device {
         this.deviceName = deviceName;
     }
     
-    public void setConnectedDevices(Set<ConnectedDevices> connectedDevices) {
+    public void setConnectedDevices(Set<Device> connectedDevices) {
+		this.connectedDevices = connectedDevices;
+	}
+    
+    public Set<Device> getConnectedDevices() {
+		return connectedDevices;
+	}
+    
+    /*public void setConnectedDevices(Set<ConnectedDevices> connectedDevices) {
 		this.connectedDevices = connectedDevices;
 	}
     
     public Set<ConnectedDevices> getConnectedDevices() {
 		return connectedDevices;
-	}
+	}*/
     
     @Override
 	public int hashCode() {
