@@ -16,13 +16,27 @@
 	    <li>No Devices Found</li>
 	  </c:otherwise>
 	</c:choose>
-	
- <a href = "add">Add Device</a>
- <a href = "deleteAllDevices">Delete All Devices</a>
- <a href = "listAllDevices">Show Devices</a>
- <form action="findDeviceByName">
- 	<label for="deviceName">Search for Device: <input type="text" name="deviceName" /></label>
- 	<input type="submit" value="Search"/>
- </form>
+
+	 <li><a href="add">Add Device</a></li>
+	 <li><a href="deleteAllDevices">Delete All Devices</a></li>
+	 <li><a href="listAllDevices">Show All Devices</a></li>
+ 
+ <fieldset>
+	 <form action="findDeviceByName">
+	 	<label for="deviceName">Search for Device: <input type="text" name="deviceName" /></label>
+	 	<input type="submit" value="Search"/>
+	 </form>
+ </fieldset>
+ 
+ <fieldset>
+	 <form action="connectDevices">
+	 	<label for="startNode">1st Device: <input type="text" name="startNode" /></label>
+	 	<label for="endNode">2nd Device: <input type="text" name="endNode" /></label>
+	 	<input type="submit" value="Connect Devices"/>
+	 </form>
+ </fieldset>
+ 
  </body>
 </html>
+
+

@@ -152,20 +152,6 @@ public class DeviceController {
 	    		
 	    	deviceService.save(newDevice);
 	    	
-	    	/*Device theDevice = deviceService.findOne(newDevice.getId());
-	    	logger.info("Retrieved Device name from Neo4j : using deviceService.findOne() : "+theDevice.getDeviceName());
-	    	
-	    	Device newDevice1 = deviceService.findByPropertyValue("deviceName", "Orion");
-	    	if(newDevice1 != null) {
-	    		logger.info("RETRIEVING PROPERTY BY VSALUE : "+newDevice1.getDeviceName());
-	    		logger.info("Saving new device : Saving relationship.");
-	    		newDevice1.connectsToDevice(newDevice);
-	    		deviceService.save(newDevice1);
-	    		
-	    	}
-	    	else
-	    		logger.info("NO Property Value Node found with Orion");*/
-	    	
 	    	Iterable<Device> devices = deviceService.findAll();
 	    	
 	    	if(devices.iterator().hasNext()) {
@@ -185,10 +171,37 @@ public class DeviceController {
         return "redirect:/listAllDevices";
     }
 	
+	@RequestMapping("/connectDevices")
+	@Transactional
+	public String connectDevices(@RequestParam("startNode") String startNode, @RequestParam("endNode") String endNode) throws Exception {
+
+		Device startDevice = searchDeviceByDeviceName(startNode);
+		
+		Device endDevice = searchDeviceByDeviceName(endNode);
+		
+    	if(startDevice != null && endDevice != null) {
+    		logger.info("Saving new device : Saving relationship.");
+    		startDevice.connectsToDevice(endDevice);
+    		deviceService.save(startDevice);
+    	} else
+    		logger.info("Cannot connect : "+startNode + " : with : "+endNode);
+    	
+    	return "redirect:/listAllDevices";
+	}
+	
+	
+	private Device searchDeviceByDeviceName(String deviceName) {
+		
+		Device foundDevice = deviceService.findByPropertyValue("deviceName", deviceName);
+		
+		return foundDevice;
+	}
+	
+	
 	@RequestMapping("/findDeviceByName")
     public String findDevice(@RequestParam("deviceName") String deviceName, Model model) {
 		
-    	Device foundDevice = deviceService.findByPropertyValue("deviceName", deviceName);
+		Device foundDevice = searchDeviceByDeviceName(deviceName);
     	
     	List<Device> devices = new ArrayList<Device>();
     	
