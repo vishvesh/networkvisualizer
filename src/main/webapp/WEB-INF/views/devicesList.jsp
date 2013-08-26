@@ -21,7 +21,7 @@
  <a href = "deleteAllDevices">Delete All Devices</a>
  <a href = "listAllDevices">Show Devices</a>
  <form action="findDeviceByName">
- 	<input type="text" name="deviceName" />
+ 	<label for="deviceName">Search for Device: <input type="text" name="deviceName" /></label>
  	<input type="submit" value="Search"/>
  </form>
  </body>

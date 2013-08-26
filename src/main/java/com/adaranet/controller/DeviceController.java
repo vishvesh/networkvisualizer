@@ -8,7 +8,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.support.Neo4jTemplate;
-import org.springframework.data.neo4j.transaction.Neo4jTransactional;
+//import org.springframework.data.neo4j.transaction.Neo4jTransactional;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -152,7 +152,7 @@ public class DeviceController {
 	    		
 	    	deviceService.save(newDevice);
 	    	
-	    	Device theDevice = deviceService.findOne(newDevice.getId());
+	    	/*Device theDevice = deviceService.findOne(newDevice.getId());
 	    	logger.info("Retrieved Device name from Neo4j : using deviceService.findOne() : "+theDevice.getDeviceName());
 	    	
 	    	Device newDevice1 = deviceService.findByPropertyValue("deviceName", "Orion");
@@ -164,7 +164,7 @@ public class DeviceController {
 	    		
 	    	}
 	    	else
-	    		logger.info("NO Property Value Node found with Orion");
+	    		logger.info("NO Property Value Node found with Orion");*/
 	    	
 	    	Iterable<Device> devices = deviceService.findAll();
 	    	

@@ -6,7 +6,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.support.Neo4jTemplate;
 import org.springframework.data.neo4j.support.node.Neo4jHelper;
-import org.springframework.data.neo4j.transaction.Neo4jTransactional;
+//import org.springframework.data.neo4j.transaction.Neo4jTransactional;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.BeforeTransaction;
@@ -46,7 +46,9 @@ public class RelationshipTest {
 	@BeforeTransaction
 	public void setUp() {
 		try {
-			Neo4jHelper.cleanDb(template);
+			
+			//Neo4jHelper.cleanDb(template);
+			
 		      /*Log4jConfigurer.initLogging( "classpath:propFiles/log4j.properties" );
 		      logger.info("");
 				logger.info("************************************************************");
@@ -72,11 +74,11 @@ public class RelationshipTest {
 		assertThat(persistedEntity.getValue(), equalTo(firstEntity.getValue()));
 		assertThat(persistedEntity.getEntityRelationships(), hasSize(3));*/
 		
-		Device one = new Device("One");
+		/*Device one = new Device("One");
 		Device two = new Device("Two");
 		
 		deviceService.save(one);
-		deviceService.save(two);
+		deviceService.save(two);*/
 		
 		Iterable<Device> devices = deviceService.findAll();
 		
@@ -100,7 +102,8 @@ public class RelationshipTest {
 		System.out.println("After executing all the tests!");
 		
 		Device theDevice = deviceService.findByPropertyValue("deviceName", "One");
-		System.out.println("FOUND THE DEVICE : "+theDevice.getDeviceName());
+		if(theDevice != null)
+			System.out.println("FOUND THE DEVICE : "+theDevice.getDeviceName());
 				
 		//System.out.println("Test Start");
 		//logger.info("Initiating test for Relationship.");

@@ -3,7 +3,7 @@ package com.adaranet.model;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.GeneratedValue;
+//import javax.persistence.GeneratedValue;
 
 import org.neo4j.graphdb.Direction;
 import org.springframework.data.neo4j.annotation.Fetch;
@@ -20,14 +20,14 @@ import com.adaranet.relationships.ConnectedDevices;
 public class Device {
 
     @GraphId
-    @GeneratedValue
+    //@GeneratedValue
     private Long id;
 
     //@Indexed(indexType = IndexType.FULLTEXT, indexName = "searchByDeviceName")
     @Indexed
     private String deviceName;
 
-    @RelatedTo(type = "CONNECTED_TO_DEVICE", elementClass = Device.class, direction = Direction.BOTH)
+    @RelatedTo(type = "CONNECTED_TO_DEVICE", elementClass = Device.class, direction = Direction.INCOMING)
     private Set<Device> connectedDevices = new HashSet<Device>();
 
     public void connectsToDevice(Device endPoint) {
