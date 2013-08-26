@@ -187,17 +187,16 @@ public class DeviceController {
 	
 	@RequestMapping("/findDeviceByName")
     public String findDevice(@RequestParam("deviceName") String deviceName, Model model) {
-    	
-    	logger.info("Returning found Device By deviceName : "+deviceName);
-    	
+		
     	Device foundDevice = deviceService.findByPropertyValue("deviceName", deviceName);
-    	
-    	logger.info("FOUND DEVICE's NAME : "+foundDevice.getDeviceName());
     	
     	List<Device> devices = new ArrayList<Device>();
     	
     	if(foundDevice != null) {
     		devices.add(foundDevice);
+    		logger.info("FOUND DEVICE's NAME : "+foundDevice.getDeviceName() + " : Search String : "+deviceName);
+    	} else {
+    		logger.info("Device NOT FOUND with search string : "+deviceName);
     	}
     	
     	model.addAttribute("devices", devices);
