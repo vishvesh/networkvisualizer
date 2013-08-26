@@ -11,6 +11,7 @@ import org.springframework.data.neo4j.support.Neo4jTemplate;
 import org.springframework.data.neo4j.transaction.Neo4jTransactional;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -182,6 +183,29 @@ public class DeviceController {
 		}
 
         return "redirect:/listAllDevices";
+    }
+	
+	@RequestMapping("/findDeviceByName")
+    public String findDevice(@RequestParam("deviceName") String deviceName, Model model) {
+    	
+    	logger.info("Returning found Device By deviceName : "+deviceName);
+    	
+    	Device foundDevice = deviceService.findByPropertyValue("deviceName", deviceName);
+    	
+    	logger.info("FOUND DEVICE's NAME : "+foundDevice.getDeviceName());
+    	
+    	List<Device> devices = new ArrayList<Device>();
+    	
+    	if(foundDevice != null) {
+    		devices.add(foundDevice);
+    	}
+    	
+    	model.addAttribute("devices", devices);
+    	
+        //map.put("person", new Person());
+        //map.put("peopleList", personService.findAll().iterator());
+
+        return "devicesList";
     }
 
     @RequestMapping("/")

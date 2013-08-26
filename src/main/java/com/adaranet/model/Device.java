@@ -23,7 +23,8 @@ public class Device {
     @GeneratedValue
     private Long id;
 
-    @Indexed(indexType = IndexType.FULLTEXT, indexName = "searchByDeviceName")
+    //@Indexed(indexType = IndexType.FULLTEXT, indexName = "searchByDeviceName")
+    @Indexed
     private String deviceName;
 
     @RelatedTo(type = "CONNECTED_TO_DEVICE", elementClass = Device.class, direction = Direction.BOTH)
