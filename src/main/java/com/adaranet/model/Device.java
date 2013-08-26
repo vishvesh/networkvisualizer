@@ -25,12 +25,11 @@ public class Device {
 
     @Indexed(indexType = IndexType.FULLTEXT, indexName = "searchByDeviceName")
     private String deviceName;
-    
-    @Fetch
-    @RelatedToVia(type = "CONNECTED_TO_DEVICE", direction = Direction.OUTGOING)
+
+    @RelatedTo(type = "CONNECTED_TO_DEVICE", elementClass = Device.class, direction = Direction.BOTH)
     private Set<Device> connectedDevices = new HashSet<Device>();
 
-    public void connectToDevice(Device endPoint) {
+    public void connectsToDevice(Device endPoint) {
     	this.connectedDevices.add(endPoint);
     }
 

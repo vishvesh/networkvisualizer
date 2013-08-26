@@ -94,7 +94,7 @@ public class RelationshipTest {
 		//ConnectedDevices c = template.createRelationshipBetween(one, two, ConnectedDevices.class, "CONNECTED_TO", false);
 		//template.save(c);
 		
-		//one.connectToDevice(two);
+		//one.connectsToDevice(two);
 		//deviceService.save(one);
 		
 		System.out.println("After executing all the tests!");

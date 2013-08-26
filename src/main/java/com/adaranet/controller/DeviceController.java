@@ -100,14 +100,21 @@ public class DeviceController {
 	}
 	
 	@RequestMapping(value = "/add", method = RequestMethod.GET)
-    @Transactional
-    public String addRequest() {
+    //@Transactional
+    public String forwardToAddDevicePage() {
 
     	logger.info("Routing user to addDevice.jsp page!");
     	
-    	//deviceService.save(device);
-
         return "addDevice";
+    }
+	
+	@RequestMapping(value = "", method = RequestMethod.GET)
+    //@Transactional
+    public String routeToIndexPage() {
+
+    	logger.info("Routing user to Index page!");
+
+        return "index";
     }
 	
 	@RequestMapping(value = "/deleteAllDevices", method = RequestMethod.GET)
@@ -147,11 +154,16 @@ public class DeviceController {
 	    	Device theDevice = deviceService.findOne(newDevice.getId());
 	    	logger.info("Retrieved Device name from Neo4j : using deviceService.findOne() : "+theDevice.getDeviceName());
 	    	
-	    	/*Device newDevice1 = deviceService.findByPropertyValue("deviceName", "AC");
-	    	if(newDevice1 != null)
+	    	Device newDevice1 = deviceService.findByPropertyValue("deviceName", "Orion");
+	    	if(newDevice1 != null) {
 	    		logger.info("RETRIEVING PROPERTY BY VSALUE : "+newDevice1.getDeviceName());
+	    		logger.info("Saving new device : Saving relationship.");
+	    		newDevice1.connectsToDevice(newDevice);
+	    		deviceService.save(newDevice1);
+	    		
+	    	}
 	    	else
-	    		logger.info("NO Property Value Node found with AC");*/
+	    		logger.info("NO Property Value Node found with Orion");
 	    	
 	    	Iterable<Device> devices = deviceService.findAll();
 	    	
