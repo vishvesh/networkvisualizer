@@ -2,6 +2,17 @@
 
 <!doctype>
 <html>
+<head>
+
+<script type="text/javascript" src="resources/js/jquery/jquery-1.10.1.min.js"></script>
+
+<style type="text/css">
+	canvas {
+		border: 1px solid black;
+	}
+</style>
+
+</head>
 <body style="text-align: center;">
 	<h1>Devices:</h1>
 	
@@ -36,6 +47,32 @@
 	 </form>
  </fieldset>
  
+ <fieldset>
+	 <form action="getAllChildConnectedDevices">
+	 	<label for="deviceName">Device Name: <input type="text" name="deviceName" /></label>
+	 	<input type="submit" value="Show all Relationships"/>
+	 </form>
+ </fieldset>
+ 
+ <canvas id="canvas" width="400" height="400"></canvas>
+ <script type="text/javascript">
+ console.log($('#canvas'));
+ 
+ var canvas = $('#canvas');
+ var context = document.getElementById('canvas').getContext('2d');
+	var offset = canvas.offset();
+	
+	context.lineWidth = 1;
+	context.strokeStyle = "navy";
+	context.font = 'italic 24px san-serif';
+	context.textBaseline = 'middle';
+	context.strokeText('Neo4j - Canvas Test!', 10, 20);
+	
+	context.beginPath();
+	context.moveTo(40, 40);
+	context.lineTo(100, 50);
+	context.stroke();
+ </script>
  </body>
 </html>
 
