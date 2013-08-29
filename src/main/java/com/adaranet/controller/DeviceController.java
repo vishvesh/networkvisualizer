@@ -20,13 +20,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.adaranet.model.Device;
+import com.adaranet.relationships.ConnectedDevices;
 import com.adaranet.service.DeviceService;
 //import org.springframework.data.neo4j.transaction.Neo4jTransactional;
 
 @Controller
 public class DeviceController {
 
-	Logger logger = Logger.getLogger(getClass());
+	protected Logger logger = Logger.getLogger(getClass());
 
 	@Autowired
     private DeviceService deviceService;
@@ -146,8 +147,13 @@ public class DeviceController {
 		Device endDevice = deviceService.findDeviceByDeviceName(endNode); //searchDeviceByDeviceName(endNode);		
     	if(startDevice != null && endDevice != null) {
     		logger.info("Saving new device : Saving relationship.");
-    		startDevice.connectsToDevice(endDevice);
+    		
+    		startDevice.connectsToDevice(endDevice, "100", "50");
+
+    		//startDevice.setConnectedDevices(connectedDevices);
+    		
     		deviceService.save(startDevice);
+    		//deviceService.save(startDevice);
     	} else
     		logger.info("Cannot connect : "+startNode + " : with : "+endNode);   	
     	return "redirect:/listAllDevices";
@@ -205,6 +211,10 @@ public class DeviceController {
 		Device foundDevice = deviceService.findDeviceByDeviceName(deviceName); //searchDeviceByDeviceName(deviceName);
     	List<Device> devices = new ArrayList<Device>();   	
     	if(foundDevice != null) {
+    		
+			int count = foundDevice.getOutgoingDeviceConnections() != null ? foundDevice.getOutgoingDeviceConnections().size() : 0;
+			logger.info("Count of OutgoingConnectedDevices Collection : "+count);
+    		
     		devices.add(foundDevice);
     		logger.info("FOUND DEVICE's NAME : "+foundDevice.getDeviceName() + " : Search String : "+deviceName);
     	} else {

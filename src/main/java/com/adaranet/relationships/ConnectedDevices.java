@@ -7,7 +7,7 @@ import org.springframework.data.neo4j.annotation.StartNode;
 
 import com.adaranet.model.Device;
 
-@RelationshipEntity(type = "CONNECTED_TO")
+@RelationshipEntity(type = "CONNECTED_TO_DEVICE")
 public class ConnectedDevices {
 
 	@GraphId
@@ -18,16 +18,23 @@ public class ConnectedDevices {
 	@EndNode
 	private Device endDevice;
 	
-	private String connectionProperty;
+	private String value;
+	private String cost;
 	
 	public ConnectedDevices() {
 		
 	}
 	
-	public ConnectedDevices(Device startDevice, Device endDevice, String connectionProperty) {
+	public ConnectedDevices(Device startDevice, Device endDevice) {
 		this.startDevice = startDevice;
 		this.endDevice = endDevice;
-		this.connectionProperty = connectionProperty;
+	}
+	
+	public ConnectedDevices(Device startDevice, Device endDevice, String value, String cost) {
+		this.startDevice = startDevice;
+		this.endDevice = endDevice;
+		this.value = value;
+		this.cost = cost;
 	}
 	
 	public void setId(Long id) {
@@ -54,27 +61,33 @@ public class ConnectedDevices {
 		this.endDevice = endDevice;
 	}
 
-	public String getConnectionProperty() {
-		return connectionProperty;
+	public void setValue(String value) {
+		this.value = value;
+	}
+	
+	public String getValue() {
+		return value;
+	}
+	
+	public void setCost(String cost) {
+		this.cost = cost;
 	}
 
-	public void setConnectionProperty(String connectionProperty) {
-		this.connectionProperty = connectionProperty;
+	public String getCost() {
+		return cost;
 	}
 
-	@Override
+	/*@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime
-				* result
-				+ ((connectionProperty == null) ? 0 : connectionProperty
-						.hashCode());
+		result = prime * result + ((cost == null) ? 0 : cost.hashCode());
 		result = prime * result
 				+ ((endDevice == null) ? 0 : endDevice.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result
 				+ ((startDevice == null) ? 0 : startDevice.hashCode());
+		result = prime * result + ((value == null) ? 0 : value.hashCode());
 		return result;
 	}
 
@@ -87,10 +100,10 @@ public class ConnectedDevices {
 		if (getClass() != obj.getClass())
 			return false;
 		ConnectedDevices other = (ConnectedDevices) obj;
-		if (connectionProperty == null) {
-			if (other.connectionProperty != null)
+		if (cost == null) {
+			if (other.cost != null)
 				return false;
-		} else if (!connectionProperty.equals(other.connectionProperty))
+		} else if (!cost.equals(other.cost))
 			return false;
 		if (endDevice == null) {
 			if (other.endDevice != null)
@@ -107,7 +120,12 @@ public class ConnectedDevices {
 				return false;
 		} else if (!startDevice.equals(other.startDevice))
 			return false;
+		if (value == null) {
+			if (other.value != null)
+				return false;
+		} else if (!value.equals(other.value))
+			return false;
 		return true;
 	}
-
+*/
 }
