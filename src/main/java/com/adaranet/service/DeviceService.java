@@ -16,7 +16,7 @@ public interface DeviceService extends GraphRepository<Device> {
 	@Query(type = QueryType.Cypher, value = "START root = node:Device(deviceName = {0}) MATCH (root) <- [:CONNECTED_TO_DEVICE] - devices RETURN devices")
 	public List<Device> getFirstChildConnectedDevice(String deviceName);
 	
-	@Query(type = QueryType.Cypher, value = "START root = node:Device(deviceName = {0}) MATCH (root) <- [connections:CONNECTED_TO_DEVICE*1..] - devices RETURN devices")
+	@Query(type = QueryType.Cypher, value = "START root = node:Device(deviceName = {0}) MATCH (root) - [connections:CONNECTED_TO_DEVICE*1..] -> devices RETURN devices")
 	public List<Device> getAllChildConnectedDevices(String deviceName);
 	
 }
