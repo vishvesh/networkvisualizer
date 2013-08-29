@@ -4,25 +4,24 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.support.Neo4jTemplate;
-//import org.springframework.data.neo4j.transaction.Neo4jTransactional;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.adaranet.RelationshipTypes;
 import com.adaranet.model.Device;
 import com.adaranet.service.DeviceService;
+//import org.springframework.data.neo4j.transaction.Neo4jTransactional;
 
 @Controller
 public class DeviceController {
@@ -143,8 +142,8 @@ public class DeviceController {
 	@RequestMapping("/connectDevices")
 	@Transactional
 	public String connectDevices(@RequestParam("startNode") String startNode, @RequestParam("endNode") String endNode) throws Exception {
-		Device startDevice = searchDeviceByDeviceName(startNode);		
-		Device endDevice = searchDeviceByDeviceName(endNode);		
+		Device startDevice = deviceService.findDeviceByDeviceName(startNode); //searchDeviceByDeviceName(startNode);		
+		Device endDevice = deviceService.findDeviceByDeviceName(endNode); //searchDeviceByDeviceName(endNode);		
     	if(startDevice != null && endDevice != null) {
     		logger.info("Saving new device : Saving relationship.");
     		startDevice.connectsToDevice(endDevice);
@@ -155,29 +154,46 @@ public class DeviceController {
 	}
 	
 	
-	private Device searchDeviceByDeviceName(String deviceName) {		
+	/*private Device searchDeviceByDeviceName(String deviceName) {		
 		Device foundDevice = deviceService.findByPropertyValue("deviceName", deviceName);		
-		/*if(foundDevice == null) {
+		if(foundDevice == null) {
 			foundDevice = new Device(deviceName);
 			deviceService.save(foundDevice);
-		}*/	
+		}	
 		return foundDevice;
-	}
+	}*/
 	
 	
-	@RequestMapping("/getAllChildConnectedDevices")
+	/*@RequestMapping("/getAllChildConnectedDevices")
     public String getAllRelationshipByDeviceName(@RequestParam("deviceName") String deviceName, Model model) {	
 		
 		logger.info("*****************************************************************************************");
 		logger.info("Inside getAllRelationshipByDeviceName()");	
-		List<Device> devices = new ArrayList<Device>();
-		//devices = deviceService.getFirstChildConnectedDevice(deviceName);
-		devices = deviceService.getAllChildConnectedDevices(deviceName);
+		List<Map<String, Device>> devices = deviceService.getAllChildConnectedDevices(deviceName);
 		logger.info("Device Connected to :"+deviceName+" : Number of Device Connected : "+devices.size());
-		for (Device device : devices) {
-			logger.info("Devices having INCOMING Relationship : CONNECTED_TO_DEVICE : Device Name : "+device.getDeviceName());
-		}
+		for (Map<String, Device> device : devices) {
+			
+			for(Map.Entry<String, Device> entry : device.entrySet()) {
+				//Device val = entry.getValue();
+				//logger.info("VALL : "+val.getDeviceName());
+				logger.info(entry.getKey() + "/" + entry.getValue());
+			}
+			
+			//logger.info("Devices having INCOMING Relationship : CONNECTED_TO_DEVICE : Device Name : "+device.getDeviceName());			
+		}	
+	
 		logger.info("*****************************************************************************************");
+		model.addAttribute("devices", devices);	
+		return "devicesList";
+	}*/
+	
+	@RequestMapping("/getAllChildConnectedDevices")
+    public String getAllRelationshipByDeviceName(@RequestParam("deviceName") String deviceName, Model model) {	
+		
+		logger.info("Inside getAllRelationshipByDeviceName()");	
+		List<Device> devices = new ArrayList<Device>();
+		devices = deviceService.getAllChildConnectedDevices(deviceName);
+		logger.info("COUNT : "+devices.size());
 		model.addAttribute("devices", devices);	
 		return "devicesList";
 	}
@@ -186,7 +202,7 @@ public class DeviceController {
 	@RequestMapping("/findDeviceByName")
     public String findDevice(@RequestParam("deviceName") String deviceName, Model model) {
 		
-		Device foundDevice = searchDeviceByDeviceName(deviceName);
+		Device foundDevice = deviceService.findDeviceByDeviceName(deviceName); //searchDeviceByDeviceName(deviceName);
     	List<Device> devices = new ArrayList<Device>();   	
     	if(foundDevice != null) {
     		devices.add(foundDevice);

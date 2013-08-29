@@ -27,7 +27,8 @@ public class Device {
     @Indexed
     private String deviceName;
 
-    @RelatedTo(type = "CONNECTED_TO_DEVICE", elementClass = Device.class, direction = Direction.INCOMING)
+    @Fetch
+    @RelatedTo(type = "CONNECTED_TO_DEVICE", elementClass = Device.class, direction = Direction.BOTH)
     private Set<Device> connectedDevices = new HashSet<Device>();
 
     public void connectsToDevice(Device endPoint) {
@@ -89,7 +90,7 @@ public class Device {
 		return connectedDevices;
 	}*/
     
-    @Override
+    /*@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -127,6 +128,6 @@ public class Device {
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
-	}
+	}*/
 
 }
