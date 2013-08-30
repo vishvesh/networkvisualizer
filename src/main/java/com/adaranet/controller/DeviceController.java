@@ -245,7 +245,9 @@ public class DeviceController {
     }
 
     @RequestMapping("/json")
-    public @ResponseBody List<DevicesJsonBean> getJson() throws Exception {
+    public @ResponseBody List<DevicesJsonBean> getGraphAsJson() throws Exception {
+    	long startTime = System.currentTimeMillis();
+
     	Iterable<Device> allDevices = deviceService.findAll();
     	
     	//List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
@@ -316,6 +318,10 @@ public class DeviceController {
     	} catch (Exception e) {
     		e.printStackTrace();
     	}*/
+    	
+    	long endTime   = System.currentTimeMillis();
+    	long totalTime = endTime - startTime;
+    	logger.info("TIME TOOK FOR THE METHOD TO COMPLETE : "+totalTime+" : milli seconds");
     	
     	return jsonBeanList;
     }
