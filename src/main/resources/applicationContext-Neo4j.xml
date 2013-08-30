@@ -29,6 +29,10 @@
         </constructor-arg>
     </bean>
     
+    <!--bean id="serverWrapper" class="org.neo4j.server.WrappingNeoServerBootstrapper" init-method="start" destroy-method="stop">
+            <constructor-arg ref="graphDatabaseService"/>
+    </bean-->
+    
 	<neo4j:config graphDatabaseService="graphDatabaseService" />
 	
 	<!--bean id="serverWrapper" class="org.neo4j.server.WrappingNeoServerBootstrapper" init-method="start" destroy-method="stop">
@@ -47,13 +51,5 @@
 	    <constructor-arg index="0" ref="graphDatabaseService"/>
 	    <constructor-arg index="1" ref="config"/>
 	</bean-->
-    
-    <!--neo4j:repositories base-package="com.adaranet"/-->
-    
-    					<!-- This seems to be deprecated, but keeping this for now! -->
-    <!--bean id="graphDatabaseService" class="org.neo4j.test.ImpermanentGraphDatabase" destroy-method="shutdown"/--> 
-    <!--bean id="serverWrapper" class="org.neo4j.server.WrappingNeoServerBootstrapper" init-method="start" destroy-method="stop">
-        <constructor-arg ref="graphDatabaseService"/>
-    </bean-->
     
 </beans>

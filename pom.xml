@@ -170,12 +170,18 @@
 		<url>http://maven.springframework.org/milestone</url>
 		<snapshots><enabled>false</enabled></snapshots>
 	</repository>
-
-	<repository>
-		<id>jboss</id>
-		<name>JBoss repository</name>
-		<url>https://repository.jboss.org/nexus/content/repositories/releases</url>
-	</repository>
+	
+    <repository>
+        <id>neo4j-release-repository</id>
+        <name>Neo4j Maven 2 release repository</name>
+        <url>http://m2.neo4j.org/releases</url>
+        <releases>
+            <enabled>true</enabled>
+        </releases>
+        <snapshots>
+            <enabled>false</enabled>
+        </snapshots>
+    </repository>
 	
   </repositories>
 
@@ -194,6 +200,45 @@
 
   <build>
     <plugins>
+		<!-- Maven compiler plugin -->
+		<plugin>
+			<artifactId>maven-compiler-plugin</artifactId>
+			<configuration>
+				<source>1.6</source>
+				<target>1.6</target>
+			</configuration>
+		</plugin>
+		<!-- 
+		<plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.4</version>
+            <configuration>
+            	<executions>
+	                <execution>
+	                    <goals>
+	                        <goal>unpack-dependencies</goal>
+	                    </goals>
+	                    <phase>process-resources</phase>
+	                </execution>
+            	</executions>
+                <includeGroupIds>org.neo4j.app</includeGroupIds>
+                <includeArtifactIds>neo4j-server</includeArtifactIds>
+                <includeClassifiers>static-web</includeClassifiers>
+                <includes>webadmin-html/**</includes>
+                <outputDirectory>target/${artifactId}-${version}/WEB-INF/classes</outputDirectory>
+            </configuration>
+        </plugin>
+        
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-war-plugin</artifactId>
+            <version>2.1-beta-1</version>
+            <configuration>
+                <warName>neo4j</warName>
+            </configuration>
+        </plugin>
+		 -->
 		<plugin>
             <groupId>org.apache.tomcat.maven</groupId>
             <artifactId>tomcat7-maven-plugin</artifactId>
@@ -204,15 +249,6 @@
                 <path>/</path>
             </configuration>
         </plugin>
-           
-		<!-- Maven compiler plugin -->
-		<plugin>
-			<artifactId>maven-compiler-plugin</artifactId>
-			<configuration>
-				<source>1.6</source>
-				<target>1.6</target>
-			</configuration>
-		</plugin>
    </plugins>
    <finalName>networkvisualizer</finalName>
   </build>
