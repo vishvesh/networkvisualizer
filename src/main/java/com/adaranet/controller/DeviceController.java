@@ -22,6 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.adaranet.model.Device;
 import com.adaranet.relationships.ConnectedDevices;
 import com.adaranet.service.DeviceService;
+import com.adaranet.util.AppUtils;
 //import org.springframework.data.neo4j.transaction.Neo4jTransactional;
 
 @Controller
@@ -148,12 +149,12 @@ public class DeviceController {
     	if(startDevice != null && endDevice != null) {
     		logger.info("Saving new device : Saving relationship.");
     		
-    		startDevice.connectsToDevice(endDevice, "100", "50");
+    		startDevice.connectsToDevice(endDevice, Integer.toString(AppUtils.generateRandomInt(100)), Integer.toString(AppUtils.generateRandomInt(100)));
 
     		//startDevice.setConnectedDevices(connectedDevices);
     		
     		deviceService.save(startDevice);
-    		//deviceService.save(startDevice);
+    		//deviceService.save(endDevice);
     	} else
     		logger.info("Cannot connect : "+startNode + " : with : "+endNode);   	
     	return "redirect:/listAllDevices";
@@ -232,6 +233,18 @@ public class DeviceController {
     	logger.info("Redirecting to index.jsp");   	
         //map.put("person", new Person());
         //map.put("peopleList", personService.findAll().iterator());
+    	
+    	Iterable<Device> allDevices = deviceService.findAll();
+    	logger.info("");
+    	for (Device device : allDevices) {
+			Set<ConnectedDevices> outgoingDevices = device.getOutgoingDeviceConnections();
+			logger.info("Device persisted in Neo4j is : "+device.getDeviceName()+" : Size of the SET : "+outgoingDevices.size());
+			for (ConnectedDevices connectedDevices : outgoingDevices) {
+				logger.info("Connected Devices for : "+device.getDeviceName()+" : is : "+connectedDevices.getEndDevice().getDeviceName()+" : Value : "+connectedDevices.getValue());
+			}
+			logger.info("");
+		}
+    	
         return "index";
     }
 

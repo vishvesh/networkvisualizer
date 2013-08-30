@@ -1,6 +1,7 @@
 package com.adaranet.relationships;
 
 import org.springframework.data.neo4j.annotation.EndNode;
+import org.springframework.data.neo4j.annotation.Fetch;
 import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.RelationshipEntity;
 import org.springframework.data.neo4j.annotation.StartNode;
@@ -13,8 +14,11 @@ public class ConnectedDevices {
 	@GraphId
 	private Long id;
 	
+	@Fetch
 	@StartNode
 	private Device startDevice;
+	
+	@Fetch
 	@EndNode
 	private Device endDevice;
 	
