@@ -228,7 +228,7 @@ public class DeviceController {
 
 	
     @RequestMapping("/")
-    public String index(Map<String, Object> map) {    	
+    public String index() {    	
     	logger.info("Redirecting to index.jsp");   	
         //map.put("person", new Person());
         //map.put("peopleList", personService.findAll().iterator());
