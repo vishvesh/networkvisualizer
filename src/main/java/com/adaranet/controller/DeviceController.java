@@ -1,13 +1,18 @@
 package com.adaranet.controller;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.aspectj.lang.annotation.Aspect;
+import org.codehaus.jackson.annotate.JsonBackReference;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.support.Neo4jTemplate;
 import org.springframework.stereotype.Controller;
@@ -17,8 +22,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.adaranet.dto.DeviceDto;
+import com.adaranet.jsonBeans.DevicesJsonBean;
 import com.adaranet.model.Device;
 import com.adaranet.relationships.ConnectedDevices;
 import com.adaranet.service.DeviceService;
@@ -233,21 +241,84 @@ public class DeviceController {
     	logger.info("Redirecting to index.jsp");   	
         //map.put("person", new Person());
         //map.put("peopleList", personService.findAll().iterator());
-    	
-    	Iterable<Device> allDevices = deviceService.findAll();
-    	logger.info("");
-    	for (Device device : allDevices) {
-			Set<ConnectedDevices> outgoingDevices = device.getOutgoingDeviceConnections();
-			logger.info("Device persisted in Neo4j is : "+device.getDeviceName()+" : Size of the SET : "+outgoingDevices.size());
-			for (ConnectedDevices connectedDevices : outgoingDevices) {
-				logger.info("Connected Devices for : "+device.getDeviceName()+" : is : "+connectedDevices.getEndDevice().getDeviceName()+" : Value : "+connectedDevices.getValue());
-			}
-			logger.info("");
-		}
-    	
         return "index";
     }
 
+    @RequestMapping("/json")
+    public @ResponseBody List<DevicesJsonBean> getJson() throws Exception {
+    	Iterable<Device> allDevices = deviceService.findAll();
+    	
+    	//List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
+    	List<DevicesJsonBean> jsonBeanList = new ArrayList<DevicesJsonBean>();
+    	
+    	logger.info("");
+    	for (Device device : allDevices) {
+			Set<ConnectedDevices> outgoingDevices = device.getOutgoingDeviceConnections();
+			Set<ConnectedDevices> incomingDevices = device.getIncomingDeviceConnections();
+			logger.info("INCOMING DEVICES SIZE : "+incomingDevices.size());
+			
+			Set<DeviceDto> deviceOutgoingDtos = new HashSet<DeviceDto>();
+			Set<DeviceDto> deviceIncomingDtos = new HashSet<DeviceDto>();
+			
+			DeviceDto parentDevice = new DeviceDto();
+			parentDevice.setDeviceName(device.getDeviceName());
+			parentDevice.setDeviceType(device.getDeviceType());
+			parentDevice.setId(device.getId());
+
+			//Map<String, Object> deviceMapper = new HashMap<String, Object>();
+			//deviceMapper.put("parentDevice", device);
+			//deviceMapper.put("outgoingDevices", outgoingDevices);
+			//list.add(deviceMapper);
+			
+			logger.info("Device persisted in Neo4j is : "+device.getDeviceName()+" : Size of the SET : "+outgoingDevices.size());
+			for (ConnectedDevices connectedDevices : outgoingDevices) {
+				DeviceDto deviceDto = new DeviceDto();
+				deviceDto.setId(connectedDevices.getEndDevice().getId());
+				deviceDto.setDeviceName(connectedDevices.getEndDevice().getDeviceName());
+				deviceDto.setDeviceType(connectedDevices.getEndDevice().getDeviceType());
+				deviceDto.setCost(connectedDevices.getCost());
+				deviceDto.setValue(connectedDevices.getValue());
+				deviceOutgoingDtos.add(deviceDto);
+				logger.info("Connected Devices for : "+device.getDeviceName()+" : is : "+connectedDevices.getEndDevice().getDeviceName()+" : Value : "+connectedDevices.getValue());
+			}
+			
+			for (ConnectedDevices connectedDevices : incomingDevices) {
+				logger.info("Start Node : "+connectedDevices.getStartDevice().getDeviceName()+" : End Node : "+connectedDevices.getEndDevice().getDeviceName());
+				DeviceDto deviceDto = new DeviceDto();
+				deviceDto.setId(connectedDevices.getStartDevice().getId());
+				deviceDto.setDeviceName(connectedDevices.getStartDevice().getDeviceName());
+				deviceDto.setDeviceType(connectedDevices.getStartDevice().getDeviceType());
+				deviceDto.setCost(connectedDevices.getCost());
+				deviceDto.setValue(connectedDevices.getValue());
+				deviceIncomingDtos.add(deviceDto);
+			}
+			
+			DevicesJsonBean bean = new DevicesJsonBean();
+			bean.setParentDevice(parentDevice);
+			bean.setOutgoingDevices(deviceOutgoingDtos);
+			bean.setIncomingDevices(deviceIncomingDtos);
+			jsonBeanList.add(bean);
+			
+			logger.info("");
+		}
+    	
+    	/*ObjectMapper mapper = new ObjectMapper();
+    	
+    	try {
+    		//map.put("devices", Collections.allDevices);
+    		String json = mapper.writeValueAsString(jsonBeanList);
+     
+    		logger.info("Printing the JSON");
+    		logger.info(json);
+    		
+    		//model.addAttribute("json", json);
+     
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    	}*/
+    	
+    	return jsonBeanList;
+    }
     
     @RequestMapping("/delete/{personId}")
     @Transactional

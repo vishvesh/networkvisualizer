@@ -7,6 +7,8 @@ import java.util.Set;
 //import javax.persistence.GeneratedValue;
 
 import org.apache.log4j.Logger;
+import org.codehaus.jackson.annotate.JsonBackReference;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.neo4j.graphdb.Direction;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.neo4j.annotation.Fetch;
@@ -21,7 +23,7 @@ import com.adaranet.controller.DeviceController;
 import com.adaranet.relationships.ConnectedDevices;
 
 @NodeEntity
-public class Device extends DeviceController implements Serializable {
+public class Device {
 
 	/**
 	 * @author vdeshmukh
@@ -42,6 +44,7 @@ public class Device extends DeviceController implements Serializable {
     //private ConnectedDevices connectedDevices;
 
     @Fetch
+    //@JsonBackReference
     @RelatedToVia(type = "CONNECTED_TO_DEVICE", elementClass = ConnectedDevices.class, direction = Direction.OUTGOING)
     private Set<ConnectedDevices> outgoingDeviceConnections = new HashSet<ConnectedDevices>();
     

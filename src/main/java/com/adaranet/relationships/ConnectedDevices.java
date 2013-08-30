@@ -1,5 +1,7 @@
 package com.adaranet.relationships;
 
+import org.codehaus.jackson.annotate.JsonBackReference;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.springframework.data.neo4j.annotation.EndNode;
 import org.springframework.data.neo4j.annotation.Fetch;
 import org.springframework.data.neo4j.annotation.GraphId;
@@ -20,6 +22,7 @@ public class ConnectedDevices {
 	
 	@Fetch
 	@EndNode
+	//@JsonBackReference
 	private Device endDevice;
 	
 	private String value;
