@@ -1,4 +1,4 @@
-package com.adaranet;
+package com.adaranet.util;
 
 import org.neo4j.graphdb.RelationshipType;
 import org.springframework.data.neo4j.annotation.RelationshipEntity;
