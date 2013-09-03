@@ -40,6 +40,13 @@
  </fieldset>
  
  <fieldset>
+	 <form action="deleteDevice">
+	 	<label for="deviceName">Delete Device: <input type="text" name="deviceName" /></label>
+	 	<input type="submit" value="Delete"/>
+	 </form>
+ </fieldset>
+ 
+ <fieldset>
 	 <form action="connectDevices">
 	 	<label for="startNode">1st Device: <input type="text" name="startNode" /></label>
 	 	<label for="endNode">2nd Device: <input type="text" name="endNode" /></label>
@@ -54,9 +61,9 @@
 	 </form>
  </fieldset>
  
- <canvas id="canvas" width="400" height="400"></canvas>
- <script type="text/javascript">
- console.log($('#canvas'));
+ <!--canvas id="canvas" width="400" height="400"></canvas-->
+ <!--script type="text/javascript">
+console.log($('#canvas'));
  
  var canvas = $('#canvas');
  var context = document.getElementById('canvas').getContext('2d');
@@ -72,7 +79,7 @@
 	context.moveTo(40, 40);
 	context.lineTo(100, 50);
 	context.stroke();
- </script>
+ </script-->
  </body>
 </html>
 

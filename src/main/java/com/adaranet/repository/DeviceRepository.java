@@ -4,11 +4,11 @@ import java.util.List;
 
 import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.annotation.QueryType;
-import org.springframework.data.neo4j.repository.GraphRepository;
 
 import com.adaranet.model.Device;
+import com.adaranet.repository.generic.GenericRepository;
 
-public interface DeviceRepository extends GraphRepository<Device> {
+public interface DeviceRepository extends GenericRepository<Device> {
 	
 	public Device findDeviceByDeviceName(String deviceName);
    
