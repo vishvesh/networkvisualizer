@@ -1,7 +1,6 @@
-package com.adaranet.service;
+package com.adaranet.repository;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.annotation.QueryType;
@@ -9,7 +8,7 @@ import org.springframework.data.neo4j.repository.GraphRepository;
 
 import com.adaranet.model.Device;
 
-public interface DeviceService extends GraphRepository<Device> {
+public interface DeviceRepository extends GraphRepository<Device> {
 	
 	public Device findDeviceByDeviceName(String deviceName);
    

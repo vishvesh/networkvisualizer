@@ -24,7 +24,7 @@
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
     
-    <tx:annotation-driven />
+    <tx:annotation-driven mode="aspectj" transaction-manager="transactionManager"/>
     
     <!--context:property-placeholder properties-ref="deployProperties" /-->
 

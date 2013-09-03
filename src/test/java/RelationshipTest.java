@@ -1,25 +1,15 @@
-import static org.junit.Assert.assertThat;
-
-import org.aspectj.lang.annotation.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.support.Neo4jTemplate;
-import org.springframework.data.neo4j.support.node.Neo4jHelper;
-//import org.springframework.data.neo4j.transaction.Neo4jTransactional;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.BeforeTransaction;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.adaranet.model.Device;
-import com.adaranet.relationships.ConnectedDevices;
-import com.adaranet.service.DeviceService;
-
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.junit.Assert.assertThat;
+import com.adaranet.repository.DeviceRepository;
+//import org.springframework.data.neo4j.transaction.Neo4jTransactional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:applicationContext*.xml" })
@@ -29,7 +19,7 @@ public class RelationshipTest {
 	private Neo4jTemplate template;
 	
 	@Autowired
-	private DeviceService deviceService;
+	private DeviceRepository deviceRepository;
 	
 	//Logger logger = Logger.getLogger(getClass());
 	
@@ -80,7 +70,7 @@ public class RelationshipTest {
 		deviceService.save(one);
 		deviceService.save(two);*/
 		
-		Iterable<Device> devices = deviceService.findAll();
+		Iterable<Device> devices = deviceRepository.findAll();
 		
 		for (Device device : devices) {
 			//logger.info("Device Name : "+device.getDeviceName());
@@ -101,7 +91,7 @@ public class RelationshipTest {
 		
 		System.out.println("After executing all the tests!");
 		
-		Device theDevice = deviceService.findByPropertyValue("deviceName", "One");
+		Device theDevice = deviceRepository.findByPropertyValue("deviceName", "One");
 		if(theDevice != null)
 			System.out.println("FOUND THE DEVICE : "+theDevice.getDeviceName());
 				
@@ -118,7 +108,7 @@ public class RelationshipTest {
 		//Device theDevice = deviceService.findByPropertyValue("deviceName", "One");
 		//System.out.println("FOUND THE DEVICE in METHOD 2: "+theDevice.getDeviceName());
 		
-		Iterable<Device> devices = deviceService.findAll();
+		Iterable<Device> devices = deviceRepository.findAll();
 		for (Device device : devices) {
 			System.out.println("ALL DEVICES IN THE LOOP : "+device.getDeviceName());
 		}

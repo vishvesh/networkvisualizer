@@ -24,4 +24,6 @@ http://www.springframework.org/schema/mvc http://www.springframework.org/schema/
         <property name="suffix" value=".jsp" />
     </bean>
     
+    <tx:annotation-driven mode="aspectj" transaction-manager="transactionManager"/>
+    
 </beans>

@@ -1,8 +1,6 @@
 package com.adaranet.controller;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -10,9 +8,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.codehaus.jackson.annotate.JsonBackReference;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.support.Neo4jTemplate;
 import org.springframework.stereotype.Controller;
@@ -29,7 +24,7 @@ import com.adaranet.dto.DeviceDto;
 import com.adaranet.jsonBeans.DevicesJsonBean;
 import com.adaranet.model.Device;
 import com.adaranet.relationships.ConnectedDevices;
-import com.adaranet.service.DeviceService;
+import com.adaranet.repository.DeviceRepository;
 import com.adaranet.util.AppUtils;
 //import org.springframework.data.neo4j.transaction.Neo4jTransactional;
 
@@ -39,7 +34,7 @@ public class DeviceController {
 	protected Logger logger = Logger.getLogger(getClass());
 
 	@Autowired
-    private DeviceService deviceService;
+    private DeviceRepository deviceRepository;
 
 	@Autowired
 	private Neo4jTemplate template;
@@ -59,22 +54,22 @@ public class DeviceController {
 		model.put("devices", devices);*/		
 		Map<String, Object> model = new HashMap<String, Object>();		
 		List<Device> devices = new ArrayList<Device>();		
-		Iterable<Device> allDevicesFromDb = deviceService.findAll();    	
+		Iterable<Device> allDevicesFromDb = deviceRepository.findAll();    	
     	if(allDevicesFromDb.iterator().hasNext()) {
     		for (Device device : allDevicesFromDb) {
-    			logger.info("Device Name found from the DB : Using deviceService.findAll() : "+device.getDeviceName());
+    			logger.info("Device Name found from the DB : Using deviceRepository.findAll() : "+device.getDeviceName());
     			devices.add(device);
     		}
     		//logger.info("Deleting all the Nodes from Neo4j");
-    		//deviceService.deleteAll(); //TODO: Need to Delete this....    		
-    		Iterable<Device> result = deviceService.findAll();
+    		//deviceRepository.deleteAll(); //TODO: Need to Delete this....    		
+    		Iterable<Device> result = deviceRepository.findAll();
     		if(result.iterator().hasNext()) {
     			logger.info("RESULT FOUND");
     		} else {
     			logger.info("NO RESULT FOUND");
     		}   		
-    		/*Device orion = deviceService.findByPropertyValue("deviceName", "Orion");    		
-    		Device polaris = deviceService.findByPropertyValue("deviceName", "Polaris");    		
+    		/*Device orion = deviceRepository.findByPropertyValue("deviceName", "Orion");    		
+    		Device polaris = deviceRepository.findByPropertyValue("deviceName", "Polaris");    		
     		if((orion != null)) {
     			logger.info("Orion & Polaris are not Null!");
     		}
@@ -87,7 +82,7 @@ public class DeviceController {
     	} else {
     		logger.info("No devices found/persisted in Neo4j!");
     	}		
-		//deviceService.addDevice(device);
+		//deviceRepository.addDevice(device);
 		//return new ModelAndView("redirect:/device.html");
 		return new ModelAndView("devicesList", model);
 	}
@@ -112,10 +107,10 @@ public class DeviceController {
 	@Transactional
 	public String deleteAllDevices() throws Exception {
 		logger.info("Comes in inside listAllDevices()");
-		Iterable<Device> allDevicesFromDb = deviceService.findAll();
+		Iterable<Device> allDevicesFromDb = deviceRepository.findAll();
     	if(allDevicesFromDb.iterator().hasNext()) {
     		logger.info("Deleting all the Nodes from Neo4j");
-    		deviceService.deleteAll(); //TODO: Need to Delete this....		
+    		deviceRepository.deleteAll(); //TODO: Need to Delete this....		
     		logger.info("Deleted all the devices from Neo4j.");   		
     	} else {
     		logger.info("No devices Found/Persisted in Neo4j that are to be deleted!");
@@ -132,11 +127,11 @@ public class DeviceController {
 	    	logger.info("Adding few dummy devices in the neo4j-graph-db");  	
 	    	//Device newDevice = template.save(new Device(deviceName));
 	    	Device newDevice = new Device(deviceName);    		
-	    	deviceService.save(newDevice);	    	
-	    	Iterable<Device> devices = deviceService.findAll();    	
+	    	deviceRepository.save(newDevice);	    	
+	    	Iterable<Device> devices = deviceRepository.findAll();    	
 	    	if(devices.iterator().hasNext()) {
 	    		for (Device device : devices) {
-	    			logger.info("Device Name found from the DB : Using deviceService.findAll() : "+device.getDeviceName());
+	    			logger.info("Device Name found from the DB : Using deviceRepository.findAll() : "+device.getDeviceName());
 	    		}
 	    	} else {
 	    		logger.info("No devices persisted in Neo4j!");
@@ -152,8 +147,8 @@ public class DeviceController {
 	@RequestMapping("/connectDevices")
 	@Transactional
 	public String connectDevices(@RequestParam("startNode") String startNode, @RequestParam("endNode") String endNode) throws Exception {
-		Device startDevice = deviceService.findDeviceByDeviceName(startNode); //searchDeviceByDeviceName(startNode);		
-		Device endDevice = deviceService.findDeviceByDeviceName(endNode); //searchDeviceByDeviceName(endNode);		
+		Device startDevice = deviceRepository.findDeviceByDeviceName(startNode); //searchDeviceByDeviceName(startNode);		
+		Device endDevice = deviceRepository.findDeviceByDeviceName(endNode); //searchDeviceByDeviceName(endNode);		
     	if(startDevice != null && endDevice != null) {
     		logger.info("Saving new device : Saving relationship.");
     		
@@ -161,8 +156,8 @@ public class DeviceController {
 
     		//startDevice.setConnectedDevices(connectedDevices);
     		
-    		deviceService.save(startDevice);
-    		//deviceService.save(endDevice);
+    		deviceRepository.save(startDevice);
+    		//deviceRepository.save(endDevice);
     	} else
     		logger.info("Cannot connect : "+startNode + " : with : "+endNode);   	
     	return "redirect:/listAllDevices";
@@ -170,10 +165,10 @@ public class DeviceController {
 	
 	
 	/*private Device searchDeviceByDeviceName(String deviceName) {		
-		Device foundDevice = deviceService.findByPropertyValue("deviceName", deviceName);		
+		Device foundDevice = deviceRepository.findByPropertyValue("deviceName", deviceName);		
 		if(foundDevice == null) {
 			foundDevice = new Device(deviceName);
-			deviceService.save(foundDevice);
+			deviceRepository.save(foundDevice);
 		}	
 		return foundDevice;
 	}*/
@@ -184,7 +179,7 @@ public class DeviceController {
 		
 		logger.info("*****************************************************************************************");
 		logger.info("Inside getAllRelationshipByDeviceName()");	
-		List<Map<String, Device>> devices = deviceService.getAllChildConnectedDevices(deviceName);
+		List<Map<String, Device>> devices = deviceRepository.getAllChildConnectedDevices(deviceName);
 		logger.info("Device Connected to :"+deviceName+" : Number of Device Connected : "+devices.size());
 		for (Map<String, Device> device : devices) {
 			
@@ -207,7 +202,7 @@ public class DeviceController {
 		
 		logger.info("Inside getAllRelationshipByDeviceName()");	
 		List<Device> devices = new ArrayList<Device>();
-		devices = deviceService.getAllChildConnectedDevices(deviceName);
+		devices = deviceRepository.getAllChildConnectedDevices(deviceName);
 		logger.info("COUNT : "+devices.size());
 		model.addAttribute("devices", devices);	
 		return "devicesList";
@@ -217,7 +212,7 @@ public class DeviceController {
 	@RequestMapping("/findDeviceByName")
     public String findDevice(@RequestParam("deviceName") String deviceName, Model model) {
 		
-		Device foundDevice = deviceService.findDeviceByDeviceName(deviceName); //searchDeviceByDeviceName(deviceName);
+		Device foundDevice = deviceRepository.findDeviceByDeviceName(deviceName); //searchDeviceByDeviceName(deviceName);
     	List<Device> devices = new ArrayList<Device>();   	
     	if(foundDevice != null) {
     		
@@ -248,7 +243,7 @@ public class DeviceController {
     public @ResponseBody List<DevicesJsonBean> getGraphAsJson() throws Exception {
     	long startTime = System.currentTimeMillis();
 
-    	Iterable<Device> allDevices = deviceService.findAll();
+    	Iterable<Device> allDevices = deviceRepository.findAll();
     	
     	//List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
     	List<DevicesJsonBean> jsonBeanList = new ArrayList<DevicesJsonBean>();
@@ -329,7 +324,7 @@ public class DeviceController {
     @RequestMapping("/delete/{personId}")
     @Transactional
     public String deletePerson(@PathVariable("personId") Long personId) {
-    	deviceService.delete(personId);
+    	deviceRepository.delete(personId);
         return "redirect:/people/";
     }
     
