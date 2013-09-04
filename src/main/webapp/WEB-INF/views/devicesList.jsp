@@ -20,14 +20,14 @@
 	  <c:when test="${!empty devices}">
 	    <c:forEach items="${devices}" var="device">
 			<li>${device.deviceName}</li>
-			<br />
 		</c:forEach>
 	  </c:when>
 	  <c:otherwise>
 	    <li>No Devices Found</li>
 	  </c:otherwise>
 	</c:choose>
-
+	
+	 <br />
 	 <li><a href="add">Add Device</a></li>
 	 <li><a href="deleteAllDevices">Delete All Devices</a></li>
 	 <li><a href="listAllDevices">Show All Devices</a></li>
@@ -61,8 +61,8 @@
 	 </form>
  </fieldset>
  
- <!--canvas id="canvas" width="400" height="400"></canvas-->
- <!--script type="text/javascript">
+ <canvas id="canvas" width="400" height="300"></canvas>
+ <script type="text/javascript">
 console.log($('#canvas'));
  
  var canvas = $('#canvas');
@@ -79,7 +79,7 @@ console.log($('#canvas'));
 	context.moveTo(40, 40);
 	context.lineTo(100, 50);
 	context.stroke();
- </script-->
+ </script>
  </body>
 </html>
 
