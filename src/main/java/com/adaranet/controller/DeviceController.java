@@ -155,7 +155,13 @@ public class DeviceController {
     		logger.info("Cannot connect : "+startNode + " : with : "+endNode);   	
     	return "redirect:/listAllDevices";
 	}
+
 	
+	@RequestMapping("/list")
+	@Transactional
+	public String list() throws Exception {  	
+    	return "list";
+	}
 	
 	/*private Device searchDeviceByDeviceName(String deviceName) {		
 		Device foundDevice = deviceService.findByPropertyValue("deviceName", deviceName);		

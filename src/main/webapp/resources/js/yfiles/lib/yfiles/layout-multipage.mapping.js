@@ -1,0 +1,79 @@
+/****************************************************************************
+ **
+ ** This file is part of yFiles for HTML 1.1.0.1.
+ ** 
+ ** yWorks proprietary/confidential. Use is subject to license terms.
+ **
+ ** Copyright (c) 2013 by yWorks GmbH, Vor dem Kreuzberg 28, 
+ ** 72070 Tuebingen, Germany. All rights reserved.
+ **
+ ***************************************************************************/
+(typeof define=='function'?define:(function(dependencies, fn){fn();}))(['yfiles/lang'],function(){
+  {
+    if(!yfiles.mappings)yfiles.mappings={};
+    yfiles.lang.copyOwnTo({
+      '_$_mjc':["type","$qe"],
+      '_$_anc':["id","$Pf"],
+      '_$_spc':["graph","$ug"],
+      '_$_xrc':["pageNo","$Tg"],
+      '_$_pwc':["referencingNode","$nj"],
+      '_$_qwc':["representedEdge","$oj"],
+      '_$_rwc':["representedNode","$pj"],
+      '_$_fad':["createEdge","$Pk"],
+      '_$_lad':["createNode","$Qk"],
+      '_$_wfd':["layoutDone","$gn"],
+      '_$_ggd':["getEdgeInfo","$on"],
+      '_$_jgd':["getNodeInfo","$qn"],
+      '_$_qkd':["getEdgeLabelInfo","$fp"],
+      '_$_rkd':["getNodeLabelInfo","$gp"],
+      '_$_uxd':["createProxyNode","$yu"],
+      '_$_mzd':["createProxyReferenceNode","$qv"],
+      '_$_cce':["createConnectorNode","$vw"],
+      '_$_ode':["createProxyReferenceEdge","$ex"],
+      '_$_gee':["createProxyEdge","$sx"],
+      '_$_lee':["createConnectorEdge","$xx"],
+      '_$_xwe':["layouter","$LF"],
+      '_$_yye':["groupMode","$OG"],
+      '_$_cff':["maxPageSize","$WJ"],
+      '_$_fkf':["labelLayouter","$HM"],
+      '_$_zmf':["elementFactory","$gO"],
+      '_$_znf':["layoutCallback","$HO"],
+      '_$_qyf':["edgeBundleModeMask","$gU"],
+      '_$_xeg':["labelLayouterEnabled","$xX"],
+      '_$_cmg':["preferredMaximalDuration","$wbb"],
+      '_$_stg':["pageCount","$ofb"],
+      '_$_mbh':["getPage","$jjb"],
+      '_$_leh':["calcLayout","$Dkb"],
+      '_$_ohh':["getPageEdge","$Ylb"],
+      '_$_phh':["getPageNode","$Zlb"],
+      '_$_hph':["getOriginalEdge","$ypb"],
+      '_$_lph':["getOriginalNode","$zpb"],
+      '_$_wji':["addEdgeLabel","$Tyb"],
+      '_$_yji':["addNodeLabel","$Vyb"],
+      '_$_jmi':["removeEdgeLabel","$fAb"],
+      '_$_kmi':["removeNodeLabel","$gAb"],
+      '_$_xaj':["createElementFactory","$zHb"],
+      '_$_zkk':["getDefaultNodeSize","$wYb"],
+      '_$_clk':["routeRestoredEdges","$zYb"],
+      '_$_elk':["doIncrementalLayout","$BYb"],
+      '_$_hnk':["removeConnectorPair","$CZb"],
+      '_$_pem':["DefaultElementFactory","KBD"],
+      '_$_qem':["EdgeType","LBD"],
+      '_$_rem':["GroupingMode","MBD"],
+      '_$_sem':["EdgeBundleMode","NBD"],
+      '_$_tem':["NodeType","OBD"],
+      '_$_uem':["IEdgeInfo","PBD"],
+      '_$_vem':["IEdgeLabelInfo","QBD"],
+      '_$_wem':["IElementFactory","RBD"],
+      '_$_xem':["IElementInfoManager","SBD"],
+      '_$_yem':["ILayoutCallback","TBD"],
+      '_$_zem':["INodeInfo","UBD"],
+      '_$_afm':["INodeLabelInfo","VBD"],
+      '_$_bfm':["LayoutContext","WBD"],
+      '_$_cfm':["MultiPageLayout","XBD"],
+      '_$_dfm':["MultiPageLayouter","YBD"],
+      '_$$_wic':["yfiles.multipage","Root"]
+    },yfiles.mappings);
+  }
+  return undefined;
+});

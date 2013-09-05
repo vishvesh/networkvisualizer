@@ -312,7 +312,7 @@
             <configuration>
                 <url>http://localhost:8080/manager/text</url>
                 <server>TomcatServer</server>
-                <path>/</path>
+                <path>/networkvisualizer</path>
             </configuration>
         </plugin>
    </plugins>
