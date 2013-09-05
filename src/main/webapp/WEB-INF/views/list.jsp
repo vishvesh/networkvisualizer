@@ -10,18 +10,9 @@
   <script src="resources/js/yfiles/ide-support/yfiles-typeinfo.js"></script><!-- enable debugging -->
   <script src="resources/js/yfiles/lib/yfiles/es5-shim.js"></script>
   <script src="resources/js/yfiles/demo-framework/require.js"></script>
+
+  <link rel="stylesheet" href="resources/css/list.css" />
   
-  <style type="text/css">
-  	header {
-  		display: none !important;
-  	}
-  	#header {
-  		top: 0px;
-  		left: 0px;
-  		background: url("resources/images/SDN_Visualizer_Banner.jpg") no-repeat center left !important;
-  		height: 135px !important;
-  	}
-  </style>
 </head>
 <body>
   <div id="loader">

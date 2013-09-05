@@ -1,0 +1,10 @@
+header {
+	display: none !important;
+}
+
+#header {
+	top: 0px;
+	left: 0px;
+	background: url("../images/SDN_Visualizer_Banner.jpg") no-repeat center left !important;
+	height: 135px !important;
+}
