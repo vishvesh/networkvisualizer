@@ -98,17 +98,8 @@ require([
 		'resources/js/yfiles/resources/license.js',
 		'resources/js/yfiles/demo-framework/demo-framework.js',
 		'yfiles/graph-base',
-		'yfiles/graph-style-simple',
-        'yfiles/graph-style-defaults',
-        'resources/js/yfiles/BackgroundVisual.js',
-        'resources/js/yfiles/PortKeepingStage.js',
 		'resources/js/yfiles/LayoutModulesDemo.js',
-		'resources/js/yfiles/InsideNodeLineRenderer.js',
-		'resources/js/yfiles/StatusPortStyle.js',
-		'resources/js/yfiles/MySimpleLabelStyle.js',
-		'resources/js/yfiles/MySimpleNodeStyle.js',
-		'resources/js/yfiles/PortCandidateProvider.js',
-		'resources/js/yfiles/SelfloopHidingStage.js'
+		'resources/js/yfiles/InsideNodeLineRenderer.js'
 	], function () {
 	yfiles.demo.Application.start(new demo.yfiles.layout.modules.LayoutModulesDemo(), 'app', {
 		backend : 'yfiles',

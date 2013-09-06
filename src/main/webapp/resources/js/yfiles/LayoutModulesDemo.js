@@ -399,9 +399,8 @@ yfiles.module("demo.yfiles.layout.modules", function(exports) {
        */
       'initializeGraph': function() {
     	  
-    	  var edgeStyle = new yfiles.drawing.PolylineEdgeStyle.WithRenderer(
-              new demo.yfiles.graph.input.portcandidateprovider.InsideNodeLineRenderer());
-          edgeStyle.targetArrow = yfiles.drawing.DefaultArrow.DEFAULT;
+    	  var edgeStyle = new yfiles.drawing.PolylineEdgeStyle.WithRenderer(new demo.yfiles.graph.input.portcandidateprovider.InsideNodeLineRenderer());
+          edgeStyle.targetArrow = yfiles.drawing.DefaultArrow.DIAMOND;
           this.graphControl.graph.edgeDefaults.style = edgeStyle;
 		  //Setting Label Style
 			//this.graphControl.graph.edgeDefaults.labels.style = new demo.yfiles.layout.modules.MySimpleLabelStyle();
