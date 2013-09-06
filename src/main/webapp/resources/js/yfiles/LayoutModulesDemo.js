@@ -485,64 +485,93 @@ yfiles.module("demo.yfiles.layout.modules", function(exports) {
       'createSampleGraph': function() {
     	  
     	  var /*yfiles.graph.IGraph*/ graph = this.graphControl.graph;
+    	  var graphControl = this.graphControl;
     	  
-    	  var data = jsonData;
-    	  
-    	  /*Array.prototype.contains = function(k) {
-    		    for(var p in this)
-    		        if(this[p] === k)
-    		            return true;
-    		    return false;
-    		}*/
-    	  
-    	  var nodes = new Array();
-    	  
-    	  	//Creates a label style with the label text color set to dark red
-			var /*yfiles.bridge.Typeface*/ newTypeface = new yfiles.system.Typeface();
-			{
-			  newTypeface.fontFamily = "Tahoma";
-			  newTypeface.fontSize = 30;
-			}
-			
-			var /*yfiles.drawing.SimpleLabelStyle*/ newSimpleLabelStyle = new yfiles.drawing.SimpleLabelStyle.WithFont(newTypeface);
-			{
-			  newSimpleLabelStyle.textBrush = yfiles.system.Brushes.DARK_BLUE;
-			}
-			var /*yfiles.drawing.SimpleLabelStyle*/ sls = newSimpleLabelStyle;
-			//sls.backgroundPen = yfiles.drawing.Pens.RED;
-    		
-    	  for(index in data) {
-    		  console.log(data[index].parentDevice.deviceName);
-    		  
-    		  var parentDevice = data[index].parentDevice;
-    		  var parentDeviceName = parentDevice.deviceName;
-    		  var parentDeviceId = parentDevice.id;
-  
-			  //nodes[parentDeviceId] = graph.createNode();graph.createNodeWithBoundsAndTag(new yfiles.geometry.RectD(8, 8,400,120), yfiles.bridge.Colors.YELLOW);
-			  nodes[parentDeviceId] = graph.createNodeWithBoundsAndTag(new yfiles.geometry.RectD(8, 8,400,120), yfiles.system.Colors.YELLOW);
-			  graph.setNodeStyle(nodes[parentDeviceId], new yfiles.drawing.ImageNodeStyle.WithPath("resources/images/Axis_device_green.png"));
-			  
-			  var label = graph.addLabel(nodes[parentDeviceId], parentDeviceName);
-
-			  // And sets the style for the label, again through its owning graph.
-			  graph.setLabelStyle(label, sls);
-    	  }
-    		  
-    		  for(index in data) {
-	    		  var node = data[index];
+    	  try {
+	    	  var data = jsonData;
+	    	  
+	    	  /*Array.prototype.contains = function(k) {
+	    		    for(var p in this)
+	    		        if(this[p] === k)
+	    		            return true;
+	    		    return false;
+	    		}*/
+	    	  
+	    	  var nodes = new Array();
+	    	  var edges = new Array();
+	    	  
+	    	  	//Creates a label style with the label text color set to dark red
+				var /*yfiles.bridge.Typeface*/ newTypeface = new yfiles.system.Typeface();
+				{
+				  newTypeface.fontFamily = "Tahoma";
+				  newTypeface.fontSize = 30;
+				}
+				
+				var /*yfiles.drawing.SimpleLabelStyle*/ newSimpleLabelStyle = new yfiles.drawing.SimpleLabelStyle.WithFont(newTypeface);
+				{
+				  newSimpleLabelStyle.textBrush = yfiles.system.Brushes.DARK_BLUE;
+				}
+				var /*yfiles.drawing.SimpleLabelStyle*/ sls = newSimpleLabelStyle;
+				//sls.backgroundPen = yfiles.drawing.Pens.RED;
+	    		
+	    	  for(index in data) {
+	    		  console.log(data[index].parentDevice.deviceName);
+	    		  
 	    		  var parentDevice = data[index].parentDevice;
 	    		  var parentDeviceName = parentDevice.deviceName;
 	    		  var parentDeviceId = parentDevice.id;
-	    		  var outgoingDevices = data[index].outgoingDevices;
-	    		  for(i in outgoingDevices) {
-	    			 var edge = graph.createEdge(nodes[parentDeviceId], nodes[outgoingDevices[i].id]);
-	    			 var label = graph.addLabel(edge, "Value: "+outgoingDevices[i].value +'\n'+"Cost: "+outgoingDevices[i].cost);		
+	  
+				  //nodes[parentDeviceId] = graph.createNode();graph.createNodeWithBoundsAndTag(new yfiles.geometry.RectD(8, 8,400,120), yfiles.bridge.Colors.YELLOW);
+				  nodes[parentDeviceId] = graph.createNodeWithBoundsAndTag(new yfiles.geometry.RectD(8, 8,400,120), yfiles.system.Colors.YELLOW);
+				  graph.setNodeStyle(nodes[parentDeviceId], new yfiles.drawing.ImageNodeStyle.WithPath("resources/images/Axis_device_green.png"));
+				  
+				  var label = graph.addLabel(nodes[parentDeviceId], parentDeviceName);
+					console.log("Nodes length : : : "+nodes.length);
+				  // And sets the style for the label, again through its owning graph.
+				  graph.setLabelStyle(label, sls);
+	    	  }
+	    		  
+	    		  for(index in data) {
+		    		  var node = data[index];
+		    		  var parentDevice = data[index].parentDevice;
+		    		  var parentDeviceName = parentDevice.deviceName;
+		    		  var parentDeviceId = parentDevice.id;
+		    		  var outgoingDevices = data[index].outgoingDevices;
+		    		  for(i in outgoingDevices) {
+		    			 edges[i] = graph.createEdge(nodes[parentDeviceId], nodes[outgoingDevices[i].id]);
+		    			 var label = graph.addLabel(edges[i], "Value: "+outgoingDevices[i].value +'\n'+"Cost: "+outgoingDevices[i].cost);		
+	
+		 				// And sets the style for the label, again through its owning graph.
+		 				graph.setLabelStyle(label, sls);
+		    		  }
+		    	  }
+    	  } catch(err) {
+    	  	console.log(err);
+    	  } finally {
+    	  	setTimeout(function() {
+    	  		var node = graph.createNodeWithBoundsAndTag(new yfiles.geometry.RectD(8, 8,400,120), yfiles.system.Colors.YELLOW);
+				  graph.setNodeStyle(node, new yfiles.drawing.ImageNodeStyle.WithPath("resources/images/Axis_device_green.png"));
+    		  	 var edge1 = graph.createEdge(nodes[29], nodes[31]);
+    			  var edge2 = graph.createEdge(nodes[32], nodes[31]);
+    			  var edge3 = graph.createEdge(nodes[28], node);
+	    			 var label1 = graph.addLabel(edge1, "Value: "+100 +'\n'+"Cost: "+100);		
+	    			 var label2 = graph.addLabel(edge2, "Value: "+50 +'\n'+"Cost: "+50);	
+	    			 var label3 = graph.addLabel(edge3, "Value: "+40 +'\n'+"Cost: "+50);	
 
 	 				// And sets the style for the label, again through its owning graph.
-	 				graph.setLabelStyle(label, sls);
-	    		  }
-	    	  }
-    	  
+	 				graph.setLabelStyle(label1, sls);
+	 				graph.setLabelStyle(label2, sls);
+	 				graph.setLabelStyle(label3, sls);
+	 				
+	 				graphControl.morphLayout(new yfiles.hierarchic.IncrementalHierarchicLayouter(), yfiles.system.TimeSpan.fromSeconds(1), null);
+    			  //graph.applyLayout(new yfiles.hierarchic.IncrementalHierarchicLayouter()); 
+    			  //graph.invalidateDisplays();
+    			  console.log("Nodes : "+nodes.length+" : Edges : "+edges.length+" : Afterr");
+    		  }, 4000);
+    	  }
+	  
+    		  
+    		  
     	  /*$.ajax({
 		      url: '/networkvisualizer/json',
 		      contentType : "application/json",
@@ -557,7 +586,6 @@ yfiles.module("demo.yfiles.layout.modules", function(exports) {
 		});*/	
 
       },
-      
       /**
        * Gets the currently registered <code>IGraph</code> instance from the <code>GraphControl</code>.
        * @type yfiles.graph.IGraph
