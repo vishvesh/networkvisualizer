@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.support.Neo4jTemplate;
 import org.springframework.stereotype.Controller;
@@ -157,10 +158,33 @@ public class DeviceController {
 	}
 
 	
-	@RequestMapping("/list")
+	@RequestMapping("/visualize")
 	@Transactional
-	public String list() throws Exception {  	
-    	return "list";
+	public String list(Model model) throws Exception {  	
+		//logger.info("YO");
+		//model.addAttribute("jsonData", getWholeGraphAsJson());
+		//Map<String, Object> model = new HashMap<String, Object>();
+		//model.put("jsonData", getWholeGraphAsJson());
+		//logger.info("Before List");
+		//List<DevicesJsonBean> list = getWholeGraphAsJson();
+		//logger.info("LIST : "+list);
+		
+		ObjectMapper mapper = new ObjectMapper();
+    	String json = "";
+    	try {
+    		//map.put("devices", Collections.allDevices);
+    		json = mapper.writeValueAsString(getWholeGraphAsJson());
+     
+    		logger.info("Printing the JSON");
+    		logger.info(json);
+    		
+    		model.addAttribute("jsonData", json);
+     
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    	}
+    	
+    	return "visualize";
 	}
 	
 	/*private Device searchDeviceByDeviceName(String deviceName) {		
@@ -237,12 +261,17 @@ public class DeviceController {
         //map.put("peopleList", personService.findAll().iterator());
         return "index";
     }
-
+    
     @RequestMapping("/json")
-    public @ResponseBody List<DevicesJsonBean> getGraphAsJson() throws Exception {
+    public @ResponseBody List<DevicesJsonBean> getGraphAsJson(Model model) throws Exception { 
+    	return getWholeGraphAsJson();
+    }
+
+    private @ResponseBody List<DevicesJsonBean> getWholeGraphAsJson() throws Exception {
     	long startTime = System.currentTimeMillis();
 
     	Iterable<Device> allDevices = deviceService.findAll();
+    	logger.info("Graph Size : "+deviceService.count());
     	
     	//List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
     	List<DevicesJsonBean> jsonBeanList = new ArrayList<DevicesJsonBean>();

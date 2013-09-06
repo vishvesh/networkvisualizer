@@ -258,6 +258,7 @@ yfiles.module("demo.yfiles.layout.modules", function(exports) {
        * the result as the {@link yfiles.canvas.CanvasControl#inputMode}.
        */
       'initializeInputModes': function() {
+    	  //TODO: Commenting out this part as to RESTRICT USER FROM EDITING THE GRAPH(Creating/Deleting any Nodes/Edges)
         this.graphControl.inputMode = this.createEditorMode();
       },
       
@@ -281,6 +282,13 @@ yfiles.module("demo.yfiles.layout.modules", function(exports) {
         var /*yfiles.input.GraphEditorInputMode*/ mode = newGraphEditorInputMode;
         mode.navigationInputMode.addGroupEnteredListener(yfiles.lang.delegate(this.$onGroupChanged, this));
         mode.navigationInputMode.addGroupExitedListener(yfiles.lang.delegate(this.$onGroupChanged, this));
+        
+        mode.nodeCreationAllowed = false;
+		mode.edgeCreationAllowed = false;
+       //YWORKS4: don't move nodes
+       //mode.movableItems = yfiles.graph.GraphItemTypes.NONE;
+       // YWORKS4: don't resize nodes
+       mode.showHandleItems = yfiles.graph.GraphItemTypes.BEND|yfiles.graph.GraphItemTypes.EDGE;
 
         // make bend creation more important than moving of selected edges
         // this has the effect that dragging a selected edge (not its bends)
@@ -390,95 +398,164 @@ yfiles.module("demo.yfiles.layout.modules", function(exports) {
        * Initializes the graph instance and set default styles.
        */
       'initializeGraph': function() {
+    	  
+    	  var edgeStyle = new yfiles.drawing.PolylineEdgeStyle.WithRenderer(
+              new demo.yfiles.graph.input.portcandidateprovider.InsideNodeLineRenderer());
+          edgeStyle.targetArrow = yfiles.drawing.DefaultArrow.DEFAULT;
+          this.graphControl.graph.edgeDefaults.style = edgeStyle;
+		  //Setting Label Style
+			//this.graphControl.graph.edgeDefaults.labels.style = new demo.yfiles.layout.modules.MySimpleLabelStyle();
+		  //Setting the Node Style
+			 //this.graphControl.graph.nodeDefaults.style = new demo.yfiles.layout.modules.MySimpleNodeStyle();
+        // Create a new style and use it as default label style
+        //this.graphControl.graph.nodeDefaults.labels.style = new demo.yfiles.layout.modules.MySimpleLabelStyle();
+        //this.graphControl.graph.nodeDefaults.labels.labelModelParameter = yfiles.drawing.ExteriorLabelModel.NORTH;
+		
+		 // Configures default label model parameters for newly created graph elements
+        //this.$setDefaultLabelParameters();
         //Enable folding
-        var /*yfiles.graph.IFoldedGraph*/ view = new yfiles.graph.FoldingManager().createManagedView();
-        this.graphControl.graph = view.graph;
+        //var /*yfiles.graph.IFoldedGraph*/ view = new yfiles.graph.FoldingManager().createManagedView();
+        //this.graphControl.graph = view.graph;
+        
+        //var /*yfiles.graph.IGraph*/ graph = this.graphControl.graph;
+
+        // Create a new style and use it as default node style
+        //graph.nodeDefaults.style = new demo.yfiles.graph.simplecustomstyle.MySimpleNodeStyle();
+        // Create a new style and use it as default label style
+        /*var newSimpleLabelStyle;
+        {
+          newSimpleLabelStyle = new yfiles.drawing.SimpleLabelStyle();
+          newSimpleLabelStyle.backgroundPen = yfiles.system.Pens.BLACK;
+          newSimpleLabelStyle.backgroundBrush = yfiles.system.Brushes.WHITE;
+        }
+        graph.nodeDefaults.labels.style = graph.edgeDefaults.labels.style = newSimpleLabelStyle;
+        graph.nodeDefaults.labels.labelModelParameter = yfiles.drawing.ExteriorLabelModel.NORTH_EAST;
+
+        graph.nodeDefaults.size = new yfiles.geometry.SizeD(50, 50);*/
+
+        // Create some graph elements with the above defined styles.
+        //this.createSampleGraph();
 
         // #region Enable undoability
 
         // Get the master graph instance and enable undoability support.
-        var /*yfiles.graph.DefaultGraph*/ defaultGraph = view.manager.masterGraph.safeGet(yfiles.graph.DefaultGraph.$class);
-        defaultGraph.undoEngineEnabled = true;
+        //var /*yfiles.graph.DefaultGraph*/ defaultGraph = view.manager.masterGraph.safeGet(yfiles.graph.DefaultGraph.$class);
+        //defaultGraph.undoEngineEnabled = true;
 
         // #endregion 
 
         // #region Configure grouping
 
         // get a hold of the IGroupedGraph
-        var /*yfiles.graph.IGroupedGraph*/ groupedGraph = view.groupedGraph;
+        //var /*yfiles.graph.IGroupedGraph*/ groupedGraph = view.groupedGraph;
 
         // configure the group node style.
-        if (groupedGraph !== null) {
+        //if (groupedGraph !== null) {
           //PanelNodeStyle is a nice style especially suited for group nodes
-          var /*yfiles.system.Color*/ groupNodeColor = yfiles.system.Color.fromArgb(255, 214, 229, 248);
-          var /*yfiles.drawing.PanelNodeStyle*/ newPanelNodeStyle;
-          {
-            newPanelNodeStyle = new yfiles.drawing.PanelNodeStyle.WithColor(groupNodeColor);
-            newPanelNodeStyle.insets = new yfiles.geometry.InsetsD.FromLeftTopRightAndBottom(5, 20, 5, 5);
-            newPanelNodeStyle.labelInsetsColor = groupNodeColor;
-          }
-          groupedGraph.groupNodeDefaults.style = new yfiles.drawing.CollapsibleNodeStyleDecorator.WithStyle(newPanelNodeStyle);
+          //var /*yfiles.system.Color*/ groupNodeColor = yfiles.system.Color.fromArgb(255, 214, 229, 248);
+          //var /*yfiles.drawing.PanelNodeStyle*/ newPanelNodeStyle;
+          //{
+            //newPanelNodeStyle = new yfiles.drawing.PanelNodeStyle.WithColor(groupNodeColor);
+            //newPanelNodeStyle.insets = new yfiles.geometry.InsetsD.FromLeftTopRightAndBottom(5, 20, 5, 5);
+            //newPanelNodeStyle.labelInsetsColor = groupNodeColor;
+          //}
+          //groupedGraph.groupNodeDefaults.style = new yfiles.drawing.CollapsibleNodeStyleDecorator.WithStyle(newPanelNodeStyle);
 
           // Set a different label style and parameter
-          var /*yfiles.drawing.SimpleLabelStyle*/ newSimpleLabelStyle;
-          {
-            newSimpleLabelStyle = new yfiles.drawing.SimpleLabelStyle();
-          }
-          groupedGraph.groupNodeDefaults.labels.style = newSimpleLabelStyle;
-          groupedGraph.groupNodeDefaults.labels.labelModelParameter = yfiles.drawing.InteriorStretchLabelModel.NORTH;
-        }
+          //var /*yfiles.drawing.SimpleLabelStyle*/ newSimpleLabelStyle;
+          //{
+            //newSimpleLabelStyle = new yfiles.drawing.SimpleLabelStyle();
+          //}
+          //groupedGraph.groupNodeDefaults.labels.style = newSimpleLabelStyle;
+         // groupedGraph.groupNodeDefaults.labels.labelModelParameter = yfiles.drawing.InteriorStretchLabelModel.NORTH;
+        //}
 
         // #endregion 
 
         // #region Configure graph defaults
 
-        view.graph.nodeDefaults.style = new yfiles.drawing.ShinyPlateNodeStyle.WithColor(yfiles.system.Colors.DARK_ORANGE);
+        //view.graph.nodeDefaults.style = new yfiles.drawing.ShinyPlateNodeStyle.WithColor(yfiles.system.Colors.DARK_ORANGE);
+        //view.graph.nodeDefaults.style = new demo.yfiles.layout.modules.MySimpleNodeStyle();
+        //this.graphControl.graph.nodeDefaults.style = new demo.yfiles.graph.simplecustomstyle.MySimpleNodeStyle();
+        //this.graphControl.graph.nodeDefaults.style = new yfiles.drawing.ShinyPlateNodeStyle.WithColor(yfiles.bridge.Colors.DARK_ORANGE);
 
         // #endregion 
-
+        //this.graphControl.graph.nodeDefaults.style = new demo.yfiles.graph.simplecustomstyle.MySimpleNodeStyle();
       },
       
       'createSampleGraph': function() {
-        var /*yfiles.graph.IGraph*/ graph = this.graphControl.graph;
-        var /*yfiles.graph.INode[]*/ nodes = [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null];
-        for (var /*int*/ i = 0; i < nodes.length; i++) {
-          nodes[i] = graph.createNode();
-          graph.addLabel(nodes[i], (i + 1) + "");
-        }
+    	  
+    	  var /*yfiles.graph.IGraph*/ graph = this.graphControl.graph;
+    	  
+    	  var data = jsonData;
+    	  
+    	  /*Array.prototype.contains = function(k) {
+    		    for(var p in this)
+    		        if(this[p] === k)
+    		            return true;
+    		    return false;
+    		}*/
+    	  
+    	  var nodes = new Array();
+    	  
+    	  	//Creates a label style with the label text color set to dark red
+			var /*yfiles.bridge.Typeface*/ newTypeface = new yfiles.system.Typeface();
+			{
+			  newTypeface.fontFamily = "Tahoma";
+			  newTypeface.fontSize = 30;
+			}
+			
+			var /*yfiles.drawing.SimpleLabelStyle*/ newSimpleLabelStyle = new yfiles.drawing.SimpleLabelStyle.WithFont(newTypeface);
+			{
+			  newSimpleLabelStyle.textBrush = yfiles.system.Brushes.DARK_BLUE;
+			}
+			var /*yfiles.drawing.SimpleLabelStyle*/ sls = newSimpleLabelStyle;
+			//sls.backgroundPen = yfiles.drawing.Pens.RED;
+    		
+    	  for(index in data) {
+    		  console.log(data[index].parentDevice.deviceName);
+    		  
+    		  var parentDevice = data[index].parentDevice;
+    		  var parentDeviceName = parentDevice.deviceName;
+    		  var parentDeviceId = parentDevice.id;
+  
+			  //nodes[parentDeviceId] = graph.createNode();graph.createNodeWithBoundsAndTag(new yfiles.geometry.RectD(8, 8,400,120), yfiles.bridge.Colors.YELLOW);
+			  nodes[parentDeviceId] = graph.createNodeWithBoundsAndTag(new yfiles.geometry.RectD(8, 8,400,120), yfiles.system.Colors.YELLOW);
+			  graph.setNodeStyle(nodes[parentDeviceId], new yfiles.drawing.ImageNodeStyle.WithPath("resources/images/Axis_device_green.png"));
+			  
+			  var label = graph.addLabel(nodes[parentDeviceId], parentDeviceName);
 
-        graph.setNodeStyle(nodes[0], new yfiles.drawing.ShinyPlateNodeStyle.WithColor(yfiles.system.Colors.DIM_GRAY));
-        var /*yfiles.drawing.SimpleLabelStyle*/ newSimpleLabelStyle;
-        {
-          newSimpleLabelStyle = new yfiles.drawing.SimpleLabelStyle();
-          newSimpleLabelStyle.textBrush = yfiles.system.Brushes.WHITE;
-        }
-        graph.setLabelStyle(nodes[0].labels.getItem(0), newSimpleLabelStyle);
+			  // And sets the style for the label, again through its owning graph.
+			  graph.setLabelStyle(label, sls);
+    	  }
+    		  
+    		  for(index in data) {
+	    		  var node = data[index];
+	    		  var parentDevice = data[index].parentDevice;
+	    		  var parentDeviceName = parentDevice.deviceName;
+	    		  var parentDeviceId = parentDevice.id;
+	    		  var outgoingDevices = data[index].outgoingDevices;
+	    		  for(i in outgoingDevices) {
+	    			 var edge = graph.createEdge(nodes[parentDeviceId], nodes[outgoingDevices[i].id]);
+	    			 var label = graph.addLabel(edge, "Value: "+outgoingDevices[i].value +'\n'+"Cost: "+outgoingDevices[i].cost);		
 
-        graph.createEdge(nodes[0], nodes[11]);
-        graph.createEdge(nodes[0], nodes[8]);
-        graph.createEdge(nodes[0], nodes[19]);
-        graph.createEdge(nodes[0], nodes[2]);
-        graph.createEdge(nodes[11], nodes[4]);
-        graph.createEdge(nodes[11], nodes[18]);
-        graph.createEdge(nodes[8], nodes[7]);
-        graph.createEdge(nodes[19], nodes[13]);
-        graph.createEdge(nodes[19], nodes[2]);
-        graph.createEdge(nodes[19], nodes[17]);
-        graph.createEdge(nodes[19], nodes[15]);
-        graph.createEdge(nodes[19], nodes[10]);
-        graph.createEdge(nodes[13], nodes[7]);
-        graph.createEdge(nodes[13], nodes[17]);
-        graph.createEdge(nodes[2], nodes[15]);
-        graph.createEdge(nodes[2], nodes[1]);
-        graph.createEdge(nodes[4], nodes[18]);
-        graph.createEdge(nodes[16], nodes[6]);
-        graph.createEdge(nodes[7], nodes[14]);
-        graph.createEdge(nodes[17], nodes[5]);
-        graph.createEdge(nodes[15], nodes[10]);
-        graph.createEdge(nodes[15], nodes[12]);
-        graph.createEdge(nodes[6], nodes[9]);
-        graph.createEdge(nodes[5], nodes[3]);
-        graph.createEdge(nodes[5], nodes[9]);
+	 				// And sets the style for the label, again through its owning graph.
+	 				graph.setLabelStyle(label, sls);
+	    		  }
+	    	  }
+    	  
+    	  /*$.ajax({
+		      url: '/networkvisualizer/json',
+		      contentType : "application/json",
+              dataType : "json",
+		      type: "GET",
+		      success: function(data) {
+		    	  //console.log(JSON.stringify(data));
+		      },
+		      error: function(data) {
+		    	  console.log("Some error occurred!");
+		      }   
+		});*/	
 
       },
       

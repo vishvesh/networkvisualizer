@@ -54,6 +54,11 @@ public class DeviceServiceImpl implements DeviceService {
 		deviceRepository.deleteAll();
 	}
 
+	@Transactional
+	public long count() {
+		return deviceRepository.count();
+	}
+
 	
 	
 }

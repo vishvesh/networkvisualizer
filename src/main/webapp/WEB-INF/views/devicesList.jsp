@@ -31,7 +31,7 @@
 	 <li><a href="add">Add Device</a></li>
 	 <li><a href="deleteAllDevices">Delete All Devices</a></li>
 	 <li><a href="listAllDevices">Show All Devices</a></li>
-	 <li><a href="list">LIST</a></li>
+	 <li><a href="visualize">Visualize Graph</a></li>
  
  <fieldset>
 	 <form action="findDeviceByName">

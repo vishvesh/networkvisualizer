@@ -3,7 +3,7 @@
 
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  
+  <script type="text/javascript" src="resources/js/jquery/jquery-1.10.1.min.js"></script>
   <link rel="stylesheet" href="resources/js/yfiles/lib/yfiles.css"/>
   <link rel="stylesheet" href="resources/js/yfiles/resources/style/demo-framework.css"/>
   
@@ -12,7 +12,9 @@
   <script src="resources/js/yfiles/demo-framework/require.js"></script>
 
   <link rel="stylesheet" href="resources/css/list.css" />
-  
+  <script type="text/javascript">
+		var jsonData = ${jsonData};
+	</script>
 </head>
 <body>
   <div id="loader">
@@ -24,7 +26,7 @@
     <div data-type="BorderLayout" class="container" data-layout-arrangement="headline">
 
       <div data-type="Panel" data-layout-region="top" id="top" data-splitter="false">
-      <div id="header"></div>
+      <div id="adara-header"></div>
         <div data-type="ToolBar" data-name="toolbar">
 
           <button data-command="New" title="New" data-icon="yIconNew"></button>
@@ -96,7 +98,17 @@ require([
 		'resources/js/yfiles/resources/license.js',
 		'resources/js/yfiles/demo-framework/demo-framework.js',
 		'yfiles/graph-base',
-		'resources/js/yfiles/LayoutModulesDemo.js'
+		'yfiles/graph-style-simple',
+        'yfiles/graph-style-defaults',
+        'resources/js/yfiles/BackgroundVisual.js',
+        'resources/js/yfiles/PortKeepingStage.js',
+		'resources/js/yfiles/LayoutModulesDemo.js',
+		'resources/js/yfiles/InsideNodeLineRenderer.js',
+		'resources/js/yfiles/StatusPortStyle.js',
+		'resources/js/yfiles/MySimpleLabelStyle.js',
+		'resources/js/yfiles/MySimpleNodeStyle.js',
+		'resources/js/yfiles/PortCandidateProvider.js',
+		'resources/js/yfiles/SelfloopHidingStage.js'
 	], function () {
 	yfiles.demo.Application.start(new demo.yfiles.layout.modules.LayoutModulesDemo(), 'app', {
 		backend : 'yfiles',

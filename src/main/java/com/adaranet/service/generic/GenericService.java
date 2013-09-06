@@ -16,4 +16,7 @@ public interface GenericService<T> {
 	
 	@Transactional
 	public void deleteAll();
+	
+	@Transactional
+	public long count();
 }
