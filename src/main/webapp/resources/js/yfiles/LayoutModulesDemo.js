@@ -548,6 +548,28 @@ yfiles.module("demo.yfiles.layout.modules", function(exports) {
     	  } catch(err) {
     	  	console.log(err);
     	  } finally {
+    	  	/*console.log("Random number : "+Math.floor(Math.random()*(nodes.length)));
+    	  	setTimeout(function() {
+    	  		var node = graph.createNodeWithBoundsAndTag(new yfiles.geometry.RectD(8, 8,400,120), yfiles.system.Colors.YELLOW);
+				  graph.setNodeStyle(node, new yfiles.drawing.ImageNodeStyle.WithPath("resources/images/Axis_device_green.png"));
+    		  	 var edge1 = graph.createEdge(nodes[Math.floor(Math.random()*(nodes.length))], nodes[Math.floor(Math.random()*(nodes.length))]);
+    			  var edge2 = graph.createEdge(nodes[Math.floor(Math.random()*(nodes.length))], nodes[Math.floor(Math.random()*(nodes.length))]);
+    			  var edge3 = graph.createEdge(nodes[Math.floor(Math.random()*(nodes.length))], node);
+	    			 var label1 = graph.addLabel(edge1, "Value: "+100 +'\n'+"Cost: "+100);		
+	    			 var label2 = graph.addLabel(edge2, "Value: "+50 +'\n'+"Cost: "+50);	
+	    			 var label3 = graph.addLabel(edge3, "Value: "+40 +'\n'+"Cost: "+50);	
+
+	 				// And sets the style for the label, again through its owning graph.
+	 				graph.setLabelStyle(label1, sls);
+	 				graph.setLabelStyle(label2, sls);
+	 				graph.setLabelStyle(label3, sls);
+	 				
+	 				graphControl.morphLayout(new yfiles.hierarchic.IncrementalHierarchicLayouter(), yfiles.system.TimeSpan.fromSeconds(1), null);
+    			  //graph.applyLayout(new yfiles.hierarchic.IncrementalHierarchicLayouter()); 
+    			  //graph.invalidateDisplays();
+    			  console.log("Nodes : "+nodes.length+" : Edges : "+edges.length+" : Afterr");
+    		  }, 4000);*/
+    	  	
     	  	setTimeout(function() {
     	  		var node = graph.createNodeWithBoundsAndTag(new yfiles.geometry.RectD(8, 8,400,120), yfiles.system.Colors.YELLOW);
 				  graph.setNodeStyle(node, new yfiles.drawing.ImageNodeStyle.WithPath("resources/images/Axis_device_green.png"));
@@ -568,6 +590,49 @@ yfiles.module("demo.yfiles.layout.modules", function(exports) {
     			  //graph.invalidateDisplays();
     			  console.log("Nodes : "+nodes.length+" : Edges : "+edges.length+" : Afterr");
     		  }, 4000);
+    		  setTimeout(function() {
+    	  		var node = graph.createNodeWithBoundsAndTag(new yfiles.geometry.RectD(8, 8,400,120), yfiles.system.Colors.YELLOW);
+				  graph.setNodeStyle(node, new yfiles.drawing.ImageNodeStyle.WithPath("resources/images/Axis_device_green.png"));
+				  console.log("YOOOOOO");
+    		  	 var edge1 = graph.createEdge(nodes[33], nodes[36]);
+    			  var edge2 = graph.createEdge(nodes[34], nodes[32]);
+    			  var edge3 = graph.createEdge(nodes[35], node);
+	    			 var label1 = graph.addLabel(edge1, "Value: "+100 +'\n'+"Cost: "+100);		
+	    			 var label2 = graph.addLabel(edge2, "Value: "+50 +'\n'+"Cost: "+50);	
+	    			 var label3 = graph.addLabel(edge3, "Value: "+40 +'\n'+"Cost: "+50);	
+
+	 				// And sets the style for the label, again through its owning graph.
+	 				graph.setLabelStyle(label1, sls);
+	 				graph.setLabelStyle(label2, sls);
+	 				graph.setLabelStyle(label3, sls);
+	 				
+	 				graphControl.morphLayout(new yfiles.hierarchic.IncrementalHierarchicLayouter(), yfiles.system.TimeSpan.fromSeconds(1), null);
+    			  //graph.applyLayout(new yfiles.hierarchic.IncrementalHierarchicLayouter()); 
+    			  //graph.invalidateDisplays();
+    			  console.log("Nodes : "+nodes.length+" : Edges : "+edges.length+" : Afterr");
+    		  }, 8000);
+    		  setTimeout(function() {
+    	  		var node = graph.createNodeWithBoundsAndTag(new yfiles.geometry.RectD(8, 8,400,120), yfiles.system.Colors.YELLOW);
+				  graph.setNodeStyle(node, new yfiles.drawing.ImageNodeStyle.WithPath("resources/images/Axis_device_green.png"));
+				  console.log("YOOOOOO");
+    		  	 var edge1 = graph.createEdge(nodes[29], nodes[35]);
+    			  var edge2 = graph.createEdge(nodes[37], nodes[39]);
+    			  var edge3 = graph.createEdge(nodes[38], node);
+	    			 var label1 = graph.addLabel(edge1, "Value: "+100 +'\n'+"Cost: "+100);		
+	    			 var label2 = graph.addLabel(edge2, "Value: "+50 +'\n'+"Cost: "+50);	
+	    			 var label3 = graph.addLabel(edge3, "Value: "+40 +'\n'+"Cost: "+50);	
+
+	 				// And sets the style for the label, again through its owning graph.
+	 				graph.setLabelStyle(label1, sls);
+	 				graph.setLabelStyle(label2, sls);
+	 				graph.setLabelStyle(label3, sls);
+	 				
+	 				//new yfiles.router.OrganicEdgeRouter()
+	 				graphControl.morphLayout(new yfiles.hierarchic.IncrementalHierarchicLayouter(), yfiles.system.TimeSpan.fromSeconds(1), null);
+    			  //graph.applyLayout(new yfiles.hierarchic.IncrementalHierarchicLayouter()); 
+    			  //graph.invalidateDisplays();
+    			  console.log("Nodes : "+nodes.length+" : Edges : "+edges.length+" : Afterr");
+    		  }, 12000);
     	  }
 	  
     		  
