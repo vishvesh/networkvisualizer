@@ -515,6 +515,7 @@ yfiles.module("demo.yfiles.layout.modules", function(exports) {
 				//sls.backgroundPen = yfiles.drawing.Pens.RED;
 	    		
 	    	  for(index in data) {
+	    	  	console.log("index : "+index);
 	    		  console.log(data[index].parentDevice.deviceName);
 	    		  
 	    		  var parentDevice = data[index].parentDevice;
@@ -522,23 +523,24 @@ yfiles.module("demo.yfiles.layout.modules", function(exports) {
 	    		  var parentDeviceId = parentDevice.id;
 	  
 				  //nodes[parentDeviceId] = graph.createNode();graph.createNodeWithBoundsAndTag(new yfiles.geometry.RectD(8, 8,400,120), yfiles.bridge.Colors.YELLOW);
-				  nodes[parentDeviceId] = graph.createNodeWithBoundsAndTag(new yfiles.geometry.RectD(8, 8,400,120), yfiles.system.Colors.YELLOW);
-				  graph.setNodeStyle(nodes[parentDeviceId], new yfiles.drawing.ImageNodeStyle.WithPath("resources/images/Axis_device_green.png"));
-				  
-				  var label = graph.addLabel(nodes[parentDeviceId], parentDeviceName);
+				  nodes[index] = graph.createNodeWithBoundsAndTag(new yfiles.geometry.RectD(8, 8,400,120), yfiles.system.Colors.YELLOW);
+				  graph.setNodeStyle(nodes[index], new yfiles.drawing.ImageNodeStyle.WithPath("resources/images/Axis_device_green.png"));
+				  console.log("Nodes index: "+nodes[index]);
+				  var label = graph.addLabel(nodes[index], parentDeviceName);
 					console.log("Nodes length : : : "+nodes.length);
 				  // And sets the style for the label, again through its owning graph.
 				  graph.setLabelStyle(label, sls);
 	    	  }
-	    		  
 	    		  for(index in data) {
+	    		  console.log("NODES 12 : "+nodes[index]);
+	    		  	console.log("index in data : "+index);
 		    		  var node = data[index];
 		    		  var parentDevice = data[index].parentDevice;
 		    		  var parentDeviceName = parentDevice.deviceName;
 		    		  var parentDeviceId = parentDevice.id;
 		    		  var outgoingDevices = data[index].outgoingDevices;
 		    		  for(i in outgoingDevices) {
-		    			 edges[i] = graph.createEdge(nodes[parentDeviceId], nodes[outgoingDevices[i].id]);
+		    			 edges[i] = graph.createEdge(nodes[index], nodes[Math.floor(Math.random()*(nodes.length))]);
 		    			 var label = graph.addLabel(edges[i], "Value: "+outgoingDevices[i].value +'\n'+"Cost: "+outgoingDevices[i].cost);		
 	
 		 				// And sets the style for the label, again through its owning graph.
@@ -548,7 +550,8 @@ yfiles.module("demo.yfiles.layout.modules", function(exports) {
     	  } catch(err) {
     	  	console.log(err);
     	  } finally {
-    	  	/*console.log("Random number : "+Math.floor(Math.random()*(nodes.length)));
+    	  	
+    	  	//Change to setInterval for continuous calls to create random edges & nodes.
     	  	setTimeout(function() {
     	  		var node = graph.createNodeWithBoundsAndTag(new yfiles.geometry.RectD(8, 8,400,120), yfiles.system.Colors.YELLOW);
 				  graph.setNodeStyle(node, new yfiles.drawing.ImageNodeStyle.WithPath("resources/images/Axis_device_green.png"));
@@ -568,29 +571,9 @@ yfiles.module("demo.yfiles.layout.modules", function(exports) {
     			  //graph.applyLayout(new yfiles.hierarchic.IncrementalHierarchicLayouter()); 
     			  //graph.invalidateDisplays();
     			  console.log("Nodes : "+nodes.length+" : Edges : "+edges.length+" : Afterr");
-    		  }, 4000);*/
-    	  	
-    	  	setTimeout(function() {
-    	  		var node = graph.createNodeWithBoundsAndTag(new yfiles.geometry.RectD(8, 8,400,120), yfiles.system.Colors.YELLOW);
-				  graph.setNodeStyle(node, new yfiles.drawing.ImageNodeStyle.WithPath("resources/images/Axis_device_green.png"));
-    		  	 var edge1 = graph.createEdge(nodes[29], nodes[31]);
-    			  var edge2 = graph.createEdge(nodes[32], nodes[31]);
-    			  var edge3 = graph.createEdge(nodes[28], node);
-	    			 var label1 = graph.addLabel(edge1, "Value: "+100 +'\n'+"Cost: "+100);		
-	    			 var label2 = graph.addLabel(edge2, "Value: "+50 +'\n'+"Cost: "+50);	
-	    			 var label3 = graph.addLabel(edge3, "Value: "+40 +'\n'+"Cost: "+50);	
-
-	 				// And sets the style for the label, again through its owning graph.
-	 				graph.setLabelStyle(label1, sls);
-	 				graph.setLabelStyle(label2, sls);
-	 				graph.setLabelStyle(label3, sls);
-	 				
-	 				graphControl.morphLayout(new yfiles.hierarchic.IncrementalHierarchicLayouter(), yfiles.system.TimeSpan.fromSeconds(1), null);
-    			  //graph.applyLayout(new yfiles.hierarchic.IncrementalHierarchicLayouter()); 
-    			  //graph.invalidateDisplays();
-    			  console.log("Nodes : "+nodes.length+" : Edges : "+edges.length+" : Afterr");
     		  }, 4000);
-    		  setTimeout(function() {
+    		  
+    		  /*setTimeout(function() {
     	  		var node = graph.createNodeWithBoundsAndTag(new yfiles.geometry.RectD(8, 8,400,120), yfiles.system.Colors.YELLOW);
 				  graph.setNodeStyle(node, new yfiles.drawing.ImageNodeStyle.WithPath("resources/images/Axis_device_green.png"));
 				  console.log("YOOOOOO");
@@ -610,8 +593,9 @@ yfiles.module("demo.yfiles.layout.modules", function(exports) {
     			  //graph.applyLayout(new yfiles.hierarchic.IncrementalHierarchicLayouter()); 
     			  //graph.invalidateDisplays();
     			  console.log("Nodes : "+nodes.length+" : Edges : "+edges.length+" : Afterr");
-    		  }, 8000);
-    		  setTimeout(function() {
+    		  }, 8000);*/
+    		  
+    		  /*setTimeout(function() {
     	  		var node = graph.createNodeWithBoundsAndTag(new yfiles.geometry.RectD(8, 8,400,120), yfiles.system.Colors.YELLOW);
 				  graph.setNodeStyle(node, new yfiles.drawing.ImageNodeStyle.WithPath("resources/images/Axis_device_green.png"));
 				  console.log("YOOOOOO");
@@ -632,7 +616,7 @@ yfiles.module("demo.yfiles.layout.modules", function(exports) {
     			  //graph.applyLayout(new yfiles.hierarchic.IncrementalHierarchicLayouter()); 
     			  //graph.invalidateDisplays();
     			  console.log("Nodes : "+nodes.length+" : Edges : "+edges.length+" : Afterr");
-    		  }, 12000);
+    		  }, 12000);*/
     	  }
 	  
     		  
