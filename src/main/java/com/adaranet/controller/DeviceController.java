@@ -160,14 +160,15 @@ public class DeviceController {
 	
 	@RequestMapping("/visualize")
 	@Transactional
-	public String list(Model model) throws Exception {  	
+	public String visualize(Model model) throws Exception {  	
 		//logger.info("YO");
 		//model.addAttribute("jsonData", getWholeGraphAsJson());
 		//Map<String, Object> model = new HashMap<String, Object>();
 		//model.put("jsonData", getWholeGraphAsJson());
 		//logger.info("Before List");
 		//List<DevicesJsonBean> list = getWholeGraphAsJson();
-		//logger.info("LIST : "+list);
+		
+		logger.info("Comes inside visualize");
 		
 		ObjectMapper mapper = new ObjectMapper();
     	String json = "";

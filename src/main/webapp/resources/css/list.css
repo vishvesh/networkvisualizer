@@ -8,3 +8,22 @@ header {
 	background: url("../images/SDN_Visualizer_Banner.jpg") no-repeat center left;
 	height: 135px;
 }
+
+canvas {
+	/* border: 1px solid black; */
+	/* height: 800px !important;
+	width: 1000px !important; */
+}
+
+body {
+	margin: 0 auto;
+}
+
+#wrapper {
+	width: 73%; 
+	margin: 0 auto;
+}
+
+#links {
+	text-align: center;
+}
