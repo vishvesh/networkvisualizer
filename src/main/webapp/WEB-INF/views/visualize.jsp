@@ -16,6 +16,9 @@
   </script>
 </head>
 <body>
+
+<div id="adara-header"></div>
+
 <div id="wrapper">
   <div id="network-graph"></div>
 </div>

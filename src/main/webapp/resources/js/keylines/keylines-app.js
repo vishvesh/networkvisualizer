@@ -43,6 +43,8 @@ function afterChartCreated(err, loadedChart) {
 
   chart = loadedChart;
   chart.bind('dblclick', expandClickedData);
+  chart.bind('click', handleClickEvent);
+  chart.interactionOptions({handMode:true});
   
   var data = jsonData;
   console.log("data : "+data);
@@ -54,7 +56,7 @@ function afterChartCreated(err, loadedChart) {
   });
   //callCypher(ratingsQuery, true);
   
-  setInterval(function() {
+  /*setInterval(function() {
   	
   	var parentID = Math.floor(Math.random() * 101);
   	var outgoingID = Math.floor(Math.random() * 101);
@@ -64,45 +66,11 @@ function afterChartCreated(err, loadedChart) {
   			'{"id":'+(outgoingID+1)+',"deviceName":"Egyptian'+(outgoingID+1)+'","deviceType":null,"value":"83","cost":"21"},' +
   			'{"id":'+(outgoingID+2)+',"deviceName":"Norse'+(outgoingID+2)+'","deviceType":null,"value":"78","cost":"37"},' +
   			'{"id":'+(outgoingID+3)+',"deviceName":"Polaris'+(outgoingID+3)+'","deviceType":null,"value":"91","cost":"61"}],"incomingDevices":[]}]';
-  	
-  	/*var sampleJson = '[{"parentDevice":{"id":55,"deviceName":"Zeus","deviceType":null,"value":null,"cost":null},' +
-  			'"outgoingDevices":[{"id":29,"deviceName":"Athena","deviceType":null,"value":"51.36835032991367","cost":"49.00938581663079"},' +
-  			'{"id":27,"deviceName":"Egyptian","deviceType":null,"value":"83","cost":"21"},' +
-  			'{"id":21,"deviceName":"Norse","deviceType":null,"value":"78.15967929523308","cost":"37.29201736915656"},' +
-  			'{"id":22,"deviceName":"Polaris","deviceType":null,"value":"91.63599052849108","cost":"61.83247182134591"}],' +
-  			'"incomingDevices":[]},{"parentDevice":{"id":56,"deviceName":"Athena","deviceType":null,"value":null,"cost":null},' +
-  			'"outgoingDevices":[{"id":12,"deviceName":"Isis","deviceType":null,"value":"95","cost":"3"},' +
-  			'{"id":26,"deviceName":"Perseus","deviceType":null,"value":"67.0320126416648","cost":"29.605506658203197"},' +
-  			'{"id":25,"deviceName":"Poseidon","deviceType":null,"value":"37.48619841653627","cost":"0.44424219391038244"}],' +
-  			'"incomingDevices":[{"id":19,"deviceName":"Zeus","deviceType":null,"value":"51.36835032991367","cost":"49.00938581663079"}]},' +
-  			'{"parentDevice":{"id":57,"deviceName":"Norse","deviceType":null,"value":null,"cost":null},' +
-  			'"outgoingDevices":[{"id":36,"deviceName":"Thor","deviceType":null,"value":"74.65047151496016","cost":"20.518652453498408"},' +
-  			'{"id":38,"deviceName":"Loki","deviceType":null,"value":"36.065761547480676","cost":"8.651284916124313"}],' +
-  			'"incomingDevices":[{"id":19,"deviceName":"Zeus","deviceType":null,"value":"78.15967929523308","cost":"37.29201736915656"}]},' +
-  			'{"parentDevice":{"id":58,"deviceName":"Polaris","deviceType":null,"value":null,"cost":null},' +
-  			'"outgoingDevices":[{"id":55,"deviceName":"Poseidon","deviceType":null,"value":"16","cost":"64"},' +
-  			'{"id":39,"deviceName":"Orion","deviceType":null,"value":"3.4451445949300274","cost":"97.08868581181348"}],' +
-  			'"incomingDevices":[{"id":19,"deviceName":"Zeus","deviceType":null,"value":"91.63599052849108","cost":"61.83247182134591"}]},' +
-  			'{"parentDevice":{"id":59,"deviceName":"Thor","deviceType":null,"value":null,"cost":null},"outgoingDevices":[],' +
-  			'"incomingDevices":[{"id":21,"deviceName":"Norse","deviceType":null,"value":"74.65047151496016","cost":"20.518652453498408"}]},' +
-  			'{"parentDevice":{"id":60,"deviceName":"Loki","deviceType":null,"value":null,"cost":null},"outgoingDevices":[],' +
-  			'"incomingDevices":[{"id":21,"deviceName":"Norse","deviceType":null,"value":"36.065761547480676","cost":"8.651284916124313"}]},' +
-  			'{"parentDevice":{"id":61,"deviceName":"Poseidon","deviceType":null,"value":null,"cost":null},"outgoingDevices":[],' +
-  			'"incomingDevices":[{"id":20,"deviceName":"Athena","deviceType":null,"value":"37.48619841653627","cost":"0.44424219391038244"},' +
-  			'{"id":22,"deviceName":"Polaris","deviceType":null,"value":"16","cost":"64"}]},{"parentDevice":' +
-  			'{"id":62,"deviceName":"Perseus","deviceType":null,"value":null,"cost":null},"outgoingDevices":[],"' +
-  			'incomingDevices":[{"id":20,"deviceName":"Athena","deviceType":null,"value":"67.0320126416648","cost":"29.605506658203197"}]},' +
-  			'{"parentDevice":{"id":63,"deviceName":"Orion","deviceType":null,"value":null,"cost":null},"outgoingDevices":[],"incomingDevices":' +
-  			'[{"id":22,"deviceName":"Polaris","deviceType":null,"value":"3.4451445949300274","cost":"97.08868581181348"}]},{"parentDevice":' +
-  			'{"id":64,"deviceName":"Isis","deviceType":null,"value":null,"cost":null},"outgoingDevices":[],"incomingDevices":' +
-  			'[{"id":20,"deviceName":"Athena","deviceType":null,"value":"95","cost":"3"}]},{"parentDevice":' +
-  			'{"id":65,"deviceName":"Egyptian","deviceType":null,"value":null,"cost":null},"outgoingDevices":[],"incomingDevices":' +
-  			'[{"id":19,"deviceName":"Zeus","deviceType":null,"value":"83","cost":"21"}]}]';*/
-  			
+
   	var theItems = parseJson(JSON.parse(sampleJson));
   	chart.expand(theItems, {fit: true, animate: true, tidy: true});
   	
-  }, 3000);
+  }, 3000);*/
 
 }
 
@@ -132,8 +100,87 @@ function parseJson(data) {
 	return items || null;
 }
 
+function handleClickEvent(clickedID, x, y) {
+	console.log("handling click event : "+clickedID);
+	//var selectionContainsNodeCombo = chart.combo().isCombo(chart.selection([31,38]), {type: 'node'});
+	//console.log(chart.getItem(clickedID)+" : Selection contains combo : "+selectionContainsNodeCombo);
+	console.log(chart.getItem(clickedID));
+	//chart.combo().combine({ids:["31", "35"]}, {animate: true}, function (comboIds) {
+	/*var link = {
+	    type: 'link',
+	    id1: 34,
+	    id2: 41,
+	    id: '341-414',
+	    //t: labelDictionary[item.type],
+	    t: 'Value: 43\nCost: 64',
+	    a2: true,
+	    c: 'rgb(55, 55, 255)',
+	    w: 2//,
+	    //g: linkGlyph(item),
+	    //d: {
+	    //  type: outgoingDevices[i].cost  //This can be used to calculate weighted shorted paths b/n nodes
+	   // }
+	  };
+	  
+	chart.expand(link, {fit: true, animate: true, tidy: true});
+	chart.animateProperties({id: link.id, c: 'rgba(133,28,63,0.5)', w: 10}, {time: 500});
+	
+	
+	setTimeout(function() {
+		console.log("Combine called before");
+		
+		chart.combo().combine({
+		    ids: [34,41],
+		    label: 'Group',
+		    animate: false//,
+		    //style: comboStyle
+	  	});	
+		//chart.combo().combine({ids:[34,41]}, {animate: true}, function (comboIds) {
+	   //you can record the combos here if you like
+		//console.log("INSIDEEEE : "+comboIds);
+	   //});
+		
+		console.log("Combine called after");
+	}, 3000);
+	
+	setTimeout(function() {
+		console.log("UnCombine called before");
+		
+		chart.combo().uncombine(chart.selection(), {animate: true, full: true});
+		
+		console.log("UnCombine called after");
+	}, 6000);
+	
+	//chart.combo().combine({ids:["28-32","32-39"]}, {animate: true}, function (comboIds) {
+	  // you can record the combos here if you like
+		//console.log("INSIDEEEE");
+	//});
+	
+	if((clickedID && parseInt(clickedID))) {
+		console.log("Clicked ID : Left Click : "+clickedID);
+		var link2 = {
+		    type: 'link',
+		    id1: 37,
+		    id2: 35,
+		    id: 37 + '1-1' + 35,
+		    //t: labelDictionary[item.type],
+		    t: 'Value: 44\nCost: 54',
+		    a2: true,
+		    c: 'rgba(133,28,63,0.5)',
+		    w: 5
+		  };
+		  
+		//var theItems = parseJson(JSON.parse(sampleJson));
+	  	chart.expand(link2, {fit: true, animate: true, tidy: true});
+		chart.animateProperties({id: link2.id, c: 'rgba(133,28,63,0.5)', w: 10}, {time: 500});
+    }*/
+}
+
 function expandClickedData(clickedID, x, y) {
-	console.log("Clicked ID : "+clickedID);
+	console.log("Clicked ID : Double Click : "+clickedID);
+	
+	calculateShortestPaths(28, 41);
+
   /*if (clickedID) {
 
     var cleanID = getSubStringAfterLastIndexOfChar(clickedID, ':');
@@ -243,16 +290,46 @@ function parseNode(item) {
   //var basetype = getSubStringAfterLastIndexOfChar(item.data.__type__, '.').toLowerCase();
   //var icontype = (basetype === 'actor' && item.data.gender === 'female') ? 'actor-female' : basetype;
 
-  var parentDevice = item.parentDevice;
+	var parentDevice = item.parentDevice;
+	
+  /*
+  console.log(parentDevice.deviceName);
   //var outgoingDevices = item.outgoingDevices;
+  var iconType;
+  var w = 300;
+  var h = 120;
+  if(parentDevice.deviceName == 'Polaris') {
+ 	iconType = 'red';
+ 	w = 60;
+ 	h = 60;
+  }
+  else
+  	iconType = 'device';
+  	
+  console.log("ICON TYPE : "+iconType);
+  	
+  var nodeIconType = nodeIcon(iconType);
 	
   var node = {
     id: parentDevice.id,
     type: 'node',
     t: parentDevice.deviceName,
+    u: nodeIconType,
+    w: w,
+    h: h
+    //t: nodeLabel(basetype, item),
+    //u: nodeIcon(icontype)/*,
+    //d: {
+    //  type: basetype  //store the type of the item for later - will be used for subsequent queries
+    //}
+  };*/
+  var node = {
+    id: parentDevice.id,
+    type: 'node',
+    t: parentDevice.deviceName,
     u: nodeIcon('device')
-    //w: 300,
-    //h: 120
+    //w: w,
+    //h: h
     //t: nodeLabel(basetype, item),
     //u: nodeIcon(icontype)/*,
     /*d: {
@@ -286,18 +363,54 @@ function parseLink(item) {
 	    a2: true,
 	    c: 'rgb(55, 55, 255)',
 	    w: 2,
-	    g: linkGlyph(item)/*,
+	    g: linkGlyph(item),
 	    d: {
-	      type: item.type  //might be useful one day..
-	    }*/
+	      type: outgoingDevices[i].cost  //This can be used to calculate weighted shorted paths b/n nodes
+	    }
 	  };
 	  
+	  /*var link2 = {
+	    type: 'link',
+	    id1: id1,
+	    id2: id2,
+	    id: id1 + '1-1' + id2,
+	    //t: labelDictionary[item.type],
+	    t: 'Value: '+outgoingDevices[i].value+'\nCost:'+outgoingDevices[i].cost,
+	    a2: true,
+	    c: 'rgb(133,28,63,0.5)',
+	    w: 8,
+	    g: linkGlyph(item),
+	    d: {
+	      type: outgoingDevices[i].cost  //This can be used to calculate weighted shorted paths b/n nodes
+	    }
+	  };*/
+	  
 	  links.push(link);
+	  //links.push(link2);
 	}
 
   return links;
 
 }
+
+function calculateShortestPaths(id1, id2, opts) {
+	var paths = chart.graph().shortestPaths(id1, id2, {direction: 'any'});
+	console.log('Number of hops = ' + paths.distance);  
+	
+	chart.selection(paths.items);
+	
+	console.log("PATH ITEMS: "+paths.items);
+	
+	for(item in (paths.items).reverse()) {
+		
+		var theItem = paths.items[item];
+		console.log("Item : "+theItem);
+		
+		if(theItem.indexOf('-') != -1)
+			chart.animateProperties({id: theItem, c: 'rgba(133,28,63,0.5)', w: 10}, {time: 500});
+	}
+}
+
 
 function nodeLabel(type, item) {
   if (type === 'movie') { 
@@ -309,6 +422,7 @@ function nodeLabel(type, item) {
 }
 
 var nodeIcons = {
+  'red': 'resources/images/red.png',
   'device': 'resources/images/Axis_device_green.png',
   'user': 'icon/custom/identity.png',
   'actor': 'icon/new/man.png',

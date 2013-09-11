@@ -62,7 +62,7 @@
 	 </form>
  </fieldset>
  
- <canvas id="canvas" width="400" height="300"></canvas>
+<%--  <canvas id="canvas" width="400" height="300"></canvas>
  <script type="text/javascript">
 console.log($('#canvas'));
  
@@ -80,7 +80,7 @@ console.log($('#canvas'));
 	context.moveTo(40, 40);
 	context.lineTo(100, 50);
 	context.stroke();
- </script>
+ </script> --%>
  </body>
 </html>
 
