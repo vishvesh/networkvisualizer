@@ -5,8 +5,10 @@ import java.util.Set;
 
 import org.neo4j.graphdb.Direction;
 import org.springframework.data.neo4j.annotation.GraphId;
+import org.springframework.data.neo4j.annotation.Indexed;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedTo;
+import org.springframework.data.neo4j.annotation.RelatedToVia;
 
 import com.adaranet.relationships.ConnectsToDevice;
 
@@ -20,11 +22,11 @@ public class Port {
     @GraphId
     private Long id;
 
-    //@Indexed(unique = true)
+    @Indexed
     private String portName;
     private String portType;
     
-    @RelatedTo(type = "CONNECTS_TO_DEVICE", direction = Direction.OUTGOING, elementClass = Device.class)
+    @RelatedToVia(type = "CONNECTS_TO_DEVICE", direction = Direction.OUTGOING, elementClass = ConnectsToDevice.class)
     private Set<ConnectsToDevice> connectedDevices = new HashSet<ConnectsToDevice>();
     
     public void connectsToDevice(Device destDevice) {

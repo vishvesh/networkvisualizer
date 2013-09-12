@@ -23,6 +23,7 @@ import com.adaranet.model.Device;
 import com.adaranet.model.Port;
 import com.adaranet.service.DeviceService;
 import com.adaranet.service.PortService;
+import com.adaranet.util.AppUtils;
 //import org.springframework.data.neo4j.transaction.Neo4jTransactional;
 
 @Controller
@@ -149,16 +150,36 @@ public class DeviceController {
     		//startDevice.connectsToDevice(endDevice, Integer.toString(AppUtils.generateRandomInt(100)), Integer.toString(AppUtils.generateRandomInt(100)));
 
     		//startDevice.setConnectedDevices(connectedDevices);
+    		//deviceService.saveEntity(startDevice);
     		
-    		Port sourcePort = new Port("em0", "Ethernet");
-    		Port destPort = new Port("em4", "Ethernet");
-    		
-    		portService.saveEntity(sourcePort);
-    		portService.saveEntity(destPort);
+    		Port sourcePort = null;
+    		Port destPort = null;
+    		//sourcePort = new Port("em0", "Ethernet");
+		    //destPort = new Port("em4", "Ethernet");
+			//portService.saveEntity(sourcePort);
+			//portService.saveEntity(destPort);
+    		//Port sourcePort = null;
+    		//Port destPort = null;
+    		try {
+				//sourcePort = new Port("em0", "Ethernet");
+			    //destPort = new Port("em4", "Ethernet");
+				//portService.saveEntity(sourcePort);
+				//portService.saveEntity(destPort);
+    			sourcePort = portService.findPortByPortName("em0");
+    			destPort = portService.findPortByPortName("em4");
+    			logger.info("Source Port : "+sourcePort.getPortName()+" : Dest. Port : "+destPort.getPortName());
+			} catch (Exception e) {
+				// TODO: handle exception
+			} finally {
+				Port connectedPort = startDevice.connectPortsAndDestinationDevice(sourcePort, destPort, endDevice);
+				connectedPort.connectsToDevice(endDevice);
+	    		
+				portService.saveEntity(connectedPort);
+				portService.saveEntity(destPort);
+	    		//deviceService.saveEntity(endDevice);
+			}
     				
-    		startDevice.connectPortsAndDestinationDevice(sourcePort, destPort, endDevice);
     		
-    		deviceService.saveEntity(startDevice);
     		//deviceService.save(endDevice);
     	} else
     		logger.info("Cannot connect : "+startNode + " : with : "+endNode);   	

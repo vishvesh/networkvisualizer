@@ -2,12 +2,15 @@ package com.adaranet.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.conversion.EndResult;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.adaranet.model.Port;
 import com.adaranet.repository.PortRepository;
 import com.adaranet.service.PortService;
 
+@Service
+@Transactional
 public class PortServiceImpl implements PortService {
 	
 	@Autowired
@@ -36,6 +39,10 @@ public class PortServiceImpl implements PortService {
 	@Transactional
 	public long count() {
 		return portRepository.count();
+	}
+
+	public Port findPortByPortName(String portName) {
+		return portRepository.findPortByPortName(portName);
 	}
 
 

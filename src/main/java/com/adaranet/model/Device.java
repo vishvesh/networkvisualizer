@@ -4,11 +4,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.neo4j.graphdb.Direction;
+import org.springframework.data.neo4j.annotation.Fetch;
 import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.Indexed;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedTo;
+import org.springframework.data.neo4j.annotation.RelatedToVia;
 
+import com.adaranet.relationships.ConnectedDevices;
 import com.adaranet.relationships.HasPort;
 //import javax.persistence.GeneratedValue;
 
@@ -28,20 +31,21 @@ public class Device {
     
     private String deviceType;
     
-    @RelatedTo(type = "HAS_PORT", elementClass = Port.class, direction = Direction.OUTGOING)
+    @RelatedToVia(type = "HAS_PORT", elementClass = HasPort.class, direction = Direction.OUTGOING)
     private Set<HasPort> hasPort = new HashSet<HasPort>();
     
-    public void connectPortsAndDestinationDevice(Port sourcePort, Port destPort, Device destDevice) {
+    public Port connectPortsAndDestinationDevice(Port sourcePort, Port destPort, Device destDevice) {
     	HasPort hasPort = new HasPort(this, sourcePort);
     	Port connectedPort = hasPort.getConnectedPort();
-    	connectedPort.connectsToDevice(destDevice);
+    	//connectedPort.connectsToDevice(destDevice);
     	this.hasPort.add(hasPort);
+    	return connectedPort;
     }
     
     //@RelatedToVia(type = "CONNECTED_TO_DEVICE", elementClass = ConnectedDevices.class, direction = Direction.BOTH)
     //private ConnectedDevices connectedDevices;
 
-    /*@Fetch
+    @Fetch
     //@JsonBackReference
     @RelatedToVia(type = "CONNECTED_TO_DEVICE", elementClass = ConnectedDevices.class, direction = Direction.OUTGOING)
     private Set<ConnectedDevices> outgoingDeviceConnections = new HashSet<ConnectedDevices>();
@@ -67,7 +71,7 @@ public class Device {
 		return incomingDeviceConnections;
 	}
     
-    */
+    
     public Device() {
     	
 	}
