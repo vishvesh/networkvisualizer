@@ -5,17 +5,12 @@
 <head>
 
 <script type="text/javascript" src="resources/js/jquery/jquery-1.10.1.min.js"></script>
-
-<style type="text/css">
-	canvas {
-		border: 1px solid black;
-	}
-</style>
+<link rel="stylesheet" href="resources/css/devicesList.css" />
 
 </head>
 <body style="text-align: center;">
 	
-	<div>
+	<div class="float-left">
 	<h1>Devices:</h1>
 		<c:choose>
 		  <c:when test="${!empty devices}">
@@ -29,8 +24,7 @@
 		</c:choose>
 		</div>
 		
-	<br/>
-	<div>
+	<div class="float-left">
 	<h1>Ports:</h1>
 		<c:choose>
 		  <c:when test="${!empty ports}">
