@@ -2,10 +2,8 @@ package com.adaranet.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -20,12 +18,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.adaranet.dto.DeviceDto;
 import com.adaranet.jsonBeans.DevicesJsonBean;
 import com.adaranet.model.Device;
-import com.adaranet.relationships.ConnectedDevices;
+import com.adaranet.model.Port;
 import com.adaranet.service.DeviceService;
-import com.adaranet.util.AppUtils;
+import com.adaranet.service.PortService;
 //import org.springframework.data.neo4j.transaction.Neo4jTransactional;
 
 @Controller
@@ -38,6 +35,9 @@ public class DeviceController {
 	
 	@Autowired
 	private DeviceService deviceService;
+	
+	@Autowired
+	private PortService portService;
 
 	@Autowired
 	private Neo4jTemplate template;
@@ -146,9 +146,17 @@ public class DeviceController {
     	if(startDevice != null && endDevice != null) {
     		logger.info("Saving new device : Saving relationship.");
     		
-    		startDevice.connectsToDevice(endDevice, Integer.toString(AppUtils.generateRandomInt(100)), Integer.toString(AppUtils.generateRandomInt(100)));
+    		//startDevice.connectsToDevice(endDevice, Integer.toString(AppUtils.generateRandomInt(100)), Integer.toString(AppUtils.generateRandomInt(100)));
 
     		//startDevice.setConnectedDevices(connectedDevices);
+    		
+    		Port sourcePort = new Port("em0", "Ethernet");
+    		Port destPort = new Port("em4", "Ethernet");
+    		
+    		portService.saveEntity(sourcePort);
+    		portService.saveEntity(destPort);
+    				
+    		startDevice.connectPortsAndDestinationDevice(sourcePort, destPort, endDevice);
     		
     		deviceService.saveEntity(startDevice);
     		//deviceService.save(endDevice);
@@ -240,8 +248,8 @@ public class DeviceController {
     	List<Device> devices = new ArrayList<Device>();   	
     	if(foundDevice != null) {
     		
-			int count = foundDevice.getOutgoingDeviceConnections() != null ? foundDevice.getOutgoingDeviceConnections().size() : 0;
-			logger.info("Count of OutgoingConnectedDevices Collection : "+count);
+			//int count = foundDevice.getOutgoingDeviceConnections() != null ? foundDevice.getOutgoingDeviceConnections().size() : 0;
+			//logger.info("Count of OutgoingConnectedDevices Collection : "+count);
     		
     		devices.add(foundDevice);
     		logger.info("FOUND DEVICE's NAME : "+foundDevice.getDeviceName() + " : Search String : "+deviceName);
@@ -278,7 +286,7 @@ public class DeviceController {
     	List<DevicesJsonBean> jsonBeanList = new ArrayList<DevicesJsonBean>();
     	
     	logger.info("");
-    	for (Device device : allDevices) {
+    	/*for (Device device : allDevices) {
 			Set<ConnectedDevices> outgoingDevices = device.getOutgoingDeviceConnections();
 			Set<ConnectedDevices> incomingDevices = device.getIncomingDeviceConnections();
 			logger.info("INCOMING DEVICES SIZE : "+incomingDevices.size());
@@ -326,7 +334,7 @@ public class DeviceController {
 			jsonBeanList.add(bean);
 			
 			logger.info("");
-		}
+		}*/
     	
     	/*ObjectMapper mapper = new ObjectMapper();
     	
