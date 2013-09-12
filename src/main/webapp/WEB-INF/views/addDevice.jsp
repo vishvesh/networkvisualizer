@@ -12,6 +12,19 @@
 	    <label>&nbsp;</label><input type="submit" value="Add Device" />
 	  </div>
 	</form>
+	
+<br />	
+<h1>Add Port:</h1>
+
+	<form action="addPort" method="POST">
+	  <div class="form-row">
+	    <label for="id_first_name" class="fieldNames">
+	    Port Name : </label> <input type="text" name="portName" id="portName" />
+	  </div>
+	  <div class="form-row">
+	    <label>&nbsp;</label><input type="submit" value="Add Port" />
+	  </div>
+	</form>	
 
 </body>
 </html>

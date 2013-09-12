@@ -14,21 +14,38 @@
 
 </head>
 <body style="text-align: center;">
-	<h1>Devices:</h1>
 	
-	<c:choose>
-	  <c:when test="${!empty devices}">
-	    <c:forEach items="${devices}" var="device">
-			<li>${device.deviceName}</li>
-		</c:forEach>
-	  </c:when>
-	  <c:otherwise>
-	    <li>No Devices Found</li>
-	  </c:otherwise>
-	</c:choose>
+	<div>
+	<h1>Devices:</h1>
+		<c:choose>
+		  <c:when test="${!empty devices}">
+		    <c:forEach items="${devices}" var="device">
+				<li>${device.deviceName}</li>
+			</c:forEach>
+		  </c:when>
+		  <c:otherwise>
+		    <li>No Devices Found</li>
+		  </c:otherwise>
+		</c:choose>
+		</div>
+		
+	<br/>
+	<div>
+	<h1>Ports:</h1>
+		<c:choose>
+		  <c:when test="${!empty ports}">
+		    <c:forEach items="${ports}" var="port">
+				<li>${port.portName}</li>
+			</c:forEach>
+		  </c:when>
+		  <c:otherwise>
+		    <li>No Ports Found</li>
+		  </c:otherwise>
+		</c:choose>
+	</div>
 	
 	 <br />
-	 <li><a href="add">Add Device</a></li>
+	 <li><a href="add">Add Device Or Port</a></li>
 	 <li><a href="deleteAllDevices">Delete All Devices</a></li>
 	 <li><a href="listAllDevices">Show All Devices</a></li>
 	 <li><a href="visualize">Visualize Graph</a></li>

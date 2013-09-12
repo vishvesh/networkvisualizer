@@ -2,28 +2,33 @@ package com.adaranet.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.neo4j.helpers.collection.IteratorUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.support.Neo4jTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.adaranet.dto.DeviceDto;
 import com.adaranet.jsonBeans.DevicesJsonBean;
 import com.adaranet.model.Device;
 import com.adaranet.model.Port;
+import com.adaranet.relationships.ConnectedDevices;
 import com.adaranet.service.DeviceService;
 import com.adaranet.service.PortService;
-import com.adaranet.util.AppUtils;
 //import org.springframework.data.neo4j.transaction.Neo4jTransactional;
 
 @Controller
@@ -43,42 +48,20 @@ public class DeviceController {
 	@Autowired
 	private Neo4jTemplate template;
 
+	
+	//********************* Start of Controller Methods ***************************//
+	
 	@RequestMapping(value = "/listAllDevices", method = RequestMethod.GET)
 	@Transactional
 	public ModelAndView listAllDevices() throws Exception {
 		logger.info("Comes in inside listAllDevices()");	
-		Map<String, Object> model = new HashMap<String, Object>();		
-		List<Device> devices = new ArrayList<Device>();		
-		Iterable<Device> allDevicesFromDb = deviceService.findAll();    	
-    	if(allDevicesFromDb.iterator().hasNext()) {
-    		for (Device device : allDevicesFromDb) {
-    			logger.info("Device Name found from the DB : Using deviceService.findAll() : "+device.getDeviceName());
-    			devices.add(device);
-    		}
-    		//logger.info("Deleting all the Nodes from Neo4j");
-    		//deviceService.deleteAll(); //TODO: Need to Delete this....    		
-    		Iterable<Device> result = deviceService.findAll();
-    		if(result.iterator().hasNext()) {
-    			logger.info("RESULT FOUND");
-    		} else {
-    			logger.info("NO RESULT FOUND");
-    		}   		
-    		/*Device orion = deviceService.findByPropertyValue("deviceName", "Orion");    		
-    		Device polaris = deviceService.findByPropertyValue("deviceName", "Polaris");    		
-    		if((orion != null)) {
-    			logger.info("Orion & Polaris are not Null!");
-    		}
-    		else {
-    			logger.info("Orion & Polaris are NULL!");
-    		}*/    		 		
-    		//TODO: Look into this JIRA Issue : http://stackoverflow.com/questions/10861588/spring-data-neo4j-relationshiptype-issues
-    		//template.createRelationshipBetween(orion, polaris, RelationshipTypes.CONNECTS_TO, null);		
-    		model.put("devices", devices);
-    	} else {
-    		logger.info("No devices found/persisted in Neo4j!");
-    	}		
-		//deviceService.addDevice(device);
-		//return new ModelAndView("redirect:/device.html");
+		Map<String, Object> model = new HashMap<String, Object>();
+		
+		List<Device> devices = (List<Device>) IteratorUtil.asCollection(deviceService.findAll());
+		model.put("devices", devices);
+		
+    	List<Port> ports = (List<Port>) IteratorUtil.asCollection(portService.findAll());
+    	model.put("ports", ports);
 		return new ModelAndView("devicesList", model);
 	}
 	
@@ -138,6 +121,29 @@ public class DeviceController {
         return "redirect:/listAllDevices";
     }
 	
+	@RequestMapping(value = "/addPort", method = RequestMethod.POST)
+	@Transactional
+    public String addPort(@RequestParam("portName") String portName) throws Exception {	
+		if(portName != null && !portName.isEmpty() && !portName.equals("")) {		
+	    	logger.info("Adding few dummy ports in the neo4j-graph-db");  	
+	    	//Device newDevice = template.save(new Device(deviceName));
+	    	Port newPort = new Port(portName, "Ethernet");    		
+	    	portService.saveEntity(newPort);	    	
+	    	Iterable<Port> ports = portService.findAll();    	
+	    	if(ports.iterator().hasNext()) {
+	    		for (Port port : ports) {
+	    			logger.info("Port Name found from the DB : Using deviceService.findAll() : "+port.getPortName());
+	    		}
+	    	} else {
+	    		logger.info("No Ports persisted in Neo4j!");
+	    	}    	
+	    	logger.info("After returning all the ports which are persisted in Neo4j");	    	
+		} else {
+			logger.info("Port Name passed in from the template is 'NULL' or 'BLANK'. Therefore, not persisting the null Node in Neo4j.");
+		}
+        return "redirect:/listAllDevices";
+    }
+	
 	
 	@RequestMapping("/connectDevices")
 	@Transactional
@@ -189,20 +195,12 @@ public class DeviceController {
 	
 	@RequestMapping("/visualize")
 	@Transactional
-	public String visualize(Model model) throws Exception {  	
-		//logger.info("YO");
-		//model.addAttribute("jsonData", getWholeGraphAsJson());
-		//Map<String, Object> model = new HashMap<String, Object>();
-		//model.put("jsonData", getWholeGraphAsJson());
-		//logger.info("Before List");
-		//List<DevicesJsonBean> list = getWholeGraphAsJson();
-		
+	public String visualize(Model model) throws Exception {
 		logger.info("Comes inside visualize");
 		
 		ObjectMapper mapper = new ObjectMapper();
     	String json = "";
     	try {
-    		//map.put("devices", Collections.allDevices);
     		json = mapper.writeValueAsString(getWholeGraphAsJson());
      
     		logger.info("Printing the JSON");
@@ -216,40 +214,7 @@ public class DeviceController {
     	
     	return "visualize";
 	}
-	
-	/*private Device searchDeviceByDeviceName(String deviceName) {		
-		Device foundDevice = deviceService.findByPropertyValue("deviceName", deviceName);		
-		if(foundDevice == null) {
-			foundDevice = new Device(deviceName);
-			deviceService.save(foundDevice);
-		}	
-		return foundDevice;
-	}*/
-	
-	
-	/*@RequestMapping("/getAllChildConnectedDevices")
-    public String getAllRelationshipByDeviceName(@RequestParam("deviceName") String deviceName, Model model) {	
-		
-		logger.info("*****************************************************************************************");
-		logger.info("Inside getAllRelationshipByDeviceName()");	
-		List<Map<String, Device>> devices = deviceService.getAllChildConnectedDevices(deviceName);
-		logger.info("Device Connected to :"+deviceName+" : Number of Device Connected : "+devices.size());
-		for (Map<String, Device> device : devices) {
-			
-			for(Map.Entry<String, Device> entry : device.entrySet()) {
-				//Device val = entry.getValue();
-				//logger.info("VALL : "+val.getDeviceName());
-				logger.info(entry.getKey() + "/" + entry.getValue());
-			}
-			
-			//logger.info("Devices having INCOMING Relationship : CONNECTED_TO_DEVICE : Device Name : "+device.getDeviceName());			
-		}	
-	
-		logger.info("*****************************************************************************************");
-		model.addAttribute("devices", devices);	
-		return "devicesList";
-	}*/
-	
+
 	@RequestMapping("/getAllChildConnectedDevices")
     public String getAllRelationshipByDeviceName(@RequestParam("deviceName") String deviceName, Model model) {	
 		
@@ -278,17 +243,13 @@ public class DeviceController {
     		logger.info("Device NOT FOUND with search string : "+deviceName);
     	}   	
     	model.addAttribute("devices", devices);  	
-        //map.put("person", new Person());
-        //map.put("peopleList", personService.findAll().iterator());
         return "devicesList";
     }
 
 	
     @RequestMapping("/")
     public String index() {    	
-    	logger.info("Redirecting to index.jsp");   	
-        //map.put("person", new Person());
-        //map.put("peopleList", personService.findAll().iterator());
+    	logger.info("Redirecting to index.jsp");
         return "index";
     }
     
@@ -303,11 +264,10 @@ public class DeviceController {
     	Iterable<Device> allDevices = deviceService.findAll();
     	logger.info("Graph Size : "+deviceService.count());
     	
-    	//List<Map<String, Object>> list = new ArrayList<Map<String,Object>>();
     	List<DevicesJsonBean> jsonBeanList = new ArrayList<DevicesJsonBean>();
     	
     	logger.info("");
-    	/*for (Device device : allDevices) {
+    	for (Device device : allDevices) {
 			Set<ConnectedDevices> outgoingDevices = device.getOutgoingDeviceConnections();
 			Set<ConnectedDevices> incomingDevices = device.getIncomingDeviceConnections();
 			logger.info("INCOMING DEVICES SIZE : "+incomingDevices.size());
@@ -320,11 +280,6 @@ public class DeviceController {
 			parentDevice.setDeviceType(device.getDeviceType());
 			parentDevice.setId(device.getId());
 
-			//Map<String, Object> deviceMapper = new HashMap<String, Object>();
-			//deviceMapper.put("parentDevice", device);
-			//deviceMapper.put("outgoingDevices", outgoingDevices);
-			//list.add(deviceMapper);
-			
 			logger.info("Device persisted in Neo4j is : "+device.getDeviceName()+" : Size of the SET : "+outgoingDevices.size());
 			for (ConnectedDevices connectedDevices : outgoingDevices) {
 				DeviceDto deviceDto = new DeviceDto();
@@ -355,23 +310,8 @@ public class DeviceController {
 			jsonBeanList.add(bean);
 			
 			logger.info("");
-		}*/
-    	
-    	/*ObjectMapper mapper = new ObjectMapper();
-    	
-    	try {
-    		//map.put("devices", Collections.allDevices);
-    		String json = mapper.writeValueAsString(jsonBeanList);
-     
-    		logger.info("Printing the JSON");
-    		logger.info(json);
-    		
-    		//model.addAttribute("json", json);
-     
-    	} catch (Exception e) {
-    		e.printStackTrace();
-    	}*/
-    	
+		}
+
     	long endTime   = System.currentTimeMillis();
     	long totalTime = endTime - startTime;
     	logger.info("TIME TOOK FOR THE METHOD TO COMPLETE : "+totalTime+" : milli seconds");
