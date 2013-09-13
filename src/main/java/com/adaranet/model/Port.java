@@ -11,7 +11,7 @@ import org.springframework.data.neo4j.annotation.Indexed;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedToVia;
 
-import com.adaranet.relationships.ConnectsToDevice;
+//import com.adaranet.relationships.ConnectsToDevice;
 import com.adaranet.relationships.ConnectsToPort;
 
 @NodeEntity
@@ -28,13 +28,13 @@ public class Port {
     private String portName;
     private String portType;
     
-    @RelatedToVia(type = "CONNECTS_TO_DEVICE", direction = Direction.OUTGOING, elementClass = ConnectsToDevice.class)
+    /*@RelatedToVia(type = "CONNECTS_TO_DEVICE", direction = Direction.OUTGOING, elementClass = ConnectsToDevice.class)
     private Set<ConnectsToDevice> connectedDevices = new HashSet<ConnectsToDevice>();
     
     public void connectsToDevice(Device destDevice) {
     	ConnectsToDevice connectsToDevice = new ConnectsToDevice(this, destDevice);
     	this.connectedDevices.add(connectsToDevice);
-    }
+    }*/
     
     @RelatedToVia(type = "CONNECTS_TO_PORT", direction = Direction.OUTGOING, elementClass = ConnectsToPort.class)
     private Set<ConnectsToPort> connectedPorts = new HashSet<ConnectsToPort>();
@@ -42,6 +42,7 @@ public class Port {
     public void connectsToPort(Port destPort) {
     	ConnectsToPort connectsToPort = new ConnectsToPort(this, destPort);
     	this.connectedPorts.add(connectsToPort);
+    	System.out.println("Connected Ports HashSet Size : "+connectedPorts.size());
     }
     
     public Port() {
@@ -69,9 +70,9 @@ public class Port {
 		return portType;
 	}
     
-    public Set<ConnectsToDevice> getConnectedDevice() {
+    /*public Set<ConnectsToDevice> getConnectedDevice() {
 		return connectedDevices;
-	}
+	}*/
     
     public Set<ConnectsToPort> getConnectedPorts() {
 		return connectedPorts;

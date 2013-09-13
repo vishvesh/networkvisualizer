@@ -13,7 +13,7 @@ import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedToVia;
 
 import com.adaranet.relationships.ConnectedDevices;
-import com.adaranet.relationships.ConnectsToDevice;
+//import com.adaranet.relationships.ConnectsToDevice;
 import com.adaranet.relationships.ConnectsToPort;
 import com.adaranet.relationships.HasPort;
 //import javax.persistence.GeneratedValue;
@@ -34,13 +34,13 @@ public class Device {
     
     private String deviceType;
     
-    @Fetch
+    //@Fetch
     @RelatedToVia(type = "HAS_PORT", elementClass = HasPort.class, direction = Direction.OUTGOING)
     private Set<HasPort> outgoingConnectingPorts = new HashSet<HasPort>();
 
-    @Fetch
+    /*@Fetch
     @RelatedToVia(type = "CONNECTS_TO_DEVICE", direction = Direction.INCOMING, elementClass = ConnectsToDevice.class)
-    private Set<ConnectsToDevice> incomingPorts = new HashSet<ConnectsToDevice>();
+    private Set<ConnectsToDevice> incomingPorts = new HashSet<ConnectsToDevice>();*/
     
     public Port connectPortsAndDestinationDevice(Port sourcePort, Port destPort, Device destDevice) {
     	HasPort hasPort = new HasPort(this, sourcePort);
@@ -48,7 +48,7 @@ public class Device {
     	//connectedPort.connectsToDevice(destDevice);
     	this.outgoingConnectingPorts.add(hasPort);
     	connectedPort.connectsToPort(destPort);
-    	destPort.connectsToDevice(destDevice);
+    	//destPort.connectsToDevice(destDevice);
     	return destPort;
     }
 
@@ -120,11 +120,11 @@ public class Device {
 		return outGoingConnectingPortsSet;
 	}
     
-    public Set<Port> getIncomingConnectingPortsToDevice() {
+    /*public Set<Port> getIncomingConnectingPortsToDevice() {
     	Set<Port> incomingConnectingPortsSet = new HashSet<Port>();
     	for (ConnectsToDevice port : incomingPorts) {
     		incomingConnectingPortsSet.add(port.getSourcePort());
 		}
 		return incomingConnectingPortsSet;
-	}
+	}*/
 }

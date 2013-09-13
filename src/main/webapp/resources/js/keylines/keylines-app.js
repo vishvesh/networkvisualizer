@@ -255,7 +255,7 @@ function callCypher(queryString, firstTime) {
 /***********************************************************************/
 
 
-function parseResult(json) {
+/*function parseResult(json) {
 
   var connections = json.data;
 
@@ -273,7 +273,7 @@ function parseResult(json) {
   }
 
   return items;
-}
+}*/
 
 function validNode(item) {
   return item.data.name || item.data.title;

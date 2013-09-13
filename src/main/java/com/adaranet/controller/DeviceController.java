@@ -161,13 +161,15 @@ public class DeviceController {
     }
 	
 	
-	@RequestMapping("/connectDevices")
+	@RequestMapping(value = "/connectDevicesViaPorts", method = RequestMethod.POST)
 	@Transactional
 	public String connectDevices(@RequestParam("startNode") String startNode, @RequestParam("endNode") String endNode,
 								 @RequestParam("startPort") String startPort, @RequestParam("endPort") String endPort) throws Exception {
 		Device startDevice = deviceService.findDeviceByDeviceName(startNode); //searchDeviceByDeviceName(startNode);		
 		Device endDevice = deviceService.findDeviceByDeviceName(endNode); //searchDeviceByDeviceName(endNode);		
     	if(startDevice != null && endDevice != null) {
+    		logger.info("");
+    		logger.info("*******************************************************************************************************************");
     		logger.info("Found both the devices. Now relating them via Ports.");
     		
     		//startDevice.connectsToDevice(endDevice, Integer.toString(AppUtils.generateRandomInt(100)), Integer.toString(AppUtils.generateRandomInt(100)));
@@ -175,24 +177,54 @@ public class DeviceController {
     		//startDevice.setConnectedDevices(connectedDevices);
     		//deviceService.saveEntity(startDevice);
     		
-    		Port sourcePort = portService.findPortByPortName(startPort);
-    		Port destPort = portService.findPortByPortName(endPort);
-    		Set<Port> hasPorts = startDevice.getOutgoingConnectingPortsFromDevice();
-    		for (Port port : hasPorts) {
-				logger.info("Outgoing Connecting Ports : "+port.getPortName());
-			}
+    		//Port sourcePort = portService.findPortByPortName(startPort);
+    		//Port destPort = portService.findPortByPortName(endPort);
     		
-    		Set<Port> incomingPorts = endDevice.getIncomingConnectingPortsToDevice();
-    		for (Port port : incomingPorts) {
-				logger.info("Incoming Connecting Ports : "+port.getPortName());
-			}
     		//Port sourcePort = portService.saveEntity(new Port(startPort, "Ethernet"));
     		//Port destPort = portService.saveEntity(new Port(endPort, "Ethernet"));
-    		logger.info("Source Port : "+sourcePort.getPortName()+" : Dest. Port : "+destPort.getPortName());
-    		startDevice.connectPortsAndDestinationDevice(sourcePort, destPort, endDevice);
-    		deviceService.saveEntity(startDevice);
+    		//logger.info("Source Port : "+sourcePort.getPortName()+" : Dest. Port : "+destPort.getPortName());
+    		
+    		//startDevice.connectPortsAndDestinationDevice(sourcePort, destPort, endDevice);
+			//deviceService.saveEntity(startDevice);
+    		
+    		Port sourcePort = null;
+    		Port destPort = null;
+    		
+    		Set<Port> startDeviceHasPort = startDevice.getOutgoingConnectingPortsFromDevice();
+    		logger.info("Start Device Has Port Set Size : "+startDeviceHasPort.size());
+    		for (Port port : startDeviceHasPort) {
+				logger.info("Outgoing Connecting Port for Start Device : "+port.getPortName().toLowerCase() +" : Start Port Name : "+startPort);
+				if((port.getPortName().toLowerCase()).equals(startPort.toLowerCase())) {
+					sourcePort = port;
+					break;
+				}
+			}
+    		
+    		Set<Port> endDeviceHasPort = endDevice.getOutgoingConnectingPortsFromDevice();
+    		logger.info("End Device Has Port Set Size : "+endDeviceHasPort.size());
+    		for (Port port : endDeviceHasPort) {
+    			logger.info("Outgoing Connecting Port for End Device : "+port.getPortName().toLowerCase() +" : End Port Name : "+endPort);
+				if((port.getPortName().toLowerCase()).equals(endPort.toLowerCase())) {
+					destPort = port;
+					break;
+				}
+			}
+
+    		//Object reference comparison(Not object itself).
+    		if(sourcePort != null && destPort != null) { 
+    			logger.info("Found both the ports for both the devices. Therefore, connecting Two Ports.");
+    			sourcePort.connectsToPort(destPort);
+    			template.save(sourcePort);
+    			logger.info("Saved the 'ConnectsToPort' relationship in neo4j.");
+    		} else {
+    			logger.info("Source Port Or Dest. Port is null. Therefore, we can not save/connect the two ports.");
+    		}
+    		
     	} else
-    		logger.info("Cannot connect : "+startNode + " : with : "+endNode);   	
+    		logger.info("Cannot connect : "+startNode + " : with : "+endNode);   
+    	
+    	logger.info("*******************************************************************************************************************");
+    	logger.info("");
     	return "redirect:/listAllDevices";
 	}
 	
@@ -201,15 +233,15 @@ public class DeviceController {
 	public String connectDeviceToPorts(@RequestParam("startNode") String startNode, @RequestParam("portName") String portName) throws Exception {
 		Device startDevice = deviceService.findDeviceByDeviceName(startNode); //searchDeviceByDeviceName(startNode);		
 		Port port = portService.findPortByPortName(portName);
-		
-		Set<HasPort> hasPort = new HashSet<HasPort>();
+				
+		//Set<HasPort> hasPort = new HashSet<HasPort>();
 		HasPort h = new HasPort();
 		h.setStartDevice(startDevice);
 		h.setConnectedPort(port);
-		hasPort = startDevice.getOutgoingConnectingPorts();
-		hasPort.add(h);
-		deviceService.saveEntity(startDevice);
-		//hasPort.add(port);
+		template.save(h);
+		//hasPort = startDevice.getOutgoingConnectingPorts();
+		//hasPort.add(h);
+		//deviceService.saveEntity(startDevice);
   	
     	return "redirect:/listAllDevices";
 	}
@@ -284,11 +316,14 @@ public class DeviceController {
     	long startTime = System.currentTimeMillis();
 
     	Iterable<Device> allDevices = deviceService.findAll();
-    	logger.info("Graph Size : "+deviceService.count());
+    	logger.info("Graph-Device Size : "+deviceService.count());
+    	
+    	Iterable<Port> allPorts = portService.findAll();
+    	logger.info("Graph-Port Size : "+portService.count());
     	
     	List<DevicesJsonBean> jsonBeanList = new ArrayList<DevicesJsonBean>();
     	
-    	logger.info("");
+    	/*logger.info("");
     	for (Device device : allDevices) {
 			Set<ConnectedDevices> outgoingDevices = device.getOutgoingDeviceConnections();
 			Set<ConnectedDevices> incomingDevices = device.getIncomingDeviceConnections();
@@ -332,7 +367,7 @@ public class DeviceController {
 			jsonBeanList.add(bean);
 			
 			logger.info("");
-		}
+		}*/
 
     	long endTime   = System.currentTimeMillis();
     	long totalTime = endTime - startTime;

@@ -62,7 +62,7 @@
  </fieldset>
  
  <fieldset>
-	 <form action="connectDevices">
+	 <form action="connectDevicesViaPorts" method="POST">
 	 	<label for="startNode">1st Device: <input type="text" name="startNode" /></label>
 	 	<label for="startPort">1st Port: <input type="text" name="startPort" /></label>
 	 	<label for="endNode">2nd Device: <input type="text" name="endNode" /></label>

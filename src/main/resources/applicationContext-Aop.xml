@@ -9,9 +9,9 @@
 			http://www.springframework.org/schema/aop 
 			http://www.springframework.org/schema/aop/spring-aop-3.1.xsd">
 
-	<!-- For parsing classes with @Aspect annotation -->
 	<aop:aspectj-autoproxy/>
 
+	<!-- For intercepting each Request Path - To get the path the request travels. -->
 	<bean id="customizableTraceInterceptor" class="com.adaranet.aop.TraceInterceptor"
 		p:enterMessage="Entering $[targetClassShortName].$[methodName]($[arguments])"
 		p:exitMessage="Leaving $[targetClassShortName].$[methodName](): $[returnValue]"/>

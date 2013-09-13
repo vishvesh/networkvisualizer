@@ -1,4 +1,4 @@
-package com.adaranet.relationships;
+/*package com.adaranet.relationships;
 
 import org.springframework.data.neo4j.annotation.EndNode;
 import org.springframework.data.neo4j.annotation.Fetch;
@@ -84,3 +84,4 @@ public class ConnectsToDevice {
 		this.cost = cost;
 	}
 }
+*/
