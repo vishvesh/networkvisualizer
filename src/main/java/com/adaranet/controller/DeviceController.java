@@ -27,6 +27,7 @@ import com.adaranet.jsonBeans.DevicesJsonBean;
 import com.adaranet.model.Device;
 import com.adaranet.model.Port;
 import com.adaranet.relationships.ConnectedDevices;
+import com.adaranet.relationships.HasPort;
 import com.adaranet.service.DeviceService;
 import com.adaranet.service.PortService;
 //import org.springframework.data.neo4j.transaction.Neo4jTransactional;
@@ -96,6 +97,21 @@ public class DeviceController {
 		return "redirect:/listAllDevices";
 	}
 	
+	@RequestMapping(value = "/deleteAllPorts", method = RequestMethod.GET)
+	@Transactional
+	public String deleteAllPorts() throws Exception {
+		logger.info("Comes in inside deleteAllPorts()");
+		Iterable<Port> allPortsFromDb = portService.findAll();
+    	if(allPortsFromDb.iterator().hasNext()) {
+    		logger.info("Deleting all the Ports from Neo4j");
+    		portService.deleteAll(); //TODO: Need to Delete this....		
+    		logger.info("Deleted all the Ports from Neo4j.");   		
+    	} else {
+    		logger.info("No Ports Found/Persisted in Neo4j that are to be deleted!");
+    	} 	
+		return "redirect:/listAllDevices";
+	}
+	
 	
 	@RequestMapping(value = "/addDevice", method = RequestMethod.POST)
 	@Transactional
@@ -147,48 +163,54 @@ public class DeviceController {
 	
 	@RequestMapping("/connectDevices")
 	@Transactional
-	public String connectDevices(@RequestParam("startNode") String startNode, @RequestParam("endNode") String endNode) throws Exception {
+	public String connectDevices(@RequestParam("startNode") String startNode, @RequestParam("endNode") String endNode,
+								 @RequestParam("startPort") String startPort, @RequestParam("endPort") String endPort) throws Exception {
 		Device startDevice = deviceService.findDeviceByDeviceName(startNode); //searchDeviceByDeviceName(startNode);		
 		Device endDevice = deviceService.findDeviceByDeviceName(endNode); //searchDeviceByDeviceName(endNode);		
     	if(startDevice != null && endDevice != null) {
-    		logger.info("Saving new device : Saving relationship.");
+    		logger.info("Found both the devices. Now relating them via Ports.");
     		
     		//startDevice.connectsToDevice(endDevice, Integer.toString(AppUtils.generateRandomInt(100)), Integer.toString(AppUtils.generateRandomInt(100)));
 
     		//startDevice.setConnectedDevices(connectedDevices);
     		//deviceService.saveEntity(startDevice);
     		
-    		Port sourcePort = null;
-    		Port destPort = null;
-    		//sourcePort = new Port("em0", "Ethernet");
-		    //destPort = new Port("em4", "Ethernet");
-			//portService.saveEntity(sourcePort);
-			//portService.saveEntity(destPort);
-    		//Port sourcePort = null;
-    		//Port destPort = null;
-    		try {
-				//sourcePort = new Port("em0", "Ethernet");
-			    //destPort = new Port("em4", "Ethernet");
-				//portService.saveEntity(sourcePort);
-				//portService.saveEntity(destPort);
-    			sourcePort = portService.findPortByPortName("em0");
-    			destPort = portService.findPortByPortName("em4");
-    			logger.info("Source Port : "+sourcePort.getPortName()+" : Dest. Port : "+destPort.getPortName());
-			} catch (Exception e) {
-				// TODO: handle exception
-			} finally {
-				Port connectedPort = startDevice.connectPortsAndDestinationDevice(sourcePort, destPort, endDevice);
-				connectedPort.connectsToDevice(endDevice);
-	    		
-				portService.saveEntity(connectedPort);
-				portService.saveEntity(destPort);
-	    		//deviceService.saveEntity(endDevice);
+    		Port sourcePort = portService.findPortByPortName(startPort);
+    		Port destPort = portService.findPortByPortName(endPort);
+    		Set<Port> hasPorts = startDevice.getOutgoingConnectingPortsFromDevice();
+    		for (Port port : hasPorts) {
+				logger.info("Outgoing Connecting Ports : "+port.getPortName());
 			}
-    				
     		
-    		//deviceService.save(endDevice);
+    		Set<Port> incomingPorts = endDevice.getIncomingConnectingPortsToDevice();
+    		for (Port port : incomingPorts) {
+				logger.info("Incoming Connecting Ports : "+port.getPortName());
+			}
+    		//Port sourcePort = portService.saveEntity(new Port(startPort, "Ethernet"));
+    		//Port destPort = portService.saveEntity(new Port(endPort, "Ethernet"));
+    		logger.info("Source Port : "+sourcePort.getPortName()+" : Dest. Port : "+destPort.getPortName());
+    		startDevice.connectPortsAndDestinationDevice(sourcePort, destPort, endDevice);
+    		deviceService.saveEntity(startDevice);
     	} else
     		logger.info("Cannot connect : "+startNode + " : with : "+endNode);   	
+    	return "redirect:/listAllDevices";
+	}
+	
+	@RequestMapping("/connectDeviceToPorts")
+	@Transactional
+	public String connectDeviceToPorts(@RequestParam("startNode") String startNode, @RequestParam("portName") String portName) throws Exception {
+		Device startDevice = deviceService.findDeviceByDeviceName(startNode); //searchDeviceByDeviceName(startNode);		
+		Port port = portService.findPortByPortName(portName);
+		
+		Set<HasPort> hasPort = new HashSet<HasPort>();
+		HasPort h = new HasPort();
+		h.setStartDevice(startDevice);
+		h.setConnectedPort(port);
+		hasPort = startDevice.getOutgoingConnectingPorts();
+		hasPort.add(h);
+		deviceService.saveEntity(startDevice);
+		//hasPort.add(port);
+  	
     	return "redirect:/listAllDevices";
 	}
 

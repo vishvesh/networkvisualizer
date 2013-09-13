@@ -1,6 +1,8 @@
 package com.adaranet.model;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.neo4j.graphdb.Direction;
@@ -8,10 +10,11 @@ import org.springframework.data.neo4j.annotation.Fetch;
 import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.Indexed;
 import org.springframework.data.neo4j.annotation.NodeEntity;
-import org.springframework.data.neo4j.annotation.RelatedTo;
 import org.springframework.data.neo4j.annotation.RelatedToVia;
 
 import com.adaranet.relationships.ConnectedDevices;
+import com.adaranet.relationships.ConnectsToDevice;
+import com.adaranet.relationships.ConnectsToPort;
 import com.adaranet.relationships.HasPort;
 //import javax.persistence.GeneratedValue;
 
@@ -31,19 +34,23 @@ public class Device {
     
     private String deviceType;
     
+    @Fetch
     @RelatedToVia(type = "HAS_PORT", elementClass = HasPort.class, direction = Direction.OUTGOING)
-    private Set<HasPort> hasPort = new HashSet<HasPort>();
+    private Set<HasPort> outgoingConnectingPorts = new HashSet<HasPort>();
+
+    @Fetch
+    @RelatedToVia(type = "CONNECTS_TO_DEVICE", direction = Direction.INCOMING, elementClass = ConnectsToDevice.class)
+    private Set<ConnectsToDevice> incomingPorts = new HashSet<ConnectsToDevice>();
     
     public Port connectPortsAndDestinationDevice(Port sourcePort, Port destPort, Device destDevice) {
     	HasPort hasPort = new HasPort(this, sourcePort);
     	Port connectedPort = hasPort.getConnectedPort();
     	//connectedPort.connectsToDevice(destDevice);
-    	this.hasPort.add(hasPort);
-    	return connectedPort;
+    	this.outgoingConnectingPorts.add(hasPort);
+    	connectedPort.connectsToPort(destPort);
+    	destPort.connectsToDevice(destDevice);
+    	return destPort;
     }
-    
-    //@RelatedToVia(type = "CONNECTED_TO_DEVICE", elementClass = ConnectedDevices.class, direction = Direction.BOTH)
-    //private ConnectedDevices connectedDevices;
 
     @Fetch
     //@JsonBackReference
@@ -60,9 +67,7 @@ public class Device {
     	this.outgoingDeviceConnections.add(connectedDevices);
     	System.out.println("Size of Outgoing Device Connections : "+outgoingDeviceConnections.size());
     }
-
-    
-    
+      
     public Set<ConnectedDevices> getOutgoingDeviceConnections() {
 		return outgoingDeviceConnections;
 	}
@@ -70,8 +75,7 @@ public class Device {
     public Set<ConnectedDevices> getIncomingDeviceConnections() {
 		return incomingDeviceConnections;
 	}
-    
-    
+       
     public Device() {
     	
 	}
@@ -102,5 +106,25 @@ public class Device {
     
     public String getDeviceType() {
 		return deviceType;
+	}
+    
+    public Set<HasPort> getOutgoingConnectingPorts() {
+		return outgoingConnectingPorts;
+	}
+
+    public Set<Port> getOutgoingConnectingPortsFromDevice() {
+    	Set<Port> outGoingConnectingPortsSet = new HashSet<Port>();
+    	for (HasPort hasPort : outgoingConnectingPorts) {
+			outGoingConnectingPortsSet.add(hasPort.getConnectedPort());
+		}
+		return outGoingConnectingPortsSet;
+	}
+    
+    public Set<Port> getIncomingConnectingPortsToDevice() {
+    	Set<Port> incomingConnectingPortsSet = new HashSet<Port>();
+    	for (ConnectsToDevice port : incomingPorts) {
+    		incomingConnectingPortsSet.add(port.getSourcePort());
+		}
+		return incomingConnectingPortsSet;
 	}
 }

@@ -39,10 +39,13 @@
 	</div>
 	
 	 <br />
-	 <li><a href="add">Add Device Or Port</a></li>
-	 <li><a href="deleteAllDevices">Delete All Devices</a></li>
-	 <li><a href="listAllDevices">Show All Devices</a></li>
-	 <li><a href="visualize">Visualize Graph</a></li>
+	 <div class="center">
+		 <li><a href="add">Add Device Or Port</a></li>
+		 <li><a href="deleteAllDevices">Delete All Devices</a></li>
+		 <li><a href="deleteAllPorts">Delete All Ports</a></li>
+		 <li><a href="listAllDevices">Show All Devices</a></li>
+		 <li><a href="visualize">Visualize Graph</a></li>
+	 </div>
  
  <fieldset>
 	 <form action="findDeviceByName">
@@ -61,8 +64,18 @@
  <fieldset>
 	 <form action="connectDevices">
 	 	<label for="startNode">1st Device: <input type="text" name="startNode" /></label>
+	 	<label for="startPort">1st Port: <input type="text" name="startPort" /></label>
 	 	<label for="endNode">2nd Device: <input type="text" name="endNode" /></label>
+	 	<label for="endPort">2nd Port: <input type="text" name="endPort" /></label>
 	 	<input type="submit" value="Connect Devices"/>
+	 </form>
+ </fieldset>
+ 
+ <fieldset>
+	 <form action="connectDeviceToPorts">
+	 	<label for="startNode">1st Device: <input type="text" name="startNode" /></label>
+	 	<label for="portName">1st Port: <input type="text" name="portName" /></label>
+	 	<input type="submit" value="Connect Device To Ports"/>
 	 </form>
  </fieldset>
  
