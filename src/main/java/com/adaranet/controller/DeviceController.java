@@ -223,7 +223,7 @@ public class DeviceController {
     	return "redirect:/listAllDevices";
 	}
 	
-	@RequestMapping("/connectDeviceToPorts")
+	/*@RequestMapping("/connectDeviceToPorts")
 	@Transactional
 	public String connectDeviceToPorts(@RequestParam("startNode") String startNode, @RequestParam("portName") String portName) throws Exception {
 		Device startDevice = deviceService.findDeviceByDeviceName(startNode); //searchDeviceByDeviceName(startNode);		
@@ -233,7 +233,7 @@ public class DeviceController {
 		h.setConnectedPort(port);
 		template.save(h);
     	return "redirect:/listAllDevices";
-	}
+	}*/
 
 	
 	@RequestMapping("/visualize")

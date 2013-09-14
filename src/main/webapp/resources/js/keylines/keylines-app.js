@@ -77,7 +77,8 @@ function afterChartCreated(err, loadedChart) {
 function parseJson(data) {
 	console.log("Parsing JSON");
 	var json = data;
-	console.log(JSON.stringify(json[0]));
+	console.log("Devices : "+JSON.stringify(json.devicesJsonBean));
+	console.log("Ports : "+JSON.stringify(json.portsJsonBean));
 
 	  //items are visual chart items
 	  var items = [];

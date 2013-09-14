@@ -71,13 +71,13 @@
 	 </form>
  </fieldset>
  
- <fieldset>
+ <!--fieldset>
 	 <form action="connectDeviceToPorts">
 	 	<label for="startNode">1st Device: <input type="text" name="startNode" /></label>
 	 	<label for="portName">1st Port: <input type="text" name="portName" /></label>
 	 	<input type="submit" value="Connect Device To Ports"/>
 	 </form>
- </fieldset>
+ </fieldset-->
  
  <!-- fieldset>
 	 <form action="getAllChildConnectedDevices">
