@@ -13,6 +13,7 @@ import org.springframework.data.neo4j.annotation.RelatedToVia;
 
 //import com.adaranet.relationships.ConnectsToDevice;
 import com.adaranet.relationships.ConnectsToPort;
+import com.adaranet.relationships.HasPort;
 
 @NodeEntity
 public class Port {
@@ -24,7 +25,7 @@ public class Port {
     @GraphId
     private Long id;
 
-    @Indexed
+    @Indexed(unique = true)
     private String portName;
     private String portType;
     
@@ -45,8 +46,20 @@ public class Port {
     	System.out.println("Connected Ports HashSet Size : "+connectedPorts.size());
     }
     
+    public Set<Port> getAllConnectedPortsFromSourcePort() {
+    	Set<Port> connectedPortsFromSourcePort = new HashSet<Port>();
+    	for (ConnectsToPort connectedPort : connectedPorts) {
+    		connectedPortsFromSourcePort.add(connectedPort.getDestPort());
+		}
+		return connectedPortsFromSourcePort;
+	}
+    
     public Port() {
     	
+	}
+    
+    public Long getId() {
+		return id;
 	}
     
     public Port(String portName, String portType) {

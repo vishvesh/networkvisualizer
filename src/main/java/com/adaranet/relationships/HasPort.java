@@ -1,5 +1,6 @@
 package com.adaranet.relationships;
 
+import org.codehaus.jackson.annotate.JsonBackReference;
 import org.springframework.data.neo4j.annotation.EndNode;
 import org.springframework.data.neo4j.annotation.Fetch;
 import org.springframework.data.neo4j.annotation.GraphId;

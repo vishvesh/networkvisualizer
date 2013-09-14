@@ -79,12 +79,12 @@
 	 </form>
  </fieldset>
  
- <fieldset>
+ <!-- fieldset>
 	 <form action="getAllChildConnectedDevices">
 	 	<label for="deviceName">Device Name: <input type="text" name="deviceName" /></label>
 	 	<input type="submit" value="Show all Relationships"/>
 	 </form>
- </fieldset>
+ </fieldset-->
  
 <%--  <canvas id="canvas" width="400" height="300"></canvas>
  <script type="text/javascript">

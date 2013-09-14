@@ -15,7 +15,6 @@ import org.springframework.data.neo4j.support.Neo4jTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,23 +22,21 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.adaranet.dto.DeviceDto;
+import com.adaranet.dto.PortDto;
+import com.adaranet.jsonBeans.DevicePortJsonBeanMapper;
 import com.adaranet.jsonBeans.DevicesJsonBean;
+import com.adaranet.jsonBeans.PortsJsonBean;
 import com.adaranet.model.Device;
 import com.adaranet.model.Port;
-import com.adaranet.relationships.ConnectedDevices;
 import com.adaranet.relationships.HasPort;
 import com.adaranet.service.DeviceService;
 import com.adaranet.service.PortService;
-//import org.springframework.data.neo4j.transaction.Neo4jTransactional;
 
 @Controller
 public class DeviceController {
 
 	protected Logger logger = Logger.getLogger(getClass());
 
-	//@Autowired
-    //private deviceService deviceRepository;
-	
 	@Autowired
 	private DeviceService deviceService;
 	
@@ -139,21 +136,30 @@ public class DeviceController {
 	
 	@RequestMapping(value = "/addPort", method = RequestMethod.POST)
 	@Transactional
-    public String addPort(@RequestParam("portName") String portName) throws Exception {	
-		if(portName != null && !portName.isEmpty() && !portName.equals("")) {		
-	    	logger.info("Adding few dummy ports in the neo4j-graph-db");  	
+    public String addPort(@RequestParam("deviceName") String deviceName, @RequestParam("portName") String portName) throws Exception {	
+		if((null != deviceName && !deviceName.isEmpty()) && (null != portName && !portName.isEmpty())) {		
+	    	logger.info("Adding few dummy ports in the neo4j-graph-db for device : "+deviceName);  	
 	    	//Device newDevice = template.save(new Device(deviceName));
-	    	Port newPort = new Port(portName, "Ethernet");    		
-	    	portService.saveEntity(newPort);	    	
-	    	Iterable<Port> ports = portService.findAll();    	
-	    	if(ports.iterator().hasNext()) {
-	    		for (Port port : ports) {
-	    			logger.info("Port Name found from the DB : Using deviceService.findAll() : "+port.getPortName());
-	    		}
+	    	String uniqueDevicePortName = deviceName+"-"+portName;
+	    	logger.info("Unique Device Port Name : "+uniqueDevicePortName);
+	    	
+	    	Device device = deviceService.findDeviceByDeviceName(deviceName);
+	    	Port checkIfPortExists = portService.findPortByPortName(uniqueDevicePortName);
+	    	
+	    	if(device != null && checkIfPortExists == null) {
+	    		logger.info("Found the device.. Also, Port does not exist already in the DB, so processing further!!!!!");
+	    		Port newPort = new Port(uniqueDevicePortName, "Ethernet");
+	    		template.save(newPort);
+	    		HasPort hasPort = new HasPort();
+	    		hasPort.setStartDevice(device);
+	    		hasPort.setConnectedPort(newPort);
+	    		template.save(hasPort);
+		    	//portService.saveEntity(newPort);
+		    	logger.info("Persisted New Port in the DB & Associated it with the Device.");
 	    	} else {
-	    		logger.info("No Ports persisted in Neo4j!");
-	    	}    	
-	    	logger.info("After returning all the ports which are persisted in Neo4j");	    	
+	    		logger.info("Port already exists in Neo4j : With Port Name : "+uniqueDevicePortName);
+	    	}
+	    	  	
 		} else {
 			logger.info("Port Name passed in from the template is 'NULL' or 'BLANK'. Therefore, not persisting the null Node in Neo4j.");
 		}
@@ -176,17 +182,6 @@ public class DeviceController {
 
     		//startDevice.setConnectedDevices(connectedDevices);
     		//deviceService.saveEntity(startDevice);
-    		
-    		//Port sourcePort = portService.findPortByPortName(startPort);
-    		//Port destPort = portService.findPortByPortName(endPort);
-    		
-    		//Port sourcePort = portService.saveEntity(new Port(startPort, "Ethernet"));
-    		//Port destPort = portService.saveEntity(new Port(endPort, "Ethernet"));
-    		//logger.info("Source Port : "+sourcePort.getPortName()+" : Dest. Port : "+destPort.getPortName());
-    		
-    		//startDevice.connectPortsAndDestinationDevice(sourcePort, destPort, endDevice);
-			//deviceService.saveEntity(startDevice);
-    		
     		Port sourcePort = null;
     		Port destPort = null;
     		
@@ -233,16 +228,10 @@ public class DeviceController {
 	public String connectDeviceToPorts(@RequestParam("startNode") String startNode, @RequestParam("portName") String portName) throws Exception {
 		Device startDevice = deviceService.findDeviceByDeviceName(startNode); //searchDeviceByDeviceName(startNode);		
 		Port port = portService.findPortByPortName(portName);
-				
-		//Set<HasPort> hasPort = new HashSet<HasPort>();
 		HasPort h = new HasPort();
 		h.setStartDevice(startDevice);
 		h.setConnectedPort(port);
 		template.save(h);
-		//hasPort = startDevice.getOutgoingConnectingPorts();
-		//hasPort.add(h);
-		//deviceService.saveEntity(startDevice);
-  	
     	return "redirect:/listAllDevices";
 	}
 
@@ -308,77 +297,86 @@ public class DeviceController {
     }
     
     @RequestMapping("/json")
-    public @ResponseBody List<DevicesJsonBean> getGraphAsJson(Model model) throws Exception { 
+    public @ResponseBody DevicePortJsonBeanMapper getGraphAsJson(Model model) throws Exception { 
     	return getWholeGraphAsJson();
     }
 
-    private @ResponseBody List<DevicesJsonBean> getWholeGraphAsJson() throws Exception {
+    private @ResponseBody DevicePortJsonBeanMapper getWholeGraphAsJson() throws Exception {
     	long startTime = System.currentTimeMillis();
 
     	Iterable<Device> allDevices = deviceService.findAll();
     	logger.info("Graph-Device Size : "+deviceService.count());
+    	//List<Device> allDevices = (List<Device>) IteratorUtil.asCollection(deviceService.findAll());
+    	//logger.info("Graph-Device Size : "+allDevices.size());
     	
     	Iterable<Port> allPorts = portService.findAll();
     	logger.info("Graph-Port Size : "+portService.count());
+    	//List<Port> allPorts = (List<Port>) IteratorUtil.asCollection(portService.findAll());
+    	//logger.info("Graph-Port Size : "+allPorts.size());
     	
-    	List<DevicesJsonBean> jsonBeanList = new ArrayList<DevicesJsonBean>();
+    	DevicePortJsonBeanMapper devicePortJsonBeanMapper = new DevicePortJsonBeanMapper();
+    	List<DevicesJsonBean> devicesJsonBeanList = new ArrayList<DevicesJsonBean>();
+    	List<PortsJsonBean> portsJsonBeanList = new ArrayList<PortsJsonBean>();
     	
-    	/*logger.info("");
     	for (Device device : allDevices) {
-			Set<ConnectedDevices> outgoingDevices = device.getOutgoingDeviceConnections();
-			Set<ConnectedDevices> incomingDevices = device.getIncomingDeviceConnections();
-			logger.info("INCOMING DEVICES SIZE : "+incomingDevices.size());
-			
-			Set<DeviceDto> deviceOutgoingDtos = new HashSet<DeviceDto>();
-			Set<DeviceDto> deviceIncomingDtos = new HashSet<DeviceDto>();
-			
-			DeviceDto parentDevice = new DeviceDto();
-			parentDevice.setDeviceName(device.getDeviceName());
-			parentDevice.setDeviceType(device.getDeviceType());
-			parentDevice.setId(device.getId());
+    		DevicesJsonBean devicesJsonBean = new DevicesJsonBean();
+    		
+    		DeviceDto deviceDto = new DeviceDto();
+    		deviceDto.setDeviceName(device.getDeviceName());
+    		deviceDto.setDeviceType(device.getDeviceType());
+    		deviceDto.setId(device.getId());
+    		
+    		Set<PortDto> hasPorts = new HashSet<PortDto>();
+    		for (Port port : device.getOutgoingConnectingPortsFromDevice()) {
+    			PortDto portDto = new PortDto();
+        		portDto.setId(port.getId());
+        		portDto.setPortName(port.getPortName());
+        		portDto.setPortType(port.getPortType());
+        		hasPorts.add(portDto);
+			}
 
-			logger.info("Device persisted in Neo4j is : "+device.getDeviceName()+" : Size of the SET : "+outgoingDevices.size());
-			for (ConnectedDevices connectedDevices : outgoingDevices) {
-				DeviceDto deviceDto = new DeviceDto();
-				deviceDto.setId(connectedDevices.getEndDevice().getId());
-				deviceDto.setDeviceName(connectedDevices.getEndDevice().getDeviceName());
-				deviceDto.setDeviceType(connectedDevices.getEndDevice().getDeviceType());
-				deviceDto.setCost(connectedDevices.getCost());
-				deviceDto.setValue(connectedDevices.getValue());
-				deviceOutgoingDtos.add(deviceDto);
-				logger.info("Connected Devices for : "+device.getDeviceName()+" : is : "+connectedDevices.getEndDevice().getDeviceName()+" : Value : "+connectedDevices.getValue());
+    		devicesJsonBean.setParentDevice(deviceDto);
+    		devicesJsonBean.setHasPorts(hasPorts);
+    		
+    		devicesJsonBeanList.add(devicesJsonBean);
+		}
+    	
+    	for (Port port : allPorts) {
+			PortsJsonBean portsJsonBean = new PortsJsonBean();
+			
+			PortDto portDto = new PortDto();
+			portDto.setId(port.getId());
+			portDto.setPortName(port.getPortName());
+			portDto.setPortType(port.getPortType());
+			
+			Set<PortDto> connectedPorts = new HashSet<PortDto>();
+			for (Port connectedPort : port.getAllConnectedPortsFromSourcePort()) {
+				PortDto connectedPortDto = new PortDto();
+				connectedPortDto.setId(connectedPort.getId());
+				connectedPortDto.setPortName(connectedPort.getPortName());
+				connectedPortDto.setPortType(connectedPort.getPortType());
+        		connectedPorts.add(connectedPortDto);
 			}
 			
-			for (ConnectedDevices connectedDevices : incomingDevices) {
-				logger.info("Start Node : "+connectedDevices.getStartDevice().getDeviceName()+" : End Node : "+connectedDevices.getEndDevice().getDeviceName());
-				DeviceDto deviceDto = new DeviceDto();
-				deviceDto.setId(connectedDevices.getStartDevice().getId());
-				deviceDto.setDeviceName(connectedDevices.getStartDevice().getDeviceName());
-				deviceDto.setDeviceType(connectedDevices.getStartDevice().getDeviceType());
-				deviceDto.setCost(connectedDevices.getCost());
-				deviceDto.setValue(connectedDevices.getValue());
-				deviceIncomingDtos.add(deviceDto);
-			}
+			portsJsonBean.setSourcePort(portDto);
+			portsJsonBean.setConnectedPorts(connectedPorts);
 			
-			DevicesJsonBean bean = new DevicesJsonBean();
-			bean.setParentDevice(parentDevice);
-			bean.setOutgoingDevices(deviceOutgoingDtos);
-			bean.setIncomingDevices(deviceIncomingDtos);
-			jsonBeanList.add(bean);
-			
-			logger.info("");
-		}*/
-
+			portsJsonBeanList.add(portsJsonBean);
+		}
+    	
+    	devicePortJsonBeanMapper.setDevicesJsonBean(devicesJsonBeanList);
+    	devicePortJsonBeanMapper.setPortsJsonBean(portsJsonBeanList);
+    	
     	long endTime   = System.currentTimeMillis();
     	long totalTime = endTime - startTime;
     	logger.info("TIME TOOK FOR THE METHOD TO COMPLETE : "+totalTime+" : milli seconds");
     	
-    	return jsonBeanList;
+    	return devicePortJsonBeanMapper;
     }
     
     @RequestMapping("/deleteDevice")
     @Transactional
-    public String deletePerson(@RequestParam("deviceName") String deviceName) {
+    public String deleteDevice(@RequestParam("deviceName") String deviceName) {
     	Device foundDevice = deviceService.findDeviceByDeviceName(deviceName);
     	deviceService.deleteEntity(foundDevice);
         return "redirect:/listAllDevices";
