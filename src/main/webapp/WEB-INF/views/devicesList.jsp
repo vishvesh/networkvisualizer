@@ -43,7 +43,7 @@
 		 <li><a href="add">Add Device Or Port</a></li>
 		 <li><a href="deleteAllDevices">Delete All Devices</a></li>
 		 <li><a href="deleteAllPorts">Delete All Ports</a></li>
-		 <li><a href="listAllDevices">Show All Devices</a></li>
+		 <li><a href="listAllDevicesAndPorts">Show All Devices & Ports</a></li>
 		 <li><a href="visualize">Visualize Graph</a></li>
 	 </div>
  
@@ -53,11 +53,18 @@
 	 	<input type="submit" value="Search"/>
 	 </form>
  </fieldset>
- 
+
  <fieldset>
 	 <form action="deleteDevice">
 	 	<label for="deviceName">Delete Device: <input type="text" name="deviceName" /></label>
-	 	<input type="submit" value="Delete"/>
+	 	<input type="submit" value="Delete Device"/>
+	 </form>
+ </fieldset>
+ 
+ <fieldset>
+	 <form action="deletePort">
+	 	<label for="portName">Delete Port: <input type="text" name="portName" /></label>
+	 	<input type="submit" value="Delete Port"/>
 	 </form>
  </fieldset>
  

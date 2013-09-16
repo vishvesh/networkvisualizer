@@ -50,6 +50,8 @@ function afterChartCreated(err, loadedChart) {
   console.log("data : "+data);
   
   var items = parseJson(data);
+  for(item in items)
+  console.log(items[item]);
   
   chart.load({type: 'LinkChart', items: items}, function() {
   	chart.zoom('fit', {}, applyStandardLayout);
@@ -74,14 +76,276 @@ function afterChartCreated(err, loadedChart) {
 
 }
 
+
+function parseDevice(device) {
+
+	var parentDevice = device.parentDevice;
+	var deviceId = parentDevice.id;
+	var deviceName = parentDevice.deviceName;
+	
+	var deviceNode = {
+	    id: deviceId,
+	    type: 'node',
+	    t: deviceName,
+	    u: nodeIcon('device'),
+	    w: 200,
+	    h: 100
+	    //t: nodeLabel(basetype, item),
+	    //u: nodeIcon(icontype)/*,
+	    /*d: {
+	      type: basetype  //store the type of the item for later - will be used for subsequent queries
+	    }*/
+     };
+  /*
+  console.log(parentDevice.deviceName);
+  //var outgoingDevices = item.outgoingDevices;
+  var iconType;
+  var w = 300;
+  var h = 120;
+  if(parentDevice.deviceName == 'Polaris') {
+ 	iconType = 'red';
+ 	w = 60;
+ 	h = 60;
+  }
+  else
+  	iconType = 'device';
+  	
+  console.log("ICON TYPE : "+iconType);
+  	
+  var nodeIconType = nodeIcon(iconType);
+	
+  var node = {
+    id: parentDevice.id,
+    type: 'node',
+    t: parentDevice.deviceName,
+    u: nodeIconType,
+    w: w,
+    h: h
+    //t: nodeLabel(basetype, item),
+    //u: nodeIcon(icontype)/*,
+    //d: {
+    //  type: basetype  //store the type of the item for later - will be used for subsequent queries
+    //}
+  };*/
+	
+  return deviceNode;
+}
+
+function getSubStringAfterLastIndexOfChar(str, char) {
+  return str.substring(str.lastIndexOf(char) + 1);
+}
+
+function parsePort(port) {
+	//var hasPort = hasport;
+	var portId = port.id;
+	var portName = port.portName;
+	var parsedPortName = getSubStringAfterLastIndexOfChar(portName, '-');
+	console.log("Has Port : Port Name : "+portName+ " : Port ID : "+portId+ " : Parsed Port Name : "+parsedPortName);
+	
+	var portNode = {
+	    id: portId,
+	    type: 'node',
+	    t: parsedPortName,
+	    u: nodeIcon('device'),
+	    w: 20,
+	    h: 30
+	    //t: nodeLabel(basetype, item),
+	    //u: nodeIcon(icontype)/*,
+	    /*d: {
+	      type: basetype  //store the type of the item for later - will be used for subsequent queries
+	    }*/
+    };
+    return portNode;
+}
+
+/**
+ * Instead of extending the Array prototype,
+ * it's good to create a separate function,
+ * since we add extra property when we
+ *  extend the Array's prototype.
+ */
+function arrayContains(array, item) {
+	console.log("Inside Array Contains Custom Method : Array : "+array+" : Item : "+item);
+	if(Array.indexOf) {
+		if(array.indexOf(item) == -1) {
+			return true;
+		} else {
+		return false;
+	  }
+	} else {
+		var i = array.length;
+	    while (i--) {
+	       if (array[i] === item) {
+	           return true;
+	       }
+	    }
+	    return false;
+	}
+}
+
+
+var combineArr = [];
+
+function parseLink(portConnections, type) {
+//function parseLink(item) {
+
+  //var id1 = idPrefix + cleanURL(item.start);
+  //var id2 = idPrefix + cleanURL(item.end);
+	var portConnectedLinks = [];
+	
+	if(type && type == 'has_port') {
+		var device = portConnections;
+		var parentDevice = device.parentDevice;
+		var deviceId = parentDevice.id;
+		//var deviceName = parentDevice.deviceName;
+		var hasPorts = portConnections.hasPorts;
+		//console.log("INSIDE HAS PORTTTTTTTT");
+		//console.log(device+" : "+parentDevice+ " : "+deviceId+ " : "+hasPorts);
+		for(var i in hasPorts) {
+			var hasPort = hasPorts[i];
+			//console.log("deviceId : "+deviceId + " : hasPort.id : "+hasPort.id);
+			var link = {
+			    type: 'link',
+			    id1: deviceId,
+			    id2: hasPort.id,
+			    id: deviceId + '-' + hasPort.id,
+			    //t: labelDictionary[item.type],
+			    t: 'has_port',
+			    a2: true,
+			    b1: 0,
+			    b2: 0,
+			    c: 'rgb(55, 55, 255)',
+			    w: 2/*,
+			    g: linkGlyph(item),
+			    d: {
+			      type: outgoingDevices[i].cost  //This can be used to calculate weighted shorted paths b/n nodes
+			    }*/
+			  };
+		  portConnectedLinks.push(link);
+		}
+	} else {
+		//console.log("SHOULD COME IN ELSE PART!");
+		var sourcePort = portConnections.sourcePort;
+		var sourcePortId = sourcePort.id;
+		var connectedPorts = portConnections.connectedPorts;
+		//console.log("CONNECTED PORTS LENGTH ???? : "+connectedPorts.length);
+		for(var i in connectedPorts) {
+			var connectedPort = connectedPorts[i];
+			var connectedPortId = connectedPort.id;
+			//console.log("Source Port ID : "+sourcePortId + " : Connected Port ID : "+connectedPortId);
+			var link = {
+			    type: 'link',
+			    id1: sourcePortId,
+			    id2: connectedPortId,
+			    id: sourcePortId + '-' + connectedPortId,
+			    //t: labelDictionary[item.type],
+			    //t: 'Port Type: '+sourcePort.portType,
+			    t: 'connects_to',
+			    a1: true,
+			    a2: true,
+			    c: 'rgb(55, 55, 255)',
+			    w: 2/*,
+			    g: linkGlyph(item),
+			    d: {
+			      type: outgoingDevices[i].cost  //This can be used to calculate weighted shorted paths b/n nodes
+			    }*/
+			  };
+		  if(!arrayContains(combineArr, sourcePortId))
+		  	combineArr.push(sourcePortId);
+		  if(!arrayContains(combineArr, connectedPortId))
+		  	combineArr.push(connectedPortId);
+		  portConnectedLinks.push(link);
+		 //console.log("LENGTHHHHHHHHHHHHHHHH : "+portConnectedLinks.length);
+		 //console.log(link);
+		}
+	 }
+	return portConnectedLinks;
+	/*var parentDevice = item.parentDevice;
+	var outgoingDevices = item.outgoingDevices;
+	
+	for(i in outgoingDevices) {
+	  var id1 = parentDevice.id;
+	  var id2 = outgoingDevices[i].id;
+	
+	  var link = {
+	    type: 'link',
+	    id1: id1,
+	    id2: id2,
+	    id: id1 + '-' + id2,
+	    //t: labelDictionary[item.type],
+	    t: 'Value: '+outgoingDevices[i].value+'\nCost:'+outgoingDevices[i].cost,
+	    a2: true,
+	    c: 'rgb(55, 55, 255)',
+	    w: 2,
+	    g: linkGlyph(item),
+	    d: {
+	      type: outgoingDevices[i].cost  //This can be used to calculate weighted shorted paths b/n nodes
+	    }
+	  };
+
+	  links.push(link);
+	}
+  return portConnectedLinks;*/
+}
+
+
 function parseJson(data) {
 	console.log("Parsing JSON");
 	var json = data;
-	console.log("Devices : "+JSON.stringify(json.devicesJsonBean));
-	console.log("Ports : "+JSON.stringify(json.portsJsonBean));
+	
+	var devices = json.devicesJsonBean;
+	var ports = json.portsJsonBean;
+	
+	//console.log("Devices Size : "+devices.length+" : Ports Size : "+ports.length);
+	//console.log("Devices : "+JSON.stringify(json.devicesJsonBean));
+	//console.log("Ports : "+JSON.stringify(json.portsJsonBean));
+	
+	var items = [];
+	
+	for(var i = 0; i < devices.length; i++) {
+		var device = devices[i];
+		var hasPorts = device.hasPorts;
+		console.log("Device Name : From Json : "+device.parentDevice.deviceName+" : Has Ports Length : "+hasPorts.length);
+		
+		items.push(parseDevice(device));
+		
+		for(var x = 0; x < hasPorts.length; x++) {
+			items.push(parsePort(hasPorts[x]));
+			
+			var has_ports = parseLink(device, 'has_port');
+			/**
+			 * Have to iterate over "has_ports" array
+			 * as keylines doesn't support addition
+			 * of the complete array. It can only 
+			 * recognize individual Nodes/Links.
+			 */
+			for(var h in has_ports) {				
+				items.push(has_ports[h]);
+			}
+		}
+	}
+
+	for(var j = 0; j < ports.length; j++) {
+		var portConnections = ports[j];
+		
+		var connections = parseLink(portConnections);
+		   /**
+			 * Have to iterate over "connections" array
+			 * as keylines doesn't support addition
+			 * of the complete array. It can only 
+			 * recognize individual Nodes/Links.
+			 */
+		for(var i in connections)
+			items.push(connections[i]);
+	}
+	
+	/*for(var i = 0; i < ports.length; i++) {
+		var port = ports[i];
+		console.log("Port Name : From Json : "+port.sourcePort.portName);
+	}*/
 
 	  //items are visual chart items
-	  var items = [];
+	  /*var items = [];
 	
 	  for (var i = 0; i < json.length; i++) {
 	    var item = json[i];
@@ -91,7 +355,7 @@ function parseJson(data) {
         var links = parseLink(item);
         for(var j = 0; j < links.length; j++)
         	items.push(links[j]);
-	  }
+	  }*/
 	  
 	  /*for (var i = 0; i < json.length; i++) {
 	    var item = json[i];
@@ -106,24 +370,25 @@ function handleClickEvent(clickedID, x, y) {
 	//var selectionContainsNodeCombo = chart.combo().isCombo(chart.selection([31,38]), {type: 'node'});
 	//console.log(chart.getItem(clickedID)+" : Selection contains combo : "+selectionContainsNodeCombo);
 	console.log(chart.getItem(clickedID));
-	//chart.combo().combine({ids:["31", "35"]}, {animate: true}, function (comboIds) {
-	/*var link = {
-	    type: 'link',
-	    id1: 34,
-	    id2: 41,
-	    id: '341-414',
-	    //t: labelDictionary[item.type],
-	    t: 'Value: 43\nCost: 64',
-	    a2: true,
-	    c: 'rgb(55, 55, 255)',
-	    w: 2//,
-	    //g: linkGlyph(item),
-	    //d: {
-	    //  type: outgoingDevices[i].cost  //This can be used to calculate weighted shorted paths b/n nodes
-	   // }
-	  };
-	  
-	chart.expand(link, {fit: true, animate: true, tidy: true});
+	for(var i in combineArr)
+		console.log(combineArr[i]);
+	chart.combo().combine(
+		{
+			//ids: [5,8,11],
+			ids: combineArr,
+			label: 'Ports'
+		},
+		{
+	    	animate: true
+	    },
+	    function(comboIds) {
+  			console.log("INSIDEEEE : "+comboIds);
+  	    }
+	    //,
+	    //style: comboStyle
+	    );	
+
+	/*chart.expand(link, {fit: true, animate: true, tidy: true});
 	chart.animateProperties({id: link.id, c: 'rgba(133,28,63,0.5)', w: 10}, {time: 500});
 	
 	
@@ -142,7 +407,7 @@ function handleClickEvent(clickedID, x, y) {
 	   //});
 		
 		console.log("Combine called after");
-	}, 3000);
+	}, 3000);*/
 	
 	setTimeout(function() {
 		console.log("UnCombine called before");
@@ -150,14 +415,14 @@ function handleClickEvent(clickedID, x, y) {
 		chart.combo().uncombine(chart.selection(), {animate: true, full: true});
 		
 		console.log("UnCombine called after");
-	}, 6000);
+	}, 3000);
 	
 	//chart.combo().combine({ids:["28-32","32-39"]}, {animate: true}, function (comboIds) {
 	  // you can record the combos here if you like
 		//console.log("INSIDEEEE");
 	//});
 	
-	if((clickedID && parseInt(clickedID))) {
+	/*if((clickedID && parseInt(clickedID))) {
 		console.log("Clicked ID : Left Click : "+clickedID);
 		var link2 = {
 		    type: 'link',
@@ -180,7 +445,7 @@ function handleClickEvent(clickedID, x, y) {
 function expandClickedData(clickedID, x, y) {
 	console.log("Clicked ID : Double Click : "+clickedID);
 	
-	calculateShortestPaths(28, 41);
+	calculateShortestPaths(5, 8);
 
   /*if (clickedID) {
 
@@ -286,114 +551,6 @@ function validConnection(arr) {
 
 var idPrefix = 'neo:';
 
-function parseNode(item) {
-
-  //var basetype = getSubStringAfterLastIndexOfChar(item.data.__type__, '.').toLowerCase();
-  //var icontype = (basetype === 'actor' && item.data.gender === 'female') ? 'actor-female' : basetype;
-
-	var parentDevice = item.parentDevice;
-	
-  /*
-  console.log(parentDevice.deviceName);
-  //var outgoingDevices = item.outgoingDevices;
-  var iconType;
-  var w = 300;
-  var h = 120;
-  if(parentDevice.deviceName == 'Polaris') {
- 	iconType = 'red';
- 	w = 60;
- 	h = 60;
-  }
-  else
-  	iconType = 'device';
-  	
-  console.log("ICON TYPE : "+iconType);
-  	
-  var nodeIconType = nodeIcon(iconType);
-	
-  var node = {
-    id: parentDevice.id,
-    type: 'node',
-    t: parentDevice.deviceName,
-    u: nodeIconType,
-    w: w,
-    h: h
-    //t: nodeLabel(basetype, item),
-    //u: nodeIcon(icontype)/*,
-    //d: {
-    //  type: basetype  //store the type of the item for later - will be used for subsequent queries
-    //}
-  };*/
-  var node = {
-    id: parentDevice.id,
-    type: 'node',
-    t: parentDevice.deviceName,
-    u: nodeIcon('device')
-    //w: w,
-    //h: h
-    //t: nodeLabel(basetype, item),
-    //u: nodeIcon(icontype)/*,
-    /*d: {
-      type: basetype  //store the type of the item for later - will be used for subsequent queries
-    }*/
-  };
-
-  return node;
-
-}
-
-function parseLink(item) {
-
-  //var id1 = idPrefix + cleanURL(item.start);
-  //var id2 = idPrefix + cleanURL(item.end);
-	var links = [];
-	var parentDevice = item.parentDevice;
-	var outgoingDevices = item.outgoingDevices;
-	
-	for(i in outgoingDevices) {
-	  var id1 = parentDevice.id;
-	  var id2 = outgoingDevices[i].id;
-	
-	  var link = {
-	    type: 'link',
-	    id1: id1,
-	    id2: id2,
-	    id: id1 + '-' + id2,
-	    //t: labelDictionary[item.type],
-	    t: 'Value: '+outgoingDevices[i].value+'\nCost:'+outgoingDevices[i].cost,
-	    a2: true,
-	    c: 'rgb(55, 55, 255)',
-	    w: 2,
-	    g: linkGlyph(item),
-	    d: {
-	      type: outgoingDevices[i].cost  //This can be used to calculate weighted shorted paths b/n nodes
-	    }
-	  };
-	  
-	  /*var link2 = {
-	    type: 'link',
-	    id1: id1,
-	    id2: id2,
-	    id: id1 + '1-1' + id2,
-	    //t: labelDictionary[item.type],
-	    t: 'Value: '+outgoingDevices[i].value+'\nCost:'+outgoingDevices[i].cost,
-	    a2: true,
-	    c: 'rgb(133,28,63,0.5)',
-	    w: 8,
-	    g: linkGlyph(item),
-	    d: {
-	      type: outgoingDevices[i].cost  //This can be used to calculate weighted shorted paths b/n nodes
-	    }
-	  };*/
-	  
-	  links.push(link);
-	  //links.push(link2);
-	}
-
-  return links;
-
-}
-
 function calculateShortestPaths(id1, id2, opts) {
 	var paths = chart.graph().shortestPaths(id1, id2, {direction: 'any'});
 	console.log('Number of hops = ' + paths.distance);  
@@ -444,25 +601,18 @@ function nodeIcon(type) {
   return icon;
 }
 
-function linkGlyph(item) {
+/*function linkGlyph(item) {
   if (item.type === 'RATED') {
     return [{c: 'rgb(50, 50, 10)', t: item.data.stars}];
   }
   return null; //other links do not have a glyph
-}
+}*/
 
 //a couple of helper methods
 
 function cleanURL(url){
   return url.substring(url.lastIndexOf('/')+1);
 }
-
-function getSubStringAfterLastIndexOfChar(str, char) {
-  return str.substring(str.lastIndexOf(char)+1);
-}
-
-
-
 
 /*var theChart = {
  type: 'LinkChart',          //this must be exactly this string
