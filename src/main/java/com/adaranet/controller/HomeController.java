@@ -57,7 +57,7 @@ public class HomeController {
 			ObjectMapper mapper = new ObjectMapper();
 	    	String json = "";
 	    	try {
-	    		json = mapper.writeValueAsString(getWholeGraphAsJson());
+	    		json = mapper.writeValueAsString(getWholeGraph());
 	     
 	    		logger.info("Printing the JSON");
 	    		logger.info(json);
@@ -72,12 +72,17 @@ public class HomeController {
 		}
 	 
 	 
-	 @RequestMapping("/json")
-	    public @ResponseBody DevicePortJsonBeanMapper getGraphAsJson(Model model) throws Exception { 
-	    	return getWholeGraphAsJson();
+	 @RequestMapping(value = "/json", method = RequestMethod.GET, produces = "application/json")
+	    public @ResponseBody DevicePortJsonBeanMapper getGraphAsJSON(Model model) throws Exception { 
+	    	return getWholeGraph();
+	    }
+	 
+	 @RequestMapping(value = "/xml", method = RequestMethod.GET, produces = "application/xml")
+	    public @ResponseBody DevicePortJsonBeanMapper getGraphAsXML(Model model) throws Exception { 
+	    	return getWholeGraph();
 	    }
 
-	    private @ResponseBody DevicePortJsonBeanMapper getWholeGraphAsJson() throws Exception {
+	    private DevicePortJsonBeanMapper getWholeGraph() throws Exception {
 	    	long startTime = System.currentTimeMillis();
 
 	    	Iterable<Device> allDevices = deviceService.findAll();

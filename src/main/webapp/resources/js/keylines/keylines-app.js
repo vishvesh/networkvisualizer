@@ -1,18 +1,5 @@
 
-var chart;
-
-/*var expandQueries = {
-  'actor':    'START clickedactor=node({id})\n' + 
-              'MATCH clickedactor-[rel:ACTS_IN*]->movie\n' + 
-              'RETURN clickedactor, rel, movie',
-  'movie':    'START clickedmovie=node({id})\n' + 
-              'MATCH person-[rel:ACTS_IN*]->clickedmovie\n' + 
-              'RETURN clickedmovie, rel, person'
-};
-
-var ratingsQuery =  'START movie=node:Movie(id="603")\n' + 
-                      'MATCH movie<-[rel:RATED*]-person\n' + 
-                      'RETURN movie, rel, person';*/
+var chart; //Global Chart Object!
 
 /************************************/
 /* Load KeyLines and general setup  */ 
@@ -28,8 +15,8 @@ $(window).load(function () {
   //Set the canvas asset path if using 'auto' or 'canvas'
   KeyLines.setCanvasPaths('resources/js/keylines/assets/');
   KeyLines.createChart('network-graph', 
-						  1200, 
-						  860,  
+						  1250, 
+						  800,  
 						  afterChartCreated);
 });
 
@@ -57,6 +44,21 @@ function afterChartCreated(err, loadedChart) {
   chart.load({type: 'LinkChart', items: items}, function() {
   	chart.zoom('fit', {}, applyStandardLayout);
   	
+	  	//var arr = [[10,14,16,12,15,17,18,19], [13,22,21,20,26,23,24,25]];
+  	var arr = [[10,14,16,12,15,17,18,19], [13,22,21,20,26,23,24,25]];
+  	setTimeout(function() {
+	  	
+	  	chart.arrange('grid', arr[0], {fit: true, animate: true, tightness : 10});
+  	}, 1000);
+  	setTimeout(function() {
+	  	chart.arrange('grid', arr[1], {fit: true, animate: true, tightness : 10});
+	  	}, 2000);
+  	/*setTimeout(function() {
+	  	var arr = [[10,14,16,12,15,17,18,19], [13,22,21,20,26,23,24,25]];
+	  	
+	  	chart.arrange('grid', arr[1], {fit: true, animate: true, tightness : 10});
+  	}, 1000);*/
+  	
   	/*setTimeout(function() {
 	  	chart.combo().combine(
 		{
@@ -75,10 +77,10 @@ function afterChartCreated(err, loadedChart) {
 	  //chart.arrange('grid', [10,14,16,12,15,17], {fit: true, animate: true, tightness : 1.5});
 	  //chart.arrange('radial', [10,14,16,12,15,17], {fit: true, animate: true, tightness : 2});
 	  
-	  var arr = [[10,14,16,12,15,17,18,19], [13,22,21,20,26,23,24,25]]
+	  //var arr = [[10,14,16,12,15,17,18,19], [13,22,21,20,26,23,24,25]]
 	  
-	  chart.arrange('grid', arr[0], {fit: true, animate: true, tightness : 10});
-	  chart.arrange('grid', arr[1], {fit: true, animate: true, tightness : 10});
+	  //chart.arrange('grid', arr[0], {fit: true, animate: true, tightness : 10});
+	  //chart.arrange('grid', arr[1], {fit: true, animate: true, tightness : 10});
   	}, 400);*/
   });
   
@@ -138,8 +140,8 @@ function parseDevice(device) {
 	    type: 'node',
 	    t: deviceName,
 	    u: nodeIcon('device'),
-	    w: 200,
-	    h: 100
+	    w: 300,
+	    h: 120
 	    //t: nodeLabel(basetype, item),
 	    //u: nodeIcon(icontype)/*,
 	    /*d: {
@@ -246,10 +248,10 @@ function parseLink(portConnections, type) {
 			    id2: hasPort.id,
 			    id: deviceId + '-' + hasPort.id,
 			    //t: labelDictionary[item.type],
-			    t: 'has_port',
+			    //t: 'has_port',
 			    a2: true,
-			    b1: 0,
-			    b2: 0,
+			    //b1: 0,
+			    //b2: 0,
 			    c: 'rgb(55, 55, 255)',
 			    w: 2/*,
 			    g: linkGlyph(item),
@@ -350,7 +352,7 @@ function parseJson(data) {
 function handleClickEvent(clickedID, x, y) {
 	console.log("handling click event : "+clickedID);
 	for(var i in combineArr)
-		console.log(combineArr[i]);
+		console.log("Element in combineArr : "+combineArr[i]);
 		
 	/*chart.combo().combine(
 		{
@@ -486,7 +488,8 @@ function nodeLabel(type, item) {
 
 var nodeIcons = {
   'red': 'resources/images/red.png',
-  'device': 'resources/images/Axis_device_green.png'
+  //'device': 'resources/images/Axis_device_green.png'
+  'device': 'resources/images/Axis_device_green_Old.png'
 };
 
 var labelDictionary = {

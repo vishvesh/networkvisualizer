@@ -2,6 +2,9 @@ package com.adaranet.jsonBeans;
 
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
 public class DevicePortJsonBeanMapper {
 
 	private List<DevicesJsonBean> devicesJsonBean;

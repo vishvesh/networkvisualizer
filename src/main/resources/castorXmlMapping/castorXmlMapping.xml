@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<!DOCTYPE mapping PUBLIC "-//EXOLAB/Castor Mapping DTD Version 1.0//EN"
+                         "http://castor.org/mapping.dtd">
+<mapping>
+ 
+    <description>
+        Placeholder XML Configuration for all the Mapped Domain Objects.
+    </description>
+    
+    <!--include href="castorMapping-Device.xml"/>
+    <include href="castorMapping-Port.xml"/-->
+    
+    <!-- START of Mapping for Device Entity! -->
+    <class name="com.adaranet.model.Device">         
+        <map-to xml="device" />         
+        <field name="deviceName" type="string">
+            <bind-xml name="deviceName" node="attribute"/>
+        </field>       
+         <field name="deviceType" type="string">
+            <bind-xml name="deviceType" node="attribute"/>
+        </field>        
+        <field name="hasPorts" type="com.adaranet.relationships.HasPort" collection="set">
+             <bind-xml name="hasPorts" />
+        </field>
+    </class>
+    <!-- END of Mapping for Device -->
+    
+    <!-- START of Mapping for Port Entity! --> 
+    <class name="com.adaranet.model.Port">         
+        <map-to xml="port" />        
+        <field name="portName" type="string">
+            <bind-xml name="portName" node="attribute"/>
+        </field>        
+         <field name="portType" type="string">
+            <bind-xml name="portType" node="attribute"/>
+        </field>         
+        <field name="connectedPorts" type="com.adaranet.relationships.ConnectsToPort" collection="set">
+             <bind-xml name="connectedPorts" />
+        </field>        
+    </class>
+	<!-- END of Mapping for Port Entity! -->
+
+</mapping>

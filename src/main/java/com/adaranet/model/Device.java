@@ -36,7 +36,7 @@ public class Device {
     
     //@Fetch
     @RelatedToVia(type = "HAS_PORT", elementClass = HasPort.class, direction = Direction.OUTGOING)
-    private Set<HasPort> outgoingConnectingPorts = new HashSet<HasPort>();
+    private Set<HasPort> hasPorts = new HashSet<HasPort>();
 
     /*@Fetch
     @RelatedToVia(type = "CONNECTS_TO_DEVICE", direction = Direction.INCOMING, elementClass = ConnectsToDevice.class)
@@ -46,7 +46,7 @@ public class Device {
     	HasPort hasPort = new HasPort(this, sourcePort);
     	Port connectedPort = hasPort.getConnectedPort();
     	//connectedPort.connectsToDevice(destDevice);
-    	this.outgoingConnectingPorts.add(hasPort);
+    	this.hasPorts.add(hasPort);
     	connectedPort.connectsToPort(destPort);
     	//destPort.connectsToDevice(destDevice);
     	return destPort;
@@ -108,13 +108,13 @@ public class Device {
 		return deviceType;
 	}
     
-    public Set<HasPort> getOutgoingConnectingPorts() {
-		return outgoingConnectingPorts;
+    public Set<HasPort> getHasPorts() {
+		return hasPorts;
 	}
 
     public Set<Port> getOutgoingConnectingPortsFromDevice() {
     	Set<Port> outGoingConnectingPortsSet = new HashSet<Port>();
-    	for (HasPort hasPort : outgoingConnectingPorts) {
+    	for (HasPort hasPort : hasPorts) {
 			outGoingConnectingPortsSet.add(hasPort.getConnectedPort());
 		}
 		return outGoingConnectingPortsSet;

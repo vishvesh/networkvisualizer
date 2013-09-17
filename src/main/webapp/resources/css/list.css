@@ -21,10 +21,33 @@ body {
 }
 
 #wrapper {
-	width: 73%; 
+	float: left;
+	width: 100%; 
+	border-bottom: 1px solid;
 	margin: 0 auto;
+}
+
+#lhs {
+	/* width: 70%; */
+	float: left;
+	margin: 0 auto;
+}
+
+#rhs {
+	min-width: 410px;
+	float: right;
+	border-left: 1px solid;
+	min-height: 804px;
 }
 
 #links {
 	text-align: center;
 }
+
+
+#links a {
+	border-left: 1px solid;
+	padding-left: 4px;
+}
+
+

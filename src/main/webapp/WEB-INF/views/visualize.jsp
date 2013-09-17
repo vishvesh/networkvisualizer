@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <script type="text/javascript" src="resources/js/jquery/jquery-1.10.1.min.js"></script>
   
+  <link rel="stylesheet" href="resources/css/bootstrap.css" />
   <link rel="stylesheet" href="resources/js/keylines/fonts/stylesheet.css"/>
   <link rel="stylesheet" href="resources/css/list.css" />
   
@@ -19,9 +20,14 @@
 
 <div id="adara-header"></div>
 
-<div id="wrapper">
-  <div id="network-graph"></div>
-</div>
+<section id="wrapper">
+  <section id="lhs">
+	<div id="network-graph"></div>
+  </section>
+  <aside id="rhs">
+  	<h1>Content To Display:</h1>
+  </aside>
+</section>
   
   <div id="links">
 	  <a id="standardlayout" href="#">Standard Layout</a>
