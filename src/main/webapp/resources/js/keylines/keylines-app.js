@@ -29,7 +29,7 @@ $(window).load(function () {
   KeyLines.setCanvasPaths('resources/js/keylines/assets/');
   KeyLines.createChart('network-graph', 
 						  1200, 
-						  900,  
+						  860,  
 						  afterChartCreated);
 });
 
@@ -39,6 +39,7 @@ function afterChartCreated(err, loadedChart) {
   $('#hierarchylayout').click(applyHierarchyLayout);
   $('#radiallayout').click(applyRadialLayout);
   $('#structurallayout').click(applyStructuralLayout);
+  $('#uncombine').click(uncombineNodes);
   $('#fullScreen').click(fullScreenMode);
 
   chart = loadedChart;
@@ -50,12 +51,37 @@ function afterChartCreated(err, loadedChart) {
   console.log("data : "+data);
   
   var items = parseJson(data);
-  for(item in items)
-  console.log(items[item]);
+  //for(item in items)
+  //console.log(items[item]);
   
   chart.load({type: 'LinkChart', items: items}, function() {
   	chart.zoom('fit', {}, applyStandardLayout);
+  	
+  	/*setTimeout(function() {
+	  	chart.combo().combine(
+		{
+			ids: combineArr,
+			label: 'Ports'
+		},
+		{
+	    	animate: true
+	    },
+	    function(comboIds) {
+			console.log("INSIDEEEE : "+comboIds);
+			clusteredIds.push(comboIds);
+	    }
+	  );
+	  //chart.arrange('circle', [10,14,16,12,15,17], {fit: true, animate: true, tightness : 2});
+	  //chart.arrange('grid', [10,14,16,12,15,17], {fit: true, animate: true, tightness : 1.5});
+	  //chart.arrange('radial', [10,14,16,12,15,17], {fit: true, animate: true, tightness : 2});
+	  
+	  var arr = [[10,14,16,12,15,17,18,19], [13,22,21,20,26,23,24,25]]
+	  
+	  chart.arrange('grid', arr[0], {fit: true, animate: true, tightness : 10});
+	  chart.arrange('grid', arr[1], {fit: true, animate: true, tightness : 10});
+  	}, 400);*/
   });
+  
   //callCypher(ratingsQuery, true);
   
   /*setInterval(function() {
@@ -74,6 +100,30 @@ function afterChartCreated(err, loadedChart) {
   	
   }, 3000);*/
 
+}
+
+
+function expandClickedData(clickedID, x, y) {
+	console.log("Clicked ID : Double Click : "+clickedID);
+	
+	//calculateShortestPaths(5, 8);
+	
+	/*setTimeout(function() {
+		console.log("UnCombine called before");
+		
+		//chart.combo().uncombine(chart.selection(), {animate: true, full: true});
+		console.log("CLUSTERED ID : "+clusteredIds);
+		for(var i in clusteredIds)
+			chart.combo().uncombine(clusteredIds[i], {animate: true, full: true});
+		
+		console.log("UnCombine called after");
+	}, 3000);*/
+}
+
+function uncombineNodes() {
+	chart.combo().uncombine(chart.selection(), {animate: true, full: false, tidy: true, time: 500, select: false});
+	//chart.expand(chart.selection(), {fit: true, animate: true, tidy: true});
+	console.log("Chart expanded");
 }
 
 
@@ -96,47 +146,10 @@ function parseDevice(device) {
 	      type: basetype  //store the type of the item for later - will be used for subsequent queries
 	    }*/
      };
-  /*
-  console.log(parentDevice.deviceName);
-  //var outgoingDevices = item.outgoingDevices;
-  var iconType;
-  var w = 300;
-  var h = 120;
-  if(parentDevice.deviceName == 'Polaris') {
- 	iconType = 'red';
- 	w = 60;
- 	h = 60;
-  }
-  else
-  	iconType = 'device';
-  	
-  console.log("ICON TYPE : "+iconType);
-  	
-  var nodeIconType = nodeIcon(iconType);
-	
-  var node = {
-    id: parentDevice.id,
-    type: 'node',
-    t: parentDevice.deviceName,
-    u: nodeIconType,
-    w: w,
-    h: h
-    //t: nodeLabel(basetype, item),
-    //u: nodeIcon(icontype)/*,
-    //d: {
-    //  type: basetype  //store the type of the item for later - will be used for subsequent queries
-    //}
-  };*/
-	
   return deviceNode;
 }
 
-function getSubStringAfterLastIndexOfChar(str, char) {
-  return str.substring(str.lastIndexOf(char) + 1);
-}
-
 function parsePort(port) {
-	//var hasPort = hasport;
 	var portId = port.id;
 	var portName = port.portName;
 	var parsedPortName = getSubStringAfterLastIndexOfChar(portName, '-');
@@ -146,9 +159,10 @@ function parsePort(port) {
 	    id: portId,
 	    type: 'node',
 	    t: parsedPortName,
-	    u: nodeIcon('device'),
+	    //u: nodeIcon('device'),
 	    w: 20,
-	    h: 30
+	    h: 20,
+	    c: 'rgb(30,144,255)'
 	    //t: nodeLabel(basetype, item),
 	    //u: nodeIcon(icontype)/*,
 	    /*d: {
@@ -159,6 +173,27 @@ function parsePort(port) {
 }
 
 /**
+ * A couple of helper methods
+ * @param {} url
+ * @return {}
+ */
+function cleanURL(url) {
+  return url.substring(url.lastIndexOf('/')+1);
+}
+
+/**
+ * Helper function to return the substring'd
+ * part of the string, which comes after the 'char + 1'
+ * passed in as the parameter.
+ * @param {} str
+ * @param {} char
+ * @return {} substring'd str
+ */
+function getSubStringAfterLastIndexOfChar(str, char) {
+  return str.substring(str.lastIndexOf(char) + 1);
+}
+
+/**
  * Instead of extending the Array prototype,
  * it's good to create a separate function,
  * since we add extra property when we
@@ -166,7 +201,7 @@ function parsePort(port) {
  */
 function arrayContains(array, item) {
 	console.log("Inside Array Contains Custom Method : Array : "+array+" : Item : "+item);
-	if(Array.indexOf) {
+	if(Array.indexOf) { //This guy will be present only for Modern Browsers.
 		if(array.indexOf(item) == -1) {
 			return true;
 		} else {
@@ -183,14 +218,18 @@ function arrayContains(array, item) {
 	}
 }
 
-
+/**
+ * Array which holds the (DOM)ID's
+ * which are to be combined/clustered
+ * after the graph is rendered or maybe, 
+ * we can use this for an event triggered. 
+ * @type Array 
+ */
 var combineArr = [];
 
-function parseLink(portConnections, type) {
-//function parseLink(item) {
+var clusteredIds = [];
 
-  //var id1 = idPrefix + cleanURL(item.start);
-  //var id2 = idPrefix + cleanURL(item.end);
+function parseLink(portConnections, type) {
 	var portConnectedLinks = [];
 	
 	if(type && type == 'has_port') {
@@ -199,11 +238,8 @@ function parseLink(portConnections, type) {
 		var deviceId = parentDevice.id;
 		//var deviceName = parentDevice.deviceName;
 		var hasPorts = portConnections.hasPorts;
-		//console.log("INSIDE HAS PORTTTTTTTT");
-		//console.log(device+" : "+parentDevice+ " : "+deviceId+ " : "+hasPorts);
 		for(var i in hasPorts) {
 			var hasPort = hasPorts[i];
-			//console.log("deviceId : "+deviceId + " : hasPort.id : "+hasPort.id);
 			var link = {
 			    type: 'link',
 			    id1: deviceId,
@@ -224,15 +260,12 @@ function parseLink(portConnections, type) {
 		  portConnectedLinks.push(link);
 		}
 	} else {
-		//console.log("SHOULD COME IN ELSE PART!");
 		var sourcePort = portConnections.sourcePort;
 		var sourcePortId = sourcePort.id;
 		var connectedPorts = portConnections.connectedPorts;
-		//console.log("CONNECTED PORTS LENGTH ???? : "+connectedPorts.length);
 		for(var i in connectedPorts) {
 			var connectedPort = connectedPorts[i];
 			var connectedPortId = connectedPort.id;
-			//console.log("Source Port ID : "+sourcePortId + " : Connected Port ID : "+connectedPortId);
 			var link = {
 			    type: 'link',
 			    id1: sourcePortId,
@@ -255,37 +288,9 @@ function parseLink(portConnections, type) {
 		  if(!arrayContains(combineArr, connectedPortId))
 		  	combineArr.push(connectedPortId);
 		  portConnectedLinks.push(link);
-		 //console.log("LENGTHHHHHHHHHHHHHHHH : "+portConnectedLinks.length);
-		 //console.log(link);
 		}
 	 }
 	return portConnectedLinks;
-	/*var parentDevice = item.parentDevice;
-	var outgoingDevices = item.outgoingDevices;
-	
-	for(i in outgoingDevices) {
-	  var id1 = parentDevice.id;
-	  var id2 = outgoingDevices[i].id;
-	
-	  var link = {
-	    type: 'link',
-	    id1: id1,
-	    id2: id2,
-	    id: id1 + '-' + id2,
-	    //t: labelDictionary[item.type],
-	    t: 'Value: '+outgoingDevices[i].value+'\nCost:'+outgoingDevices[i].cost,
-	    a2: true,
-	    c: 'rgb(55, 55, 255)',
-	    w: 2,
-	    g: linkGlyph(item),
-	    d: {
-	      type: outgoingDevices[i].cost  //This can be used to calculate weighted shorted paths b/n nodes
-	    }
-	  };
-
-	  links.push(link);
-	}
-  return portConnectedLinks;*/
 }
 
 
@@ -339,42 +344,16 @@ function parseJson(data) {
 			items.push(connections[i]);
 	}
 	
-	/*for(var i = 0; i < ports.length; i++) {
-		var port = ports[i];
-		console.log("Port Name : From Json : "+port.sourcePort.portName);
-	}*/
-
-	  //items are visual chart items
-	  /*var items = [];
-	
-	  for (var i = 0; i < json.length; i++) {
-	    var item = json[i];
-	    
-        items.push(parseNode(item));
-        
-        var links = parseLink(item);
-        for(var j = 0; j < links.length; j++)
-        	items.push(links[j]);
-	  }*/
-	  
-	  /*for (var i = 0; i < json.length; i++) {
-	    var item = json[i];
-       	items.push(parseLink(item));
-	  }*/
-
 	return items || null;
 }
 
 function handleClickEvent(clickedID, x, y) {
 	console.log("handling click event : "+clickedID);
-	//var selectionContainsNodeCombo = chart.combo().isCombo(chart.selection([31,38]), {type: 'node'});
-	//console.log(chart.getItem(clickedID)+" : Selection contains combo : "+selectionContainsNodeCombo);
-	console.log(chart.getItem(clickedID));
 	for(var i in combineArr)
 		console.log(combineArr[i]);
-	chart.combo().combine(
+		
+	/*chart.combo().combine(
 		{
-			//ids: [5,8,11],
 			ids: combineArr,
 			label: 'Ports'
 		},
@@ -384,93 +363,64 @@ function handleClickEvent(clickedID, x, y) {
 	    function(comboIds) {
   			console.log("INSIDEEEE : "+comboIds);
   	    }
-	    //,
-	    //style: comboStyle
-	    );	
+	  );*/	
 
 	/*chart.expand(link, {fit: true, animate: true, tidy: true});
-	chart.animateProperties({id: link.id, c: 'rgba(133,28,63,0.5)', w: 10}, {time: 500});
+	chart.animateProperties({id: link.id, c: 'rgba(133,28,63,0.5)', w: 10}, {time: 500});*/
 	
-	
-	setTimeout(function() {
-		console.log("Combine called before");
-		
-		chart.combo().combine({
-		    ids: [34,41],
-		    label: 'Group',
-		    animate: false//,
-		    //style: comboStyle
-	  	});	
-		//chart.combo().combine({ids:[34,41]}, {animate: true}, function (comboIds) {
-	   //you can record the combos here if you like
-		//console.log("INSIDEEEE : "+comboIds);
-	   //});
-		
-		console.log("Combine called after");
-	}, 3000);*/
-	
-	setTimeout(function() {
+	/*setTimeout(function() {
 		console.log("UnCombine called before");
 		
 		chart.combo().uncombine(chart.selection(), {animate: true, full: true});
 		
 		console.log("UnCombine called after");
-	}, 3000);
-	
-	//chart.combo().combine({ids:["28-32","32-39"]}, {animate: true}, function (comboIds) {
-	  // you can record the combos here if you like
-		//console.log("INSIDEEEE");
-	//});
-	
-	/*if((clickedID && parseInt(clickedID))) {
-		console.log("Clicked ID : Left Click : "+clickedID);
-		var link2 = {
-		    type: 'link',
-		    id1: 37,
-		    id2: 35,
-		    id: 37 + '1-1' + 35,
-		    //t: labelDictionary[item.type],
-		    t: 'Value: 44\nCost: 54',
-		    a2: true,
-		    c: 'rgba(133,28,63,0.5)',
-		    w: 5
-		  };
-		  
-		//var theItems = parseJson(JSON.parse(sampleJson));
-	  	chart.expand(link2, {fit: true, animate: true, tidy: true});
-		chart.animateProperties({id: link2.id, c: 'rgba(133,28,63,0.5)', w: 10}, {time: 500});
-    }*/
+	}, 3000);*/
 }
 
-function expandClickedData(clickedID, x, y) {
-	console.log("Clicked ID : Double Click : "+clickedID);
+/**
+ * Calculates Shortest Path and 
+ * animates/highlights the ROUTE/PATH
+ * that we are interested in.  
+ * @param {} id1
+ * @param {} id2
+ * @param {} opts
+ */
+function calculateShortestPaths(id1, id2, opts) {
+	var paths = chart.graph().shortestPaths(id1, id2, {direction: 'any'});
+	console.log('Number of hops = ' + paths.distance);  
 	
-	calculateShortestPaths(5, 8);
-
-  /*if (clickedID) {
-
-    var cleanID = getSubStringAfterLastIndexOfChar(clickedID, ':');
-    var clickedItem = chart.getItem(clickedID);
-    var expandQuery = expandQueries[clickedItem.d.type].replace('{id}', cleanID);
-    callCypher(expandQuery, false);
-
-  }*/
+	chart.selection(paths.items);
+	
+	console.log("PATH ITEMS: "+paths.items);
+	
+	//Need to reverse the array here, since we want to animate 'from' to 'to' connection/device. 
+	for(item in (paths.items).reverse()) { 
+		
+		var theItem = paths.items[item];
+		console.log("Item : "+theItem);
+		
+		//This guy needs to be configured with arrayContains() function.
+		//if(theItem.indexOf('-') != -1)
+		if(!arrayContains(theItem, '-'))
+			chart.animateProperties({id: theItem, c: 'rgba(133,28,63,0.5)', w: 10}, {time: 500});
+	}
 }
+
 
 function applyStandardLayout() {
-  chart.layout('standard');
+  chart.layout('standard', {fit: true, animate: true, tidy: true});
 }
 
 function applyHierarchyLayout() {
-  chart.layout('hierarchy', {top:chart.selection()});
+  chart.layout('hierarchy', {fit: true, animate: true, tidy: true});
 }
 
 function applyRadialLayout() { 
-  chart.layout('radial', {top:chart.selection()});
+  chart.layout('radial', {fit: true, animate: true, tidy: true});
 }
 
 function applyStructuralLayout() {
-  chart.layout('structural', {tightness: 2});
+  chart.layout('structural', {fit: true, animate: true, tidy: true});
 }
 
 function fullScreenMode() {
@@ -515,32 +465,6 @@ function callCypher(queryString, firstTime) {
 
 }
 
-
-/***********************************************************************/
-/* Parsing Cypher response format to KeyLines chart format            */
-/***********************************************************************/
-
-
-/*function parseResult(json) {
-
-  var connections = json.data;
-
-  //items are visual chart items
-  var items = [];
-
-  for (var i = 0; i < connections.length; i++) {
-    var connection = connections[i];
-    //connection is an array, 0 is a node, 1 is an array of links, 2 is the other node
-    if (validConnection(connection)) {
-      items.push(parseNode(connection[0]));
-      items.push(parseNode(connection[2]));
-      items.push(parseLink(connection[1][0]));
-    }
-  }
-
-  return items;
-}*/
-
 function validNode(item) {
   return item.data.name || item.data.title;
 }
@@ -550,25 +474,6 @@ function validConnection(arr) {
 }
 
 var idPrefix = 'neo:';
-
-function calculateShortestPaths(id1, id2, opts) {
-	var paths = chart.graph().shortestPaths(id1, id2, {direction: 'any'});
-	console.log('Number of hops = ' + paths.distance);  
-	
-	chart.selection(paths.items);
-	
-	console.log("PATH ITEMS: "+paths.items);
-	
-	for(item in (paths.items).reverse()) {
-		
-		var theItem = paths.items[item];
-		console.log("Item : "+theItem);
-		
-		if(theItem.indexOf('-') != -1)
-			chart.animateProperties({id: theItem, c: 'rgba(133,28,63,0.5)', w: 10}, {time: 500});
-	}
-}
-
 
 function nodeLabel(type, item) {
   if (type === 'movie') { 
@@ -581,12 +486,7 @@ function nodeLabel(type, item) {
 
 var nodeIcons = {
   'red': 'resources/images/red.png',
-  'device': 'resources/images/Axis_device_green.png',
-  'user': 'icon/custom/identity.png',
-  'actor': 'icon/new/man.png',
-  'actor-female':'icon/new/woman.png',
-  'movie':'icon/new/movie3.png', 
-  'director':'icon/custom/Profile.png'
+  'device': 'resources/images/Axis_device_green.png'
 };
 
 var labelDictionary = {
@@ -601,105 +501,9 @@ function nodeIcon(type) {
   return icon;
 }
 
-/*function linkGlyph(item) {
+function linkGlyph(item) {
   if (item.type === 'RATED') {
     return [{c: 'rgb(50, 50, 10)', t: item.data.stars}];
   }
   return null; //other links do not have a glyph
-}*/
-
-//a couple of helper methods
-
-function cleanURL(url){
-  return url.substring(url.lastIndexOf('/')+1);
 }
-
-/*var theChart = {
- type: 'LinkChart',          //this must be exactly this string
- items: [
-   { id: 'node1',             //'node1' is the identity of the node
-     t: 'Zeus',              //the label to be used under the icon
-     type: 'node',            //the type of the item: must be 'node' for nodes
-     u: '/icons/person.png',
-     //u: 'resources/images/Axis_device_green.png',  //the url of the icon
-     x: 300,                  //the x position (measured to the centre of the icon)
-     y: 150,                   //the y position (measured to the centre of the icon)
-     //w: 300,
-     //h: 120,
-     g: [
-         {                          
-         c: 'rgb(255, 0, 0)',         //the glyph fill colour
-         p: 'ne',                     //glyph in NE corner. use 'se', 'sw', 'nw' for the other corners
-         t: '!',                       //the glyph text
-         a: true
-         }
-       ]
-   },
-   { id: 'node2',             //'node1' is the identity of the node
-     t: 'Athena',              //the label to be used under the icon
-     type: 'node',            //the type of the item: must be 'node' for nodes
-     u: '/icons/person.png',
-     //u: 'resources/images/Axis_device_green.png',  //the url of the icon
-     x: 500,                  //the x position (measured to the centre of the icon)
-     y: 500                   //the y position (measured to the centre of the icon)
-     //w: 300,
-     //h: 120
-   },
-   {
-     c: 'rgb(0, 0, 255)',     //the colour of the link
-     id: 'link1',             //'link1' is the identity of this link
-     id1: 'node1',            //the identity of the node at one end
-     id2: 'node2',            //the identity of the node at the other end
-     t: 'is_connected_to',              //the label to be used for the link
-     type: 'link',            //the type of the item: must be 'link' for links
-     w: 1,                     //the width of the link in pixels
-     g: [                             //an array of glyphs, shown left to right
-         {
-           c: 'rgb(255, 0, 0)',         //the glyph fill colour
-           t: '!',                       //the glyph text
-           a: true
-         }
-       ]
-   }
- ]
-};
-
-$(window).load(function () {
-	  //
-	  //Set the rendering mode. 'auto' will use whatever is best for the platform. 
-	  //Set to 'flash' or 'canvas' for fine-grained control. 
-	  KeyLines.mode('canvas');
-	  //
-	  //Set the canvas asset path if using 'auto' or 'canvas'
-	  KeyLines.setCanvasPaths('resources/js/keylines/assets/');
-	  //
-	  //If you are using 'auto' or 'flash' you will need to 
-	  //set up the paths so that the KeyLines wrapper knows where to load the Flash component
-	  // KeyLines.setFlashPaths('public/keylines.swf', 
-	                         // 'vendor/swfobject.js', 
-	                          //'vendor/expressInstall.swf');
-	  //
-	  //load the component: specify the id, size and callback
-	  KeyLines.createChart('drawingID', //id
-	                            818, //width
-	                            586, //height
-	                            callback); //callback
-	 });
-	 //
-	 function callback(err, chart) {
-	 	console.log(theChart.type);
-	  chart.load({
-	  	type: theChart.type,
-	  	items: theChart.items
-	  }//{
-	    //type: 'LinkChart',
-	    //items: [{id:'id1', type: 'node', x:150, y: 150, t:'Hello World!'}]
-	  //}
-	  );
-	 }
-	 
-	 
-	 
-	 
-	 
-	 */

@@ -28,6 +28,7 @@
 	  <a id="hierarchylayout" href="#">Heirarchy Layout</a>
 	  <a id="radiallayout" href="#">Radial Layout</a>
 	  <a id="structurallayout" href="#">Structural Layout</a>
+	  <a id="uncombine" href="#">Uncombine Selected Nodes</a>
 	  <a id="fullScreen" href="#">Full Screen Mode</a>
   </div>
   
