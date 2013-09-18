@@ -1,5 +1,7 @@
 package com.adaranet.controller;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -7,6 +9,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.neo4j.helpers.collection.IteratorUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.support.Neo4jTemplate;
 import org.springframework.stereotype.Controller;
@@ -25,6 +28,7 @@ import com.adaranet.model.Device;
 import com.adaranet.model.Port;
 import com.adaranet.service.DeviceService;
 import com.adaranet.service.PortService;
+import com.adaranet.xml.CastorXmlMapper;
 
 @Controller
 public class HomeController {
@@ -43,8 +47,30 @@ public class HomeController {
 
 	 @RequestMapping(value = "", method = RequestMethod.GET)
 	    //@Transactional
-	    public String routeToIndexPage() {
+	    public String routeToIndexPage() throws Exception {
 	    	logger.info("Routing user to Index page!");
+	    	
+	    	/*Device d = new Device();
+	    	d.setId(new Long(1));
+	    	d.setDeviceName("Orion");
+	    	d.setDeviceType("Ethernet");*/
+	    	
+	    	try {
+	    		logger.info("Now to map OBJ to XML for Devices!");
+	    		List<Device> allDevices = (List<Device>) IteratorUtil.asCollection(deviceService.findAll());
+	    		CastorXmlMapper.convertFromObjectToXML(allDevices, "devices.xml");
+	    		
+	    		logger.info("Now to map OBJ to XML for Ports!");
+	    		List<Port> allPorts = (List<Port>) IteratorUtil.asCollection(portService.findAll());
+	    		CastorXmlMapper.convertFromObjectToXML(allPorts, "ports.xml");
+
+				/*logger.info("Now to map XML to OBJ!");
+				Device dd = (Device) CastorXmlMapper.convertFromXMLToObject("device.xml");
+				logger.info("DEVICE NAME : Unmarshalled XML-To-Object  : "+dd.getDeviceName());*/
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	    	
 	        return "index";
 	    }
 	 

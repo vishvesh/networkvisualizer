@@ -7,40 +7,47 @@ import java.io.IOException;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.log4j.Logger;
 import org.springframework.oxm.Marshaller;
 import org.springframework.oxm.Unmarshaller;
 
 public class CastorXmlMapper {
 	
-	private Marshaller marshaller;
-	private Unmarshaller unmarshaller;
+	protected static Logger logger = Logger.getLogger(CastorXmlMapper.class);
+	
+	private static Marshaller marshaller;
+	private static Unmarshaller unmarshaller;
 	
 	public void setMarshaller(Marshaller marshaller) {
-		this.marshaller = marshaller;
+		CastorXmlMapper.marshaller = marshaller;
 	}
 	
 	public void setUnmarshaller(Unmarshaller unmarshaller) {
-		this.unmarshaller = unmarshaller;
+		CastorXmlMapper.unmarshaller = unmarshaller;
 	}
 
-	public void convertFromObjectToXML(Object object, String filepath) throws IOException {
+	public static void convertFromObjectToXML(Object object, String filepath) throws IOException {
 		FileOutputStream os = null;
 		try {
+			logger.info("Converting Object To XML");
 			os = new FileOutputStream(filepath);
 			marshaller.marshal(object, new StreamResult(os));
 		} finally {
+			logger.info("Converted Object To XML");
 			if (os != null) {
 				os.close();
 			}
 		}
 	}
 	 
-	public Object convertFromXMLToObject(String xmlfile) throws IOException {
+	public static Object convertFromXMLToObject(String xmlfile) throws IOException {
 		FileInputStream is = null;
 		try {
+			logger.info("Converting XML To Object");
 			is = new FileInputStream(xmlfile);
 			return unmarshaller.unmarshal(new StreamSource(is));
 		} finally {
+			logger.info("Converted XML To Object");
 			if (is != null) {
 				is.close();
 			}
