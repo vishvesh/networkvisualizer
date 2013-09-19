@@ -11,11 +11,15 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
+import org.apache.log4j.Logger;
+
 public class XmlValidators {
 	
 	/**
 	 * @author vdeshmukh
 	 */
+	
+	private static Logger logger = Logger.getLogger(XmlValidators.class);
 	
 	/**
 	 * Consumes an XML and XSD from InputStream 
@@ -54,10 +58,10 @@ public class XmlValidators {
 		Validator validator = schema.newValidator();
 		try {
 		  validator.validate(xmlFile);
-		  System.out.println(xmlFile.getSystemId() + " is valid");
+		  logger.info(xmlFile.getSystemId() + " is valid");
 		} catch (Exception e) { //throws SAXException actually.
-		  System.out.println(xmlFile.getSystemId() + " is NOT valid");
-		  System.out.println("Reason: " + e.getLocalizedMessage());
+		  logger.info(xmlFile.getSystemId() + " is NOT valid");
+		  logger.info("Reason: " + e.getLocalizedMessage());
 		  return false;
 		}
 	  return true;
