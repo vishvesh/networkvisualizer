@@ -8,7 +8,7 @@
 	http://www.springframework.org/schema/oxm/spring-oxm.xsd">
  
  	<!-- Castor Mapper for XML Unmarshalling / Marshalling. -->
-    <bean id="castorXmlMarshaller" class="com.adaranet.xml.CastorXmlMapper">
+    <bean id="castorXmlMarshaller" class="com.adaranet.xml.CastorXmlMapperUtils">
         <property name="marshaller" ref="castorMarshaller" />
         <property name="unmarshaller" ref="castorMarshaller" />
     </bean>

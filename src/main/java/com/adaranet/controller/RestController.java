@@ -21,7 +21,7 @@ import com.adaranet.model.Device;
 import com.adaranet.model.Port;
 import com.adaranet.service.DeviceService;
 import com.adaranet.service.PortService;
-import com.adaranet.xml.CastorXmlMapper;
+import com.adaranet.xml.CastorXmlMapperUtils;
 import com.adaranet.xml.DeviceXmlMapper;
 
 @Controller
@@ -41,11 +41,11 @@ public class RestController {
     	try {
     		logger.info("Now to map OBJ to XML for Devices!");
     		List<Device> allDevices = (List<Device>) IteratorUtil.asCollection(deviceService.findAll());
-    		CastorXmlMapper.convertFromObjectToXMLFile(allDevices, "devices.xml");
+    		CastorXmlMapperUtils.convertFromObjectToXMLFile(allDevices, "devices.xml");
     		
     		logger.info("Now to map OBJ to XML for Ports!");
     		List<Port> allPorts = (List<Port>) IteratorUtil.asCollection(portService.findAll());
-    		CastorXmlMapper.convertFromObjectToXMLFile(allPorts, "ports.xml");
+    		CastorXmlMapperUtils.convertFromObjectToXMLFile(allPorts, "ports.xml");
     		
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -74,7 +74,7 @@ public class RestController {
 			DeviceXmlMapper deviceXmlMapper = null;
 			try {
 				logger.info("Inside createDeviceFromXml() : XML is : "+xml);
-				deviceXmlMapper = (DeviceXmlMapper) CastorXmlMapper.convertFromXMLToObjectFromInputSource(xml);
+				deviceXmlMapper = (DeviceXmlMapper) CastorXmlMapperUtils.convertFromXMLToObjectFromInputSource(xml);
 				//logger.info("Device Name : Converted from XML to Object Successfully : Device Name : "+device.getDeviceName());
 				List<Device> devices = deviceXmlMapper.getDevices();
 				logger.info("DeviceXmlMapper : Mapped Devices ArrayList : Size : "+devices.size());

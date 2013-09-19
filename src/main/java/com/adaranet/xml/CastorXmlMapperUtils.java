@@ -12,19 +12,19 @@ import org.apache.log4j.Logger;
 import org.springframework.oxm.Marshaller;
 import org.springframework.oxm.Unmarshaller;
 
-public class CastorXmlMapper {
+public class CastorXmlMapperUtils {
 	
-	protected static Logger logger = Logger.getLogger(CastorXmlMapper.class);
+	protected static Logger logger = Logger.getLogger(CastorXmlMapperUtils.class);
 	
 	private static Marshaller marshaller;
 	private static Unmarshaller unmarshaller;
 	
 	public void setMarshaller(Marshaller marshaller) {
-		CastorXmlMapper.marshaller = marshaller;
+		CastorXmlMapperUtils.marshaller = marshaller;
 	}
 	
 	public void setUnmarshaller(Unmarshaller unmarshaller) {
-		CastorXmlMapper.unmarshaller = unmarshaller;
+		CastorXmlMapperUtils.unmarshaller = unmarshaller;
 	}
 
 	public static void convertFromObjectToXMLFile(Object object, String filepath) throws IOException {
