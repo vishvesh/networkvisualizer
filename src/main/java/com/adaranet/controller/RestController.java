@@ -22,6 +22,7 @@ import com.adaranet.model.Port;
 import com.adaranet.service.DeviceService;
 import com.adaranet.service.PortService;
 import com.adaranet.xml.CastorXmlMapper;
+import com.adaranet.xml.DeviceXmlMapper;
 
 @Controller
 public class RestController {
@@ -40,11 +41,11 @@ public class RestController {
     	try {
     		logger.info("Now to map OBJ to XML for Devices!");
     		List<Device> allDevices = (List<Device>) IteratorUtil.asCollection(deviceService.findAll());
-    		CastorXmlMapper.convertFromObjectToXML(allDevices, "devices.xml");
+    		CastorXmlMapper.convertFromObjectToXMLFile(allDevices, "devices.xml");
     		
     		logger.info("Now to map OBJ to XML for Ports!");
     		List<Port> allPorts = (List<Port>) IteratorUtil.asCollection(portService.findAll());
-    		CastorXmlMapper.convertFromObjectToXML(allPorts, "ports.xml");
+    		CastorXmlMapper.convertFromObjectToXMLFile(allPorts, "ports.xml");
     		
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -70,12 +71,17 @@ public class RestController {
 	
 		@RequestMapping(value = "device/create", method=RequestMethod.POST, consumes = {MediaType.APPLICATION_XML_VALUE})
 		public ResponseEntity<String> createDeviceFromXml(@RequestBody Source xml) throws Exception {
-			Device device = null;
+			DeviceXmlMapper deviceXmlMapper = null;
 			try {
 				logger.info("Inside createDeviceFromXml() : XML is : "+xml);
-				device = (Device) CastorXmlMapper.convertFromXMLToObjectFromInputSource(xml);
-				logger.info("Device Name : Converted from XML to Object Successfully : Device Name : "+device.getDeviceName());
-				deviceService.saveEntity(device);
+				deviceXmlMapper = (DeviceXmlMapper) CastorXmlMapper.convertFromXMLToObjectFromInputSource(xml);
+				//logger.info("Device Name : Converted from XML to Object Successfully : Device Name : "+device.getDeviceName());
+				List<Device> devices = deviceXmlMapper.getDevices();
+				logger.info("DeviceXmlMapper : Mapped Devices ArrayList : Size : "+devices.size());
+				for (Device device : devices) {		
+					logger.info("Saving New Device : in Neo4j : Having Device Name : "+device.getDeviceName());
+					deviceService.saveEntity(device);
+				}
 			} catch(Exception e) {
 				e.printStackTrace();
 				return new ResponseEntity<String>("BAD_REQUEST : Check Data Format of the XML!", HttpStatus.BAD_REQUEST);

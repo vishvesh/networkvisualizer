@@ -10,6 +10,15 @@
     <!--include href="castorMapping-Device.xml"/>
     <include href="castorMapping-Port.xml"/-->
     
+    <!-- START of Mapping for DeviceMapper! -->
+    <class name="com.adaranet.xml.DeviceXmlMapper">         
+        <map-to xml="devices" />  
+        <field name="devices" type="com.adaranet.model.Device" collection="arraylist">
+             <bind-xml name="devices" />
+        </field>
+    </class>
+    <!-- END of Mapping for Device -->
+    
     <!-- START of Mapping for Device Entity! -->
     <class name="com.adaranet.model.Device">         
         <map-to xml="device" />         
