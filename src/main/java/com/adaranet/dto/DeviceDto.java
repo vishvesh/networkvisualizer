@@ -2,6 +2,11 @@ package com.adaranet.dto;
 
 import java.io.Serializable;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+import org.codehaus.jackson.annotate.JsonAutoDetect;
+
+@XmlRootElement
 public class DeviceDto implements Serializable {
 
     /**

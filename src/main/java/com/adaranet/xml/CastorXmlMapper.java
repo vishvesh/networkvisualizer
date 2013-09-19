@@ -3,7 +3,10 @@ package com.adaranet.xml;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
+import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
@@ -40,7 +43,7 @@ public class CastorXmlMapper {
 		}
 	}
 	 
-	public static Object convertFromXMLToObject(String xmlfile) throws IOException {
+	/*public static Object convertFromXMLToObject(String xmlfile) throws IOException {
 		FileInputStream is = null;
 		try {
 			logger.info("Converting XML To Object");
@@ -52,5 +55,17 @@ public class CastorXmlMapper {
 				is.close();
 			}
 		}
+	}*/
+	
+	public static Object convertFromXMLToObject(Source xml) throws IOException {
+		try {
+			logger.info("Converting XML To Object");
+			
+			return unmarshaller.unmarshal(xml);
+		} finally {
+			logger.info("Converted XML To Object");
+		}
 	}
+	
+	
 }
