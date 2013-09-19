@@ -43,21 +43,21 @@ public class CastorXmlMapper {
 		}
 	}
 	 
-	/*public static Object convertFromXMLToObject(String xmlfile) throws IOException {
+	public static Object convertFromXMLToObjectFromXMLFile(String xmlfile) throws IOException {
 		FileInputStream is = null;
 		try {
-			logger.info("Converting XML To Object");
+			logger.info("Converting XML To Object From XML File.");
 			is = new FileInputStream(xmlfile);
 			return unmarshaller.unmarshal(new StreamSource(is));
 		} finally {
-			logger.info("Converted XML To Object");
+			logger.info("Converted XML To Object From XML File.");
 			if (is != null) {
 				is.close();
 			}
 		}
-	}*/
+	}
 	
-	public static Object convertFromXMLToObject(Source xml) throws IOException {
+	public static Object convertFromXMLToObjectFromInputSource(Source xml) throws IOException {
 		try {
 			logger.info("Converting XML To Object");
 			

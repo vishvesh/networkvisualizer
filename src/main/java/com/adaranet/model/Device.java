@@ -1,8 +1,6 @@
 package com.adaranet.model;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.neo4j.graphdb.Direction;
@@ -13,9 +11,8 @@ import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedToVia;
 
 import com.adaranet.relationships.ConnectedDevices;
-//import com.adaranet.relationships.ConnectsToDevice;
-import com.adaranet.relationships.ConnectsToPort;
 import com.adaranet.relationships.HasPort;
+//import com.adaranet.relationships.ConnectsToDevice;
 //import javax.persistence.GeneratedValue;
 
 @NodeEntity
