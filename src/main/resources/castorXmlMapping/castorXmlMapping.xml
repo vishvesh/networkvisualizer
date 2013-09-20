@@ -20,12 +20,6 @@
     <!-- END of Mapping for DeviceXmlMapper -->
     
     <!-- START of Mapping for PortXmlMapper! -->
-    <!--class name="com.adaranet.xml.PortXmlMapper">         
-        <map-to xml="createPortsForDevice" />  
-        <field name="deviceHasPorts" type="com.adaranet.model.Device" collection="arraylist">
-             <bind-xml name="device" />
-        </field>
-    </class-->
     <class name="com.adaranet.xml.PortXmlMapper">         
         <map-to xml="createPortsForDevice" />  
         <field name="deviceHasPorts" type="com.adaranet.model.Device" collection="arraylist">
@@ -37,10 +31,10 @@
     <!-- START of Mapping for Device Entity! -->
     <class name="com.adaranet.model.Device">         
         <map-to xml="device" />         
-        <field name="deviceName" type="string">
+        <field name="deviceName" type="string" required="true">
             <bind-xml name="deviceName" node="element"/>
         </field>       
-         <field name="deviceType" type="string">
+         <field name="deviceType" type="string" required="false">
             <bind-xml name="deviceType" node="element"/>
         </field>  
         <field name="deviceHasPortsSetMappedByXml" type="com.adaranet.model.Port" collection="set" container="false">
@@ -73,10 +67,10 @@
     <!-- START of Mapping for Port Entity! --> 
     <class name="com.adaranet.model.Port">         
         <map-to xml="port" />
-        <field name="portName" type="string">
+        <field name="portName" type="string" required="true">
             <bind-xml name="portName" node="element"/>
         </field>        
-         <field name="portType" type="string">
+         <field name="portType" type="string" required="false">
             <bind-xml name="portType" node="element"/>
         </field>         
         <field name="connectedPorts" type="com.adaranet.relationships.ConnectsToPort" collection="set">
