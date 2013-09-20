@@ -39,10 +39,8 @@ public class DeviceController {
 
 	@Autowired
 	private DeviceService deviceService;
-	
 	@Autowired
 	private PortService portService;
-
 	@Autowired
 	private Neo4jTemplate template;
 

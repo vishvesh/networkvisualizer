@@ -21,11 +21,9 @@ public class PortController {
 	protected Logger logger = Logger.getLogger(getClass());
 
 	@Autowired
-	private DeviceService deviceService;
-	
+	private DeviceService deviceService;	
 	@Autowired
 	private PortService portService;
-
 	@Autowired
 	private Neo4jTemplate template;
 

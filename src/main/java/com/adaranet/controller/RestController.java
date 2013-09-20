@@ -36,7 +36,7 @@ public class RestController {
 	@Autowired
 	private Neo4jTemplate template;
 
-	@RequestMapping(value = "/createxml")
+	@RequestMapping(value = "/createDevicesAndPortsXml")
 	public String createXml() throws Exception {
     	try {
     		logger.info("Now to map OBJ to XML for Devices!");
@@ -69,8 +69,9 @@ public class RestController {
 			return device;
 		}*/
 	
-		@RequestMapping(value = "device/create", method=RequestMethod.POST, consumes = {MediaType.APPLICATION_XML_VALUE})
-		public ResponseEntity<String> createDeviceFromXml(@RequestBody Source xml) throws Exception {
+		//Request Headers should have : Content-Type:application/xml;
+		@RequestMapping(value = "devices/create", method=RequestMethod.POST, headers = "Accept=application/xml", consumes = {MediaType.APPLICATION_XML_VALUE})
+		public ResponseEntity<String> createDevicesFromXml(@RequestBody Source xml) throws Exception {
 			DeviceXmlMapper deviceXmlMapper = null;
 			try {
 				logger.info("Inside createDeviceFromXml() : XML is : "+xml);
@@ -86,7 +87,29 @@ public class RestController {
 				e.printStackTrace();
 				return new ResponseEntity<String>("BAD_REQUEST : Check Data Format of the XML!", HttpStatus.BAD_REQUEST);
 			}
-			return new ResponseEntity<String>("OK, Device Saved in Neo4j", HttpStatus.OK);
+			return new ResponseEntity<String>("Success, Device Saved in Neo4j", HttpStatus.OK);
+		}
+		
+		//Request Headers should have : Content-Type:application/xml;
+		@RequestMapping(value = "ports/create", method=RequestMethod.POST, headers = "Accept=application/xml", consumes = {MediaType.APPLICATION_XML_VALUE})
+		public ResponseEntity<String> createPortsFromXml(@RequestBody Source xml) throws Exception {
+			//TODO: To implement the mapper to create Ports for a particular/existing Device....
+			/*DeviceXmlMapper deviceXmlMapper = null;
+			try {
+				logger.info("Inside createDeviceFromXml() : XML is : "+xml);
+				deviceXmlMapper = (DeviceXmlMapper) CastorXmlMapperUtils.convertFromXMLToObjectFromInputSource(xml);
+				//logger.info("Device Name : Converted from XML to Object Successfully : Device Name : "+device.getDeviceName());
+				List<Device> devices = deviceXmlMapper.getDevices();
+				logger.info("DeviceXmlMapper : Mapped Devices ArrayList : Size : "+devices.size());
+				for (Device device : devices) {		
+					logger.info("Saving New Device : in Neo4j : Having Device Name : "+device.getDeviceName());
+					deviceService.saveEntity(device);
+				}
+			} catch(Exception e) {
+				e.printStackTrace();
+				return new ResponseEntity<String>("BAD_REQUEST : Check Data Format of the XML!", HttpStatus.BAD_REQUEST);
+			}*/
+			return new ResponseEntity<String>("Success, Port Saved in Neo4j", HttpStatus.OK);
 		}
 	
 }

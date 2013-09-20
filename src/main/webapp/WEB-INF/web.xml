@@ -66,18 +66,7 @@
 	    <servlet-name>dispatcher</servlet-name>
 	    <url-pattern>/</url-pattern>
 	  </servlet-mapping-->
-	
-	<!--servlet>
-		<description>Get Information about Connect Device</description>
-		<display-name>DeviceServletController</display-name>
-		<servlet-name>DeviceServletController</servlet-name>
-		<servlet-class>com.adaranet.netvisualizer.controller.DeviceServletController</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>DeviceServletController</servlet-name>
-		<url-pattern>/DeviceServletController</url-pattern>
-	</servlet-mapping-->
-	
+
 	<session-config>
         <session-timeout>
             30
