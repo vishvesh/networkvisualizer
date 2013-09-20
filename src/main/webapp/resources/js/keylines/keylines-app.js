@@ -141,12 +141,12 @@ function parseDevice(device) {
 	    t: deviceName,
 	    u: nodeIcon('device'),
 	    w: 300,
-	    h: 120
+	    h: 120,
 	    //t: nodeLabel(basetype, item),
 	    //u: nodeIcon(icontype)/*,
-	    /*d: {
-	      type: basetype  //store the type of the item for later - will be used for subsequent queries
-	    }*/
+	    d: {
+	      baseType: 'Device' //store the type of the item for later - will be used for subsequent queries
+	    }
      };
   return deviceNode;
 }
@@ -164,12 +164,13 @@ function parsePort(port) {
 	    //u: nodeIcon('device'),
 	    w: 20,
 	    h: 20,
-	    c: 'rgb(30,144,255)'
+	    c: 'rgb(30,144,255)',
 	    //t: nodeLabel(basetype, item),
 	    //u: nodeIcon(icontype)/*,
-	    /*d: {
-	      type: basetype  //store the type of the item for later - will be used for subsequent queries
-	    }*/
+	    d: {
+	      type: port.portType,  //store the type of the item for later - will be used for subsequent queries
+	      baseType: 'Port'
+	    }
     };
     return portNode;
 }
@@ -253,7 +254,10 @@ function parseLink(portConnections, type) {
 			    //b1: 0,
 			    //b2: 0,
 			    c: 'rgb(55, 55, 255)',
-			    w: 2/*,
+			    w: 2,
+			    d: {
+			      baseType: 'Link - Has_Port'  //This can be used to calculate weighted shorted paths b/n nodes
+			    }/*,
 			    g: linkGlyph(item),
 			    d: {
 			      type: outgoingDevices[i].cost  //This can be used to calculate weighted shorted paths b/n nodes
@@ -279,7 +283,10 @@ function parseLink(portConnections, type) {
 			    a1: true,
 			    a2: true,
 			    c: 'rgb(55, 55, 255)',
-			    w: 2/*,
+			    w: 2,
+			    d: {
+			      baseType: 'Link - Connects_To'  //This can be used to calculate weighted shorted paths b/n nodes
+			    }/*,
 			    g: linkGlyph(item),
 			    d: {
 			      type: outgoingDevices[i].cost  //This can be used to calculate weighted shorted paths b/n nodes
@@ -351,8 +358,16 @@ function parseJson(data) {
 
 function handleClickEvent(clickedID, x, y) {
 	console.log("handling click event : "+clickedID);
-	for(var i in combineArr)
-		console.log("Element in combineArr : "+combineArr[i]);
+	//for(var i in combineArr)
+		//console.log("Element in combineArr : "+combineArr[i]);
+	var item = chart.getItem(clickedID);
+	var itemBaseType = item.d.baseType;
+	console.log(item);
+	$('#baseType').html(itemBaseType);
+	/*if(item.type == 'node') {
+		console.log(item.d.baseType);
+		$('#baseType').html(item.d.baseType);
+	}*/
 		
 	/*chart.combo().combine(
 		{

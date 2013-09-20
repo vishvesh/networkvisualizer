@@ -26,6 +26,10 @@
   </section>
   <aside id="rhs">
   	<h1>Content To Display:</h1>
+  	<div id="typeWrapper">
+  		<span>Base Type:</span>
+  		<span id="baseType"></span>
+  	</div>
   </aside>
 </section>
   

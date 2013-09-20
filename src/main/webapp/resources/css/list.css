@@ -20,6 +20,15 @@ body {
 	margin: 0 auto;
 }
 
+#baseType {
+	margin-left: 3px;
+}
+
+#typeWrapper {
+	font-size: 1.5em;
+	color: darkslateblue;
+}
+
 #wrapper {
 	float: left;
 	width: 100%; 
