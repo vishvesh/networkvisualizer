@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.adaranet.model.Device;
 import com.adaranet.model.Port;
+import com.adaranet.relationships.HasPort;
 import com.adaranet.service.CastorXmlService;
 import com.adaranet.service.DeviceService;
 import com.adaranet.service.PortService;
@@ -58,7 +59,8 @@ public class CastorXmlServiceImpl implements CastorXmlService {
 			logger.info("Devices List Size : "+devices.size());
 			for (Device device : devices) {
 				logger.info("Device Name : Converted from XML to Object Successfully : Device Name : "+device.getDeviceName());
-				if(!(deviceService.findDeviceByDeviceName(device.getDeviceName()) == null)) {
+				Device foundDevice = deviceService.findDeviceByDeviceName(device.getDeviceName());
+				if(!(foundDevice == null)) {
 					Set<Port> hasPorts = device.getDeviceHasPortsSetMappedByXml();
 					logger.info("Has Ports Set Size : "+hasPorts.size());
 					for (Port port : hasPorts) {
@@ -66,6 +68,15 @@ public class CastorXmlServiceImpl implements CastorXmlService {
 						String uniquePortName = device.getDeviceName()+"-"+port.getPortName();
 						if(portService.findPortByPortName(uniquePortName) == null) {
 							logger.info("The Port with PortName : "+uniquePortName+" : DoesNotExist in Neo4j.. So, we can persist it.");
+							Port newPort = new Port();
+							newPort.setPortName(port.getPortName());
+							newPort.setPortType(port.getPortType());
+							template.save(newPort);
+							HasPort hasPort = new HasPort();
+							hasPort.setStartDevice(foundDevice);
+							hasPort.setConnectedPort(newPort);
+							template.save(hasPort);
+							logger.info("Configured Port : "+port.getPortName()+" : for Device : "+device.getDeviceName()+" : with HAS_PORT Relationship Successfully!");
 						} else {
 							logger.info("The Port with PortName : "+uniquePortName+" : Already Exists in Neo4j.");
 						}
