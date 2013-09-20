@@ -34,6 +34,8 @@ public class Device {
     //@Fetch
     @RelatedToVia(type = "HAS_PORT", elementClass = HasPort.class, direction = Direction.OUTGOING)
     private Set<HasPort> hasPorts = new HashSet<HasPort>();
+    
+    private Set<Port> deviceHasPortsSetMappedByXml = new HashSet<Port>();
 
     /*@Fetch
     @RelatedToVia(type = "CONNECTS_TO_DEVICE", direction = Direction.INCOMING, elementClass = ConnectsToDevice.class)
@@ -64,6 +66,15 @@ public class Device {
     	this.outgoingDeviceConnections.add(connectedDevices);
     	System.out.println("Size of Outgoing Device Connections : "+outgoingDeviceConnections.size());
     }
+    
+    public void setDeviceHasPortsSetMappedByXml(
+			Set<Port> deviceHasPortsSetMappedByXml) {
+		this.deviceHasPortsSetMappedByXml = deviceHasPortsSetMappedByXml;
+	}
+    
+    public Set<Port> getDeviceHasPortsSetMappedByXml() {
+		return deviceHasPortsSetMappedByXml;
+	}
       
     public Set<ConnectedDevices> getOutgoingDeviceConnections() {
 		return outgoingDeviceConnections;

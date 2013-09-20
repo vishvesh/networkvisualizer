@@ -2,6 +2,7 @@ package com.adaranet.controller;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.transform.Source;
 
@@ -23,6 +24,7 @@ import com.adaranet.service.DeviceService;
 import com.adaranet.service.PortService;
 import com.adaranet.xml.CastorXmlMapperUtils;
 import com.adaranet.xml.DeviceXmlMapper;
+import com.adaranet.xml.PortXmlMapper;
 
 @Controller
 public class RestController {
@@ -94,21 +96,24 @@ public class RestController {
 		@RequestMapping(value = "ports/createPortsForDevice", method=RequestMethod.POST, headers = "Accept=application/xml", consumes = {MediaType.APPLICATION_XML_VALUE})
 		public ResponseEntity<String> createPortsFromXml(@RequestBody Source xml) throws Exception {
 			//TODO: To implement the mapper to create Ports for a particular/existing Device....
-			/*DeviceXmlMapper deviceXmlMapper = null;
+			PortXmlMapper portXmlMapper = null;
 			try {
 				logger.info("Inside createDeviceFromXml() : XML is : "+xml);
-				deviceXmlMapper = (DeviceXmlMapper) CastorXmlMapperUtils.convertFromXMLToObjectFromInputSource(xml);
-				//logger.info("Device Name : Converted from XML to Object Successfully : Device Name : "+device.getDeviceName());
-				List<Device> devices = deviceXmlMapper.getDevices();
-				logger.info("DeviceXmlMapper : Mapped Devices ArrayList : Size : "+devices.size());
-				for (Device device : devices) {		
-					logger.info("Saving New Device : in Neo4j : Having Device Name : "+device.getDeviceName());
-					deviceService.saveEntity(device);
+				portXmlMapper = (PortXmlMapper) CastorXmlMapperUtils.convertFromXMLToObjectFromInputSource(xml);
+				List<Device> devices = portXmlMapper.getDeviceHasPorts();
+				logger.info("Devices List Size : "+devices.size());
+				for (Device device : devices) {
+					logger.info("Device Name : Converted from XML to Object Successfully : Device Name : "+device.getDeviceName());
+					Set<Port> hasPorts = device.getDeviceHasPortsSetMappedByXml();
+					logger.info("Has Ports Set Size : "+hasPorts.size());
+					for (Port port : hasPorts) {
+						logger.info("Connected Port Name : "+port.getPortName()+" : To Device : "+device.getDeviceName());
+					}
 				}
 			} catch(Exception e) {
 				e.printStackTrace();
 				return new ResponseEntity<String>("BAD_REQUEST : Check Data Format of the XML!", HttpStatus.BAD_REQUEST);
-			}*/
+			}
 			return new ResponseEntity<String>("Success, Port Saved in Neo4j", HttpStatus.OK);
 		}
 	
