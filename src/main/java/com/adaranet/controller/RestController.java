@@ -1,5 +1,7 @@
 package com.adaranet.controller;
 
+import java.util.Set;
+
 import javax.xml.transform.Source;
 
 import org.apache.log4j.Logger;
@@ -12,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.adaranet.model.Device;
 import com.adaranet.service.CastorXmlService;
 import com.adaranet.xml.CastorXmlMapperUtils;
+import com.adaranet.xml.ConnectDevicePortsXmlMapper;
 import com.adaranet.xml.DeviceXmlMapper;
 import com.adaranet.xml.PortXmlMapper;
 
@@ -59,6 +63,22 @@ public class RestController {
 			return new ResponseEntity<String>("BAD_REQUEST : Check Data Format of the XML!", HttpStatus.BAD_REQUEST);
 		}
 		return castorXmlService.createPortsFromXml(portXmlMapper);
+	}
+	
+	//Request Headers should have : Content-Type:application/xml;
+	@RequestMapping(value = "ports/connectDevicePorts", method=RequestMethod.POST, headers = "Accept=application/xml", consumes = {MediaType.APPLICATION_XML_VALUE})
+	public ResponseEntity<String> connectDevicePorts(@RequestBody Source xml) throws Exception {
+		ConnectDevicePortsXmlMapper connectDevicePortsXmlMapper = null;
+		try {
+			logger.info("Inside connectDevicePorts() : XML is : "+xml);
+			connectDevicePortsXmlMapper = (ConnectDevicePortsXmlMapper) CastorXmlMapperUtils.convertFromXMLToObjectFromInputSource(xml);
+			Set<Device> devicesPortsToConnect = connectDevicePortsXmlMapper.getConnections();
+			logger.info("Devices/Connections HashSet Size : "+devicesPortsToConnect.size());
+		} catch(Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<String>("BAD_REQUEST : Check Data Format of the XML!", HttpStatus.BAD_REQUEST);
+		}
+		return castorXmlService.connectDevicePortsFromXml(connectDevicePortsXmlMapper);
 	}
 	
 	/*@RequestMapping(value = "/createDevicesAndPortsXml")

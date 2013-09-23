@@ -17,6 +17,7 @@ import com.adaranet.relationships.HasPort;
 import com.adaranet.service.CastorXmlService;
 import com.adaranet.service.DeviceService;
 import com.adaranet.service.PortService;
+import com.adaranet.xml.ConnectDevicePortsXmlMapper;
 import com.adaranet.xml.DeviceXmlMapper;
 import com.adaranet.xml.PortXmlMapper;
 
@@ -94,6 +95,13 @@ public class CastorXmlServiceImpl implements CastorXmlService {
     	logger.info("TIME TOOK FOR THE METHOD TO COMPLETE : "+totalTime+" : milli seconds");
 		logger.info("**********************************************************************************************");
 		logger.info("");
-		return new ResponseEntity<String>("Success, Port Saved in Neo4j", HttpStatus.OK);
+		return new ResponseEntity<String>("Success, Ports Saved in Neo4j", HttpStatus.OK);
+	}
+
+	@Transactional
+	public ResponseEntity<String> connectDevicePortsFromXml(ConnectDevicePortsXmlMapper connectDevicePortsXmlMapper) {
+		//TODO: Need to configure this guy!
+		logger.info("Comes inside ConnectDevicePortsFromXml() method.... Need to configure this guy!");
+		return new ResponseEntity<String>("Success, Ports Saved in Neo4j", HttpStatus.OK);
 	}
 }
