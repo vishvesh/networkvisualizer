@@ -29,10 +29,26 @@
     <!-- END of Mapping for PortXmlMapper -->
     
     <!-- START of Mapping for ConnectDevicePortsXmlMapper! --> 
-    <class name="com.adaranet.xml.ConnectDevicePortsXmlMapper">         
+    <!--class name="com.adaranet.xml.ConnectDevicePortsXmlMapper">         
         <map-to xml="connectDevicePorts" />  
         <field name="connections" type="com.adaranet.model.Device" collection="set" container="false">
              <bind-xml name="connections" />
+        </field>
+    </class-->
+    <class name="com.adaranet.xml.xmlWrappers.ConnectionsWrapper">         
+        <map-to xml="connectDevicePorts" />  
+        <field name="connections" type="com.adaranet.xml.xmlWrappers.Connections" collection="set">
+             <bind-xml name="connections" />
+        </field>
+    </class>
+    
+    <class name="com.adaranet.xml.xmlWrappers.Connections">         
+        <map-to xml="connections" />  
+        <field name="sourceDevice" type="com.adaranet.model.Device">
+             <bind-xml name="sourceDevice" />
+        </field>
+        <field name="destinationDevice" type="com.adaranet.model.Device">
+             <bind-xml name="destinationDevice" />
         </field>
     </class>
     <!-- END of Mapping for ConnectDevicePortsXmlMapper -->
@@ -49,7 +65,7 @@
         <field name="deviceHasPortsSetMappedByXml" type="com.adaranet.model.Port" collection="set" container="false">
              <bind-xml name="hasPorts" />
         </field>      
-        <field name="hasPorts" type="com.adaranet.relationships.HasPort" collection="set" container="false">
+        <field name="hasPorts" type="com.adaranet.relationships.HasPort" collection="set">
              <bind-xml name="hasPort" />
         </field>
     </class>

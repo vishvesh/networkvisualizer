@@ -1,5 +1,6 @@
 package com.adaranet.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -17,9 +18,10 @@ import com.adaranet.relationships.HasPort;
 import com.adaranet.service.CastorXmlService;
 import com.adaranet.service.DeviceService;
 import com.adaranet.service.PortService;
-import com.adaranet.xml.ConnectDevicePortsXmlMapper;
 import com.adaranet.xml.DeviceXmlMapper;
 import com.adaranet.xml.PortXmlMapper;
+import com.adaranet.xml.xmlWrappers.Connections;
+import com.adaranet.xml.xmlWrappers.ConnectionsWrapper;
 
 @Service
 public class CastorXmlServiceImpl implements CastorXmlService {
@@ -98,10 +100,56 @@ public class CastorXmlServiceImpl implements CastorXmlService {
 		return new ResponseEntity<String>("Success, Ports Saved in Neo4j", HttpStatus.OK);
 	}
 
+	@SuppressWarnings("finally")
 	@Transactional
-	public ResponseEntity<String> connectDevicePortsFromXml(ConnectDevicePortsXmlMapper connectDevicePortsXmlMapper) {
+	public ResponseEntity<String> connectDevicePortsFromXml(ConnectionsWrapper connectionsWrapper) {
 		//TODO: Need to configure this guy!
 		logger.info("Comes inside ConnectDevicePortsFromXml() method.... Need to configure this guy!");
-		return new ResponseEntity<String>("Success, Ports Saved in Neo4j", HttpStatus.OK);
+		String errors = "";
+		int count = 0;
+		try {
+			Set<Connections> connections = connectionsWrapper.getConnections();
+			for (Connections connection : connections) {
+				Device sDevice = connection.getSourceDevice();
+				Device dDevice = connection.getDestinationDevice();
+				if(!sDevice.getDeviceName().equals(dDevice.getDeviceName())) {
+					Device sourceDevice = deviceService.findDeviceByDeviceName(sDevice.getDeviceName());
+					Device destinationDevice = deviceService.findDeviceByDeviceName(dDevice.getDeviceName());
+					if((null != sourceDevice && null != destinationDevice) && (!sDevice.getHasPorts().isEmpty() && !dDevice.getHasPorts().isEmpty())) {
+						logger.info("SDevice.getHasPorts size : "+sDevice.getHasPorts().size());
+						String sourcePortName = sDevice.getHasPorts().iterator().next().getConnectedPort().getPortName();
+						String destPortName = dDevice.getHasPorts().iterator().next().getConnectedPort().getPortName();
+						Port sourcePort = portService.findPortByPortName((sourceDevice.getDeviceName())+"-"+(sourcePortName));
+						Port destinationPort = portService.findPortByPortName((destinationDevice.getDeviceName())+"-"+(destPortName));
+						if(null != sourcePort && null != destinationPort) {
+							sourcePort.connectsToPort(destinationPort);
+							template.save(sourcePort);
+							logger.info("Port : "+sourcePort.getPortName()+" : is Successfully Connected to : "+destinationPort.getPortName());
+						} else {
+						logger.info("Either Source Port or Destination Port is NULL!");	
+						errors += ++count+") Could not find Either, Source Port : "+sourcePortName+" : or Destination Port :"+destPortName+"\n";
+						//return new ResponseEntity<String>("BAD_REQUEST : Either Source Port or Destination Port is NULL!", HttpStatus.BAD_REQUEST);
+						}
+					} else {
+						logger.info("Either, source Device/ Dest. device == null or sdevice/ddevice's hasports set is EMPTY.");
+						errors += ++count+") Could not find Either, Source Device : "+sDevice.getDeviceName()+" : Or Destination Device : "+dDevice.getDeviceName()+"\n";
+						//return new ResponseEntity<String>("BAD_REQUEST : Either, source Device/ Dest. device == null or sdevice/ddevice's hasports set is EMPTY!", HttpStatus.BAD_REQUEST);
+					}
+			   } else {
+				   logger.info("Source Device : "+sDevice.getDeviceName()+ " : CAN NOT be equal to : Destination Device : "+dDevice.getDeviceName());
+				   errors += ++count+") Source Device : "+sDevice.getDeviceName()+ " : CAN NOT be equal to : Destination Device : "+dDevice.getDeviceName()+"\n";
+			   }
+		  }
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			logger.info("ERROR IS : "+errors);
+			if(errors != "" || !errors.equals(""))
+				return new ResponseEntity<String>(errors, HttpStatus.OK);
+				//return new ResponseEntity<String>(errors, HttpStatus.BAD_REQUEST);
+			
+			return new ResponseEntity<String>("OK, All Device-Ports Specified in the XML are Connected Successfully!", HttpStatus.OK);
+		}
 	}
 }
+

@@ -1,11 +1,14 @@
 package com.adaranet.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.adaranet.xml.ConnectDevicePortsXmlMapper;
 import com.adaranet.xml.DeviceXmlMapper;
 import com.adaranet.xml.PortXmlMapper;
+import com.adaranet.xml.xmlWrappers.ConnectionsWrapper;
 
 public interface CastorXmlService {
 
@@ -14,6 +17,6 @@ public interface CastorXmlService {
 	@Transactional
 	public ResponseEntity<String> createPortsFromXml(PortXmlMapper portXmlMapper);
 	@Transactional
-	public ResponseEntity<String> connectDevicePortsFromXml(ConnectDevicePortsXmlMapper connectDevicePortsXmlMapper);
+	public ResponseEntity<String> connectDevicePortsFromXml(ConnectionsWrapper connectionsWrapper);
 	
 }
