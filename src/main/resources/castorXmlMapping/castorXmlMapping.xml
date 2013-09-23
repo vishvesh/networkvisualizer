@@ -28,7 +28,7 @@
     </class>
     <!-- END of Mapping for PortXmlMapper -->
     
-    <!-- START of Mapping for ConnectDevicePortsXmlMapper! -->
+    <!-- START of Mapping for ConnectDevicePortsXmlMapper! --> 
     <class name="com.adaranet.xml.ConnectDevicePortsXmlMapper">         
         <map-to xml="connectDevicePorts" />  
         <field name="connections" type="com.adaranet.model.Device" collection="set" container="false">
