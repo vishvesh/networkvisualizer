@@ -54,14 +54,20 @@
     <!-- END of Mapping for ConnectDevicePortsXmlMapper -->
     
     <!-- START of Mapping for Device Entity! -->
-    <class name="com.adaranet.model.Device">         
+    <class name="com.adaranet.model.Device" auto-complete="true">         
         <map-to xml="device" />         
         <field name="deviceName" type="string" required="true">
             <bind-xml name="deviceName" node="element"/>
         </field>       
          <field name="deviceType" type="string" required="false">
             <bind-xml name="deviceType" node="element"/>
+        </field> 
+        <field name="cpuUtilization" type="string" required="false">
+            <bind-xml name="cpuUtilization" node="element"/>
         </field>  
+        <field name="numberOfSessions" type="string" required="false">
+            <bind-xml name="numberOfSessions" node="element"/>
+        </field>   
         <field name="deviceHasPortsSetMappedByXml" type="com.adaranet.model.Port" collection="set" container="false">
              <bind-xml name="hasPorts" />
         </field>      
@@ -90,14 +96,26 @@
     <!-- END of Mapping for Device -->
     
     <!-- START of Mapping for Port Entity! --> 
-    <class name="com.adaranet.model.Port">         
+    <class name="com.adaranet.model.Port" auto-complete="true">         
         <map-to xml="port" />
         <field name="portName" type="string" required="true">
             <bind-xml name="portName" node="element"/>
         </field>        
          <field name="portType" type="string" required="false">
             <bind-xml name="portType" node="element"/>
-        </field>         
+        </field>
+        <field name="packetsIn" type="string" required="false">
+            <bind-xml name="packetsIn" node="element"/>
+        </field>   
+        <field name="packetsOut" type="string" required="false">
+            <bind-xml name="packetsOut" node="element"/>
+        </field>   
+        <field name="bitsIn" type="string" required="false">
+            <bind-xml name="bitsIn" node="element"/>
+        </field>   
+        <field name="bitsOut" type="string" required="false">
+            <bind-xml name="bitsOut" node="element"/>
+        </field>   
         <field name="connectedPorts" type="com.adaranet.relationships.ConnectsToPort" collection="set">
              <bind-xml name="connectedPorts" />
         </field>        

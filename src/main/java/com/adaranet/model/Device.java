@@ -4,14 +4,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.neo4j.graphdb.Direction;
-import org.springframework.data.neo4j.annotation.Fetch;
 import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.Indexed;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedToVia;
+import org.springframework.data.neo4j.support.index.IndexType;
 
-import com.adaranet.relationships.ConnectedDevices;
 import com.adaranet.relationships.HasPort;
+import com.adaranet.util.RelationshipTypes;
 //import com.adaranet.relationships.ConnectsToDevice;
 //import javax.persistence.GeneratedValue;
 
@@ -24,72 +24,65 @@ public class Device {
 
     @GraphId
     private Long id;
-
-    //@Indexed(indexType = IndexType.FULLTEXT, indexName = "searchByDeviceName")
-    @Indexed(unique = true)
+    @Indexed(unique = true, indexType = IndexType.FULLTEXT, indexName = "searchByDeviceName")
     private String deviceName;
-    
     private String deviceType;
-    
-    //@Fetch
-    @RelatedToVia(type = "HAS_PORT", elementClass = HasPort.class, direction = Direction.OUTGOING)
-    private Set<HasPort> hasPorts = new HashSet<HasPort>();
+    private String cpuUtilization;
+    private String numberOfSessions;
     
     private Set<Port> deviceHasPortsSetMappedByXml = new HashSet<Port>();
-
-    /*@Fetch
-    @RelatedToVia(type = "CONNECTS_TO_DEVICE", direction = Direction.INCOMING, elementClass = ConnectsToDevice.class)
-    private Set<ConnectsToDevice> incomingPorts = new HashSet<ConnectsToDevice>();*/
+    
+    //@Fetch
+    @RelatedToVia(type = RelationshipTypes.HAS_PORT, elementClass = HasPort.class, direction = Direction.OUTGOING)
+    private Set<HasPort> hasPorts = new HashSet<HasPort>();
     
     public Port connectPortsAndDestinationDevice(Port sourcePort, Port destPort, Device destDevice) {
     	HasPort hasPort = new HasPort(this, sourcePort);
     	Port connectedPort = hasPort.getConnectedPort();
-    	//connectedPort.connectsToDevice(destDevice);
     	this.hasPorts.add(hasPort);
     	connectedPort.connectsToPort(destPort);
-    	//destPort.connectsToDevice(destDevice);
     	return destPort;
     }
 
-    @Fetch
-    //@JsonBackReference
-    @RelatedToVia(type = "CONNECTED_TO_DEVICE", elementClass = ConnectedDevices.class, direction = Direction.OUTGOING)
-    private Set<ConnectedDevices> outgoingDeviceConnections = new HashSet<ConnectedDevices>();
+    public Device() {
+    	
+	}
     
-    @Fetch
-    @RelatedToVia(type = "CONNECTED_TO_DEVICE", elementClass = ConnectedDevices.class, direction = Direction.INCOMING)
-    private Set<ConnectedDevices> incomingDeviceConnections = new HashSet<ConnectedDevices>();
-
-    public void connectsToDevice(Device endDevice, String value, String cost) {
-    	System.out.println("Inside connectsToDevice() : Saving all Outgoing Devices.");
-    	ConnectedDevices connectedDevices = new ConnectedDevices(this, endDevice, value, cost);
-    	this.outgoingDeviceConnections.add(connectedDevices);
-    	System.out.println("Size of Outgoing Device Connections : "+outgoingDeviceConnections.size());
-    }
+    public Device(String deviceName) {
+    	super();
+		this.deviceName = deviceName;
+	}
     
-    public void setDeviceHasPortsSetMappedByXml(
-			Set<Port> deviceHasPortsSetMappedByXml) {
+    public Device(String deviceName, String deviceType, String cpuUtilization, String numberOfSessions) {
+		super();
+		this.deviceName = deviceName;
+		this.deviceType = deviceType;
+		this.cpuUtilization = cpuUtilization;
+		this.numberOfSessions = numberOfSessions;
+	}
+ 
+    public void setDeviceHasPortsSetMappedByXml(Set<Port> deviceHasPortsSetMappedByXml) {
 		this.deviceHasPortsSetMappedByXml = deviceHasPortsSetMappedByXml;
 	}
     
     public Set<Port> getDeviceHasPortsSetMappedByXml() {
 		return deviceHasPortsSetMappedByXml;
 	}
-      
-    public Set<ConnectedDevices> getOutgoingDeviceConnections() {
-		return outgoingDeviceConnections;
+
+    public void setCpuUtilization(String cpuUtilization) {
+		this.cpuUtilization = cpuUtilization;
 	}
     
-    public Set<ConnectedDevices> getIncomingDeviceConnections() {
-		return incomingDeviceConnections;
-	}
-       
-    public Device() {
-    	
+    public String getCpuUtilization() {
+		return cpuUtilization;
 	}
     
-    public Device(String deviceName) {
-		this.deviceName = deviceName;
+    public void setNumberOfSessions(String numberOfSessions) {
+		this.numberOfSessions = numberOfSessions;
+	}
+    
+    public String getNumberOfSessions() {
+		return numberOfSessions;
 	}
 
     public Long getId() {

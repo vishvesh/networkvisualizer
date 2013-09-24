@@ -1,8 +1,6 @@
 package com.adaranet.model;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.neo4j.graphdb.Direction;
@@ -10,10 +8,11 @@ import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.Indexed;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedToVia;
+import org.springframework.data.neo4j.support.index.IndexType;
 
-//import com.adaranet.relationships.ConnectsToDevice;
 import com.adaranet.relationships.ConnectsToPort;
-import com.adaranet.relationships.HasPort;
+import com.adaranet.util.RelationshipTypes;
+//import com.adaranet.relationships.ConnectsToDevice;
 
 @NodeEntity
 public class Port {
@@ -24,20 +23,15 @@ public class Port {
 	
     @GraphId
     private Long id;
-
-    @Indexed(unique = true)
+    @Indexed(unique = true, indexType = IndexType.FULLTEXT, indexName = "searchByPortName")
     private String portName;
     private String portType;
+    private String packetsIn;
+    private String packetsOut;
+    private String bitsIn;
+    private String bitsOut;
     
-    /*@RelatedToVia(type = "CONNECTS_TO_DEVICE", direction = Direction.OUTGOING, elementClass = ConnectsToDevice.class)
-    private Set<ConnectsToDevice> connectedDevices = new HashSet<ConnectsToDevice>();
-    
-    public void connectsToDevice(Device destDevice) {
-    	ConnectsToDevice connectsToDevice = new ConnectsToDevice(this, destDevice);
-    	this.connectedDevices.add(connectsToDevice);
-    }*/
-    
-    @RelatedToVia(type = "CONNECTS_TO_PORT", direction = Direction.OUTGOING, elementClass = ConnectsToPort.class)
+    @RelatedToVia(type = RelationshipTypes.CONNECTS_TO_PORT, direction = Direction.OUTGOING, elementClass = ConnectsToPort.class)
     private Set<ConnectsToPort> connectedPorts = new HashSet<ConnectsToPort>();
     
     public void connectsToPort(Port destPort) {
@@ -58,15 +52,58 @@ public class Port {
     	
 	}
     
-    public Long getId() {
-		return id;
-	}
-    
     public Port(String portName, String portType) {
+    	super();
     	this.portName = portName;
     	this.portType = portType;
     }
     
+    public Port(String portName, String portType, String packetsIn, String packetsOut, String bitsIn, String bitsOut) {
+		super();
+		this.portName = portName;
+		this.portType = portType;
+		this.packetsIn = packetsIn;
+		this.packetsOut = packetsOut;
+		this.bitsIn = bitsIn;
+		this.bitsOut = bitsOut;
+	}
+
+	public Long getId() {
+		return id;
+	}
+    
+    public String getPacketsIn() {
+		return packetsIn;
+	}
+    
+    public String getPacketsOut() {
+		return packetsOut;
+	}
+    
+    public void setPacketsIn(String packetsIn) {
+		this.packetsIn = packetsIn;
+	}
+    
+    public void setPacketsOut(String packetsOut) {
+		this.packetsOut = packetsOut;
+	}
+    
+    public void setBitsIn(String bitsIn) {
+		this.bitsIn = bitsIn;
+	}
+    
+    public void setBitsOut(String bitsOut) {
+		this.bitsOut = bitsOut;
+	}
+    
+    public String getBitsIn() {
+		return bitsIn;
+	}
+    
+    public String getBitsOut() {
+		return bitsOut;
+	} 
+ 
     public void setPortName(String portName) {
 		this.portName = portName;
 	}
@@ -82,10 +119,6 @@ public class Port {
     public String getPortType() {
 		return portType;
 	}
-    
-    /*public Set<ConnectsToDevice> getConnectedDevice() {
-		return connectedDevices;
-	}*/
     
     public Set<ConnectsToPort> getConnectedPorts() {
 		return connectedPorts;

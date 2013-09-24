@@ -1,6 +1,5 @@
 package com.adaranet.relationships;
 
-import org.codehaus.jackson.annotate.JsonBackReference;
 import org.springframework.data.neo4j.annotation.EndNode;
 import org.springframework.data.neo4j.annotation.Fetch;
 import org.springframework.data.neo4j.annotation.GraphId;
@@ -10,8 +9,9 @@ import org.springframework.data.neo4j.annotation.StartNode;
 
 import com.adaranet.model.Device;
 import com.adaranet.model.Port;
+import com.adaranet.util.RelationshipTypes;
 
-@RelationshipEntity(type = "HAS_PORT")
+@RelationshipEntity(type = RelationshipTypes.HAS_PORT)
 public class HasPort {
 	@GraphId
 	private Long id;
@@ -33,6 +33,7 @@ public class HasPort {
 	}
 	
 	public HasPort(Device startDevice, Port connectedPort) {
+		super();
 		this.startDevice = startDevice;
 		this.connectedPort = connectedPort;
 	}
