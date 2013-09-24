@@ -39,7 +39,10 @@ public class RestController {
 	//@RequestMapping(value = "device/create", method=RequestMethod.POST, consumes = {MediaType.APPLICATION_XML_VALUE}, produces = {MediaType.APPLICATION_XML_VALUE})
     //@RequestMapping(value = "device/create", method=RequestMethod.POST, consumes = {MediaType.APPLICATION_XML_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
 	//Request Headers should have : Content-Type:application/xml;
-	@RequestMapping(value = "devices/createDevices", method=RequestMethod.POST, headers = "Accept=application/xml", consumes = {MediaType.APPLICATION_XML_VALUE})
+	@RequestMapping(value = "devices/createDevices", 
+					method=RequestMethod.POST, 
+					headers = "Accept=application/xml", 
+					consumes = {MediaType.APPLICATION_XML_VALUE})
 	public ResponseEntity<String> createDevicesFromXml(@RequestBody Source xml) throws Exception {
 		DeviceXmlMapper deviceXmlMapper = null;
 		try {
@@ -53,7 +56,10 @@ public class RestController {
 	}
 	
 	//Request Headers should have : Content-Type:application/xml;
-	@RequestMapping(value = "ports/createPortsForDevice", method=RequestMethod.POST, headers = "Accept=application/xml", consumes = {MediaType.APPLICATION_XML_VALUE})
+	@RequestMapping(value = "ports/createPortsForDevice", 
+					method=RequestMethod.POST, 
+					headers = "Accept=application/xml", 
+					consumes = {MediaType.APPLICATION_XML_VALUE})
 	public ResponseEntity<String> createPortsFromXml(@RequestBody Source xml) throws Exception {
 		PortXmlMapper portXmlMapper = null;
 		try {
