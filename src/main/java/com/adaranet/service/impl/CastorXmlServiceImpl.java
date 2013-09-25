@@ -36,20 +36,53 @@ public class CastorXmlServiceImpl implements CastorXmlService {
 	private Neo4jTemplate template;
 	
 	@Transactional
-	public ResponseEntity<String> createOrUpdateDevicesFromXml(DeviceXmlMapper deviceXmlMapper) {
+	public ResponseEntity<String> createDevicesFromXml(DeviceXmlMapper deviceXmlMapper) {
 		try {
 			//logger.info("Device Name : Converted from XML to Object Successfully : Device Name : "+device.getDeviceName());
 			List<Device> devices = deviceXmlMapper.getDevices();
 			logger.info("DeviceXmlMapper : Mapped Devices ArrayList : Size : "+devices.size());
 			for (Device device : devices) {		
-				logger.info("Saving/Updating New Device : in Neo4j : Having Device Name : "+device.getDeviceName());
-				deviceService.saveEntity(device);
+				logger.info("Saving New Device : in Neo4j : Having Device Name : "+device.getDeviceName());
+				Device foundDevice = deviceService.findDeviceByDeviceName(device.getDeviceName());
+				if(foundDevice == null) {
+					template.save(device);
+					logger.info("Device with Name : "+device.getDeviceName()+" : is Successfully Created/Persisted in Neo4j!");
+				} else {
+					logger.info("Device with Name : "+foundDevice.getDeviceName()+" : Already Exists in Neo4j! Cannot create it once agian!");
+				}
 			}
 		} catch(Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<String>("BAD_REQUEST : Check Data Format of the XML!", HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity<String>("Success, Device Saved/Updated in Neo4j", HttpStatus.OK);
+		return new ResponseEntity<String>("Success, Device(s) Saved in Neo4j", HttpStatus.OK);
+	}
+	
+	@Transactional
+	public ResponseEntity<String> updateDevicesFromXml(DeviceXmlMapper deviceXmlMapper) {
+		try {
+			//logger.info("Device Name : Converted from XML to Object Successfully : Device Name : "+device.getDeviceName());
+			List<Device> devices = deviceXmlMapper.getDevices();
+			logger.info("DeviceXmlMapper : Mapped Devices ArrayList : Size : "+devices.size());
+			for (Device device : devices) {		
+				logger.info("Updating New Device : in Neo4j : Having Device Name : "+device.getDeviceName());
+				Device foundDevice = deviceService.findDeviceByDeviceName(device.getDeviceName());
+				if(foundDevice != null) {
+					foundDevice.setCpuUtilization(device.getCpuUtilization());
+					foundDevice.setDeviceType(device.getDeviceType());
+					foundDevice.setNumberOfSessions(device.getNumberOfSessions());
+					//deviceService.saveEntity(device);
+					template.save(foundDevice);
+					logger.info("Updated Device : "+foundDevice.getDeviceName()+" : Succesfully!");
+				} else {
+					logger.info("No Device Exists in Neo4j with Name : "+device.getDeviceName());
+				}
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<String>("BAD_REQUEST : Check Data Format of the XML!", HttpStatus.BAD_REQUEST);
+		}
+		return new ResponseEntity<String>("Success, Device(s) Updated in Neo4j", HttpStatus.OK);
 	}
 	
 	@Transactional
@@ -74,17 +107,9 @@ public class CastorXmlServiceImpl implements CastorXmlService {
 						if(foundPort == null) {
 							logger.info("Should not execute this if Found Port != null");
 							logger.info("The Port with PortName : "+uniquePortName+" : DoesNotExist in Neo4j.. So, we can persist it.");
-							Port newPort = new Port();
-							newPort.setPortName(uniquePortName);
-							newPort.setPortType(port.getPortType());
-							newPort.setBitsIn(port.getBitsIn());
-							newPort.setBitsOut(port.getBitsOut());
-							newPort.setPacketsIn(port.getPacketsIn());
-							newPort.setPacketsOut(port.getPacketsOut());
+							Port newPort = new Port(uniquePortName, port.getPortType(), port.getPacketsIn(), port.getPacketsOut(), port.getBitsIn(), port.getBitsOut());
 							template.save(newPort);
-							HasPort hasPort = new HasPort();
-							hasPort.setStartDevice(foundDevice);
-							hasPort.setConnectedPort(newPort);
+							HasPort hasPort = new HasPort(foundDevice, newPort);
 							template.save(hasPort);
 							logger.info("Configured Port : "+port.getPortName()+" : for Device : "+device.getDeviceName()+" : with HAS_PORT Relationship Successfully!");
 						} else {

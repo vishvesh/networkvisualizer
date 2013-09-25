@@ -13,10 +13,12 @@ import com.adaranet.xml.xmlWrappers.ConnectionsWrapper;
 public interface CastorXmlService {
 
 	@Transactional
-	public ResponseEntity<String> createOrUpdateDevicesFromXml(DeviceXmlMapper deviceXmlMapper);
+	public ResponseEntity<String> createDevicesFromXml(DeviceXmlMapper deviceXmlMapper);
 	@Transactional
 	public ResponseEntity<String> createPortsFromXml(PortXmlMapper portXmlMapper);
 	@Transactional
 	public ResponseEntity<String> connectDevicePortsFromXml(ConnectionsWrapper connectionsWrapper);
+	@Transactional
+	public ResponseEntity<String> updateDevicesFromXml(DeviceXmlMapper deviceXmlMapper);
 	
 }
