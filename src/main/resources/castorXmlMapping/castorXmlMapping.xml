@@ -50,6 +50,9 @@
         <field name="destinationDevice" type="com.adaranet.model.Device">
              <bind-xml name="destinationDevice" />
         </field>
+        <field name="connectionProperties" type="com.adaranet.relationships.ConnectsToPort">
+             <bind-xml name="connectionProperties" />
+        </field>
     </class>
     <!-- END of Mapping for ConnectDevicePortsXmlMapper -->
     
@@ -121,5 +124,20 @@
         </field>        
     </class>
 	<!-- END of Mapping for Port Entity! -->
-
+	
+	<!-- START of Mapping for ConnectsToPort Relationship Entity! --> 
+    <class name="com.adaranet.relationships.ConnectsToPort" auto-complete="true">         
+        <map-to xml="connectionProperties" />
+        <field name="linkCapacity" type="string" required="false">
+            <bind-xml name="linkCapacity" node="element"/>
+        </field>        
+         <field name="availableBandwidth" type="string" required="false">
+            <bind-xml name="availableBandwidth" node="element"/>
+        </field>
+        <field name="latency" type="string" required="false">
+            <bind-xml name="latency" node="element"/>
+        </field>    
+    </class>
+	<!-- END of Mapping for ConnectsToPort Relationship Entity! -->
+	
 </mapping>

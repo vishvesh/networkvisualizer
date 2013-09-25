@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.adaranet.model.Device;
 import com.adaranet.model.Port;
+import com.adaranet.relationships.ConnectsToPort;
 import com.adaranet.relationships.HasPort;
 import com.adaranet.service.CastorXmlService;
 import com.adaranet.service.DeviceService;
@@ -195,6 +196,7 @@ public class CastorXmlServiceImpl implements CastorXmlService {
 			for (Connections connection : connections) {
 				Device sDevice = connection.getSourceDevice();
 				Device dDevice = connection.getDestinationDevice();
+				ConnectsToPort connectsToPort = connection.getConnectionProperties();
 				if(!sDevice.getDeviceName().equals(dDevice.getDeviceName())) {
 					Device sourceDevice = deviceService.findDeviceByDeviceName(sDevice.getDeviceName());
 					Device destinationDevice = deviceService.findDeviceByDeviceName(dDevice.getDeviceName());
@@ -205,7 +207,7 @@ public class CastorXmlServiceImpl implements CastorXmlService {
 						Port sourcePort = portService.findPortByPortName((sourceDevice.getDeviceName())+"-"+(sourcePortName));
 						Port destinationPort = portService.findPortByPortName((destinationDevice.getDeviceName())+"-"+(destPortName));
 						if(null != sourcePort && null != destinationPort) {
-							sourcePort.connectsToPort(destinationPort);
+							sourcePort.connectsToPort(destinationPort, connectsToPort.getLinkCapacity(), connectsToPort.getAvailableBandwidth(), connectsToPort.getLatency());
 							template.save(sourcePort);
 							logger.info("Port : "+sourcePort.getPortName()+" : is Successfully Connected to : "+destinationPort.getPortName());
 						} else {

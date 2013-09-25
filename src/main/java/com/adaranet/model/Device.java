@@ -36,14 +36,6 @@ public class Device {
     //@Fetch
     @RelatedToVia(type = RelationshipTypes.HAS_PORT, elementClass = HasPort.class, direction = Direction.OUTGOING)
     private Set<HasPort> hasPorts = new HashSet<HasPort>();
-    
-    public Port connectPortsAndDestinationDevice(Port sourcePort, Port destPort, Device destDevice) {
-    	HasPort hasPort = new HasPort(this, sourcePort);
-    	Port connectedPort = hasPort.getConnectedPort();
-    	this.hasPorts.add(hasPort);
-    	connectedPort.connectsToPort(destPort);
-    	return destPort;
-    }
 
     public Device() {
     	

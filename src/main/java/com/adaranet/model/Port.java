@@ -35,8 +35,9 @@ public class Port {
     @RelatedToVia(type = RelationshipTypes.CONNECTS_TO_PORT, direction = Direction.OUTGOING, elementClass = ConnectsToPort.class)
     private Set<ConnectsToPort> connectedPorts = new HashSet<ConnectsToPort>();
     
-    public void connectsToPort(Port destPort) {
-    	ConnectsToPort connectsToPort = new ConnectsToPort(this, destPort);
+    public void connectsToPort(Port destPort, String linkCapacity, String availableBandwidth, String latency) {
+    	//ConnectsToPort connectsToPort = new ConnectsToPort(this, destPort);
+    	ConnectsToPort connectsToPort = new ConnectsToPort(this, destPort, linkCapacity, availableBandwidth, latency);
     	this.connectedPorts.add(connectsToPort);
     	System.out.println("Connected Ports HashSet Size : "+connectedPorts.size());
     }

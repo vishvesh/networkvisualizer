@@ -114,7 +114,9 @@ public class DeviceController {
 	@RequestMapping(value = "/connectDevicesViaPorts", method = RequestMethod.POST)
 	@Transactional
 	public String connectDevices(@RequestParam("startNode") String startNode, @RequestParam("endNode") String endNode,
-								 @RequestParam("startPort") String startPort, @RequestParam("endPort") String endPort) throws Exception {
+								 @RequestParam("startPort") String startPort, @RequestParam("endPort") String endPort,
+								 @RequestParam("linkCapacity") String linkCapacity, @RequestParam("availableBandwidth") String availableBandwidth,
+								 @RequestParam("latency") String latency) throws Exception {
 		Device startDevice = deviceService.findDeviceByDeviceName(startNode); //searchDeviceByDeviceName(startNode);		
 		Device endDevice = deviceService.findDeviceByDeviceName(endNode); //searchDeviceByDeviceName(endNode);		
     	if(startDevice != null && endDevice != null) {
@@ -152,7 +154,8 @@ public class DeviceController {
     		//Object reference comparison(Not object itself).
     		if(sourcePort != null && destPort != null) { 
     			logger.info("Found both the ports for both the devices. Therefore, connecting Two Ports.");
-    			sourcePort.connectsToPort(destPort);
+    			//sourcePort.connectsToPort(destPort);
+    			sourcePort.connectsToPort(destPort, linkCapacity, availableBandwidth, latency);
     			template.save(sourcePort);
     			logger.info("Saved the 'ConnectsToPort' relationship in neo4j.");
     		} else {
