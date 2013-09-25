@@ -23,6 +23,7 @@ public class Port {
 	
     @GraphId
     private Long id;
+    //@Indexed(unique = true)
     @Indexed(unique = true, indexType = IndexType.FULLTEXT, indexName = "searchByPortName")
     private String portName;
     private String portType;

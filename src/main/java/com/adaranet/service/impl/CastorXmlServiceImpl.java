@@ -36,20 +36,20 @@ public class CastorXmlServiceImpl implements CastorXmlService {
 	private Neo4jTemplate template;
 	
 	@Transactional
-	public ResponseEntity<String> createDevicesFromXml(DeviceXmlMapper deviceXmlMapper) {
+	public ResponseEntity<String> createOrUpdateDevicesFromXml(DeviceXmlMapper deviceXmlMapper) {
 		try {
 			//logger.info("Device Name : Converted from XML to Object Successfully : Device Name : "+device.getDeviceName());
 			List<Device> devices = deviceXmlMapper.getDevices();
 			logger.info("DeviceXmlMapper : Mapped Devices ArrayList : Size : "+devices.size());
 			for (Device device : devices) {		
-				logger.info("Saving New Device : in Neo4j : Having Device Name : "+device.getDeviceName());
+				logger.info("Saving/Updating New Device : in Neo4j : Having Device Name : "+device.getDeviceName());
 				deviceService.saveEntity(device);
 			}
 		} catch(Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<String>("BAD_REQUEST : Check Data Format of the XML!", HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity<String>("Success, Device Saved in Neo4j", HttpStatus.OK);
+		return new ResponseEntity<String>("Success, Device Saved/Updated in Neo4j", HttpStatus.OK);
 	}
 	
 	@Transactional
@@ -69,11 +69,18 @@ public class CastorXmlServiceImpl implements CastorXmlService {
 					for (Port port : hasPorts) {
 						logger.info("Connected Port Name : "+port.getPortName()+" : To Device : "+device.getDeviceName());
 						String uniquePortName = device.getDeviceName()+"-"+port.getPortName();
-						if(portService.findPortByPortName(uniquePortName) == null) {
+						Port foundPort = portService.findPortByPortName(uniquePortName);
+						logger.info("FOUND PORTTTTTTTTT : "+foundPort);
+						if(foundPort == null) {
+							logger.info("Should not execute this if Found Port != null");
 							logger.info("The Port with PortName : "+uniquePortName+" : DoesNotExist in Neo4j.. So, we can persist it.");
 							Port newPort = new Port();
-							newPort.setPortName(port.getPortName());
+							newPort.setPortName(uniquePortName);
 							newPort.setPortType(port.getPortType());
+							newPort.setBitsIn(port.getBitsIn());
+							newPort.setBitsOut(port.getBitsOut());
+							newPort.setPacketsIn(port.getPacketsIn());
+							newPort.setPacketsOut(port.getPacketsOut());
 							template.save(newPort);
 							HasPort hasPort = new HasPort();
 							hasPort.setStartDevice(foundDevice);

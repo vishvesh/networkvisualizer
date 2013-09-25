@@ -24,6 +24,7 @@ public class Device {
 
     @GraphId
     private Long id;
+    //@Indexed(unique = true)
     @Indexed(unique = true, indexType = IndexType.FULLTEXT, indexName = "searchByDeviceName")
     private String deviceName;
     private String deviceType;

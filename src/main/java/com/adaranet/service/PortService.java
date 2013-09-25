@@ -10,5 +10,6 @@ import com.adaranet.service.generic.GenericService;
 @Service
 @Transactional
 public interface PortService extends GenericService<Port> {
+	@Transactional
 	public Port findPortByPortName(String portName);
 }

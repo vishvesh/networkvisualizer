@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -39,20 +40,20 @@ public class RestController {
 	//@RequestMapping(value = "device/create", method=RequestMethod.POST, consumes = {MediaType.APPLICATION_XML_VALUE}, produces = {MediaType.APPLICATION_XML_VALUE})
     //@RequestMapping(value = "device/create", method=RequestMethod.POST, consumes = {MediaType.APPLICATION_XML_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
 	//Request Headers should have : Content-Type:application/xml;
-	@RequestMapping(value = "devices/createDevices", 
+	@RequestMapping(value = {"devices/createDevices", "devices/updateDevices"}, 
 					method=RequestMethod.POST, 
 					headers = "Accept=application/xml", 
 					consumes = {MediaType.APPLICATION_XML_VALUE})
-	public ResponseEntity<String> createDevicesFromXml(@RequestBody Source xml) throws Exception {
+	public ResponseEntity<String> createOrUpdateDevicesFromXml(@RequestBody Source xml) throws Exception {
 		DeviceXmlMapper deviceXmlMapper = null;
 		try {
-			logger.info("Inside createDeviceFromXml() : XML is : "+xml);
+			logger.info("Inside createOrUpdateDevicesFromXml() : XML is : "+xml);
 			deviceXmlMapper = (DeviceXmlMapper) CastorXmlMapperUtils.convertFromXMLToObjectFromInputSource(xml);
 		} catch(Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<String>("BAD_REQUEST : Check Data Format of the XML!", HttpStatus.BAD_REQUEST);
 		}
-		return castorXmlService.createDevicesFromXml(deviceXmlMapper);
+		return castorXmlService.createOrUpdateDevicesFromXml(deviceXmlMapper);
 	}
 	
 	//Request Headers should have : Content-Type:application/xml;

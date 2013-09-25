@@ -41,6 +41,7 @@ public class PortServiceImpl implements PortService {
 		return portRepository.count();
 	}
 
+	@Transactional
 	public Port findPortByPortName(String portName) {
 		return portRepository.findPortByPortName(portName);
 	}
