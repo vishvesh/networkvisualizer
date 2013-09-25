@@ -131,6 +131,57 @@ public class CastorXmlServiceImpl implements CastorXmlService {
 		logger.info("");
 		return new ResponseEntity<String>("Success, Ports Saved in Neo4j", HttpStatus.OK);
 	}
+	
+	
+	@Transactional
+	public ResponseEntity<String> updatePortsFromXml(PortXmlMapper portXmlMapper) {
+		long startTime = System.currentTimeMillis();
+		logger.info("");
+		logger.info("**********************************************************************************************");
+		try {
+			List<Device> devices = portXmlMapper.getDeviceHasPorts();
+			logger.info("Devices List Size : "+devices.size());
+			for (Device device : devices) {
+				logger.info("Device Name : Converted from XML to Object Successfully : Device Name : "+device.getDeviceName());
+				Device foundDevice = deviceService.findDeviceByDeviceName(device.getDeviceName());
+				if(!(foundDevice == null)) {
+					Set<Port> hasPorts = device.getDeviceHasPortsSetMappedByXml();
+					logger.info("Has Ports Set Size : "+hasPorts.size());
+					for (Port port : hasPorts) {
+						logger.info("Connected Port Name : "+port.getPortName()+" : To Device : "+device.getDeviceName());
+						String uniquePortName = device.getDeviceName()+"-"+port.getPortName();
+						Port foundPort = portService.findPortByPortName(uniquePortName);
+						logger.info("FOUND PORTTTTTTTTT : "+foundPort);
+						if(foundPort == null) {
+							logger.info("The Port with PortName : "+uniquePortName+" : DoesNotExist in Neo4j..");
+						} else {
+							logger.info("The Port with PortName : "+uniquePortName+" : Already Exists in Neo4j.");
+							logger.info("Updating Port!");
+							foundPort.setBitsIn(port.getBitsIn());
+							foundPort.setBitsOut(port.getBitsOut());
+							foundPort.setPacketsIn(port.getPacketsIn());
+							foundPort.setPacketsOut(port.getPacketsOut());
+							foundPort.setPortType(port.getPortType());
+							template.save(foundPort);
+							logger.info("Port : "+foundPort.getPortName()+" : Successfully Updated!");
+						}
+					}
+				} else {
+					logger.info("The Device with Name : "+device.getDeviceName()+" : Does not Exist in Neo4j.");
+				}
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<String>("BAD_REQUEST : Check Data Format of the XML!", HttpStatus.BAD_REQUEST);
+		}
+		long endTime   = System.currentTimeMillis();
+    	long totalTime = endTime - startTime;
+    	logger.info("TIME TOOK FOR THE METHOD TO COMPLETE : "+totalTime+" : milli seconds");
+		logger.info("**********************************************************************************************");
+		logger.info("");
+		return new ResponseEntity<String>("Success, Ports Saved in Neo4j", HttpStatus.OK);
+	}
+	
 
 	@SuppressWarnings("finally")
 	@Transactional

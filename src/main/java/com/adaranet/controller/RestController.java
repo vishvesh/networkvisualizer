@@ -86,6 +86,7 @@ public class RestController {
 		return castorXmlService.updateDevicesFromXml(deviceXmlMapper);
 	}
 	
+	
 	/**
 	 * Create Ports for Device(s)
 	 * @param xml
@@ -93,7 +94,7 @@ public class RestController {
 	 * @throws Exception
 	 */
 	//Request Headers should have : Content-Type:application/xml;
-	@RequestMapping(value = "ports/createPortsForDevice", 
+	@RequestMapping(value = "ports/createPorts", 
 					method=RequestMethod.POST, 
 					headers = "Accept=application/xml", 
 					consumes = {MediaType.APPLICATION_XML_VALUE})
@@ -108,6 +109,31 @@ public class RestController {
 		}
 		return castorXmlService.createPortsFromXml(portXmlMapper);
 	}
+	
+	
+	/**
+	 * Create Ports for Device(s)
+	 * @param xml
+	 * @return
+	 * @throws Exception
+	 */
+	//Request Headers should have : Content-Type:application/xml;
+	@RequestMapping(value = "ports/updatePorts", 
+					method=RequestMethod.POST, 
+					headers = "Accept=application/xml", 
+					consumes = {MediaType.APPLICATION_XML_VALUE})
+	public ResponseEntity<String> updatePortsFromXml(@RequestBody Source xml) throws Exception {
+		PortXmlMapper portXmlMapper = null;
+		try {
+			logger.info("Inside updatePortsFromXml() : XML is : "+xml);
+			portXmlMapper = (PortXmlMapper) CastorXmlMapperUtils.convertFromXMLToObjectFromInputSource(xml);
+		} catch(Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<String>("BAD_REQUEST : Check Data Format of the XML!", HttpStatus.BAD_REQUEST);
+		}
+		return castorXmlService.updatePortsFromXml(portXmlMapper);
+	}
+	
 	
 	/**
 	 * Connect Existing Device Ports!

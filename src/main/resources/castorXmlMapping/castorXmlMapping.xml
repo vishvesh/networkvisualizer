@@ -21,7 +21,7 @@
     
     <!-- START of Mapping for PortXmlMapper! -->
     <class name="com.adaranet.xml.PortXmlMapper">         
-        <map-to xml="createPortsForDevice" />  
+        <map-to xml="ports" />  
         <field name="deviceHasPorts" type="com.adaranet.model.Device" collection="arraylist">
              <bind-xml name="device" />
         </field>
