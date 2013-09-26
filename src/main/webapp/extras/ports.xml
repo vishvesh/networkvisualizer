@@ -1,0 +1,50 @@
+XML for Creation of PORT(S) for Device(s):
+URL: 10.10.1.148:8080/networkvisualizer/ports/createPorts
+URL: 10.10.1.148:8080/networkvisualizer/ports/updatePorts
+
+<?xml version="1.0" encoding="UTF-8"?>
+  <ports>
+   <device>
+       <deviceName>Device1</deviceName>
+       <hasPorts>
+          <port>
+              <portName>em0</portName>
+              <portType>Ethernet</portType>
+              <packetsIn>500</packetsIn>
+              <packetsOut>54</packetsOut>
+              <bitsIn>4000</bitsIn>
+              <bitsOut>3243</bitsOut>
+          </port>
+          <port>
+              <portName>em4</portName>
+              <portType>Ethernet</portType>
+              <packetsIn>20</packetsIn>
+              <packetsOut>30</packetsOut>
+              <bitsIn>5</bitsIn>
+              <bitsOut>7</bitsOut>
+          </port>
+       </hasPorts>
+      </device>
+     <device>
+        <deviceName>Device2</deviceName>
+        <hasPorts>
+           <port>
+              <portName>em10</portName>
+              <portType>Ethernet</portType>
+              <packetsIn>50</packetsIn>
+              <packetsOut>20</packetsOut>
+              <bitsIn>10</bitsIn>
+              <bitsOut>9</bitsOut>
+          </port>
+          <port>
+              <portName>em12</portName>
+              <portType>Ethernet</portType>
+              <packetsIn>30</packetsIn>
+              <packetsOut>10</packetsOut>
+              <bitsIn>7</bitsIn>
+              <bitsOut>8</bitsOut>
+          </port>
+       </hasPorts>
+     </device>
+  </ports>
+

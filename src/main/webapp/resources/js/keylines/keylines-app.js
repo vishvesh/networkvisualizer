@@ -44,15 +44,15 @@ function afterChartCreated(err, loadedChart) {
   chart.load({type: 'LinkChart', items: items}, function() {
   	chart.zoom('fit', {}, applyStandardLayout);
   	
-	  	//var arr = [[10,14,16,12,15,17,18,19], [13,22,21,20,26,23,24,25]];
-  	var arr = [[10,14,16,12,15,17,18,19], [13,22,21,20,26,23,24,25]];
+  	//var arr = [[10,14,16,12,15,17,18,19], [13,22,21,20,26,23,24,25]];
+  	var arr = [522, 521];
   	setTimeout(function() {
 	  	
-	  	chart.arrange('grid', arr[0], {fit: true, animate: true, tightness : 10});
+	  	chart.arrange('grid', arr, {fit: true, animate: true, tightness : 10});
   	}, 1000);
-  	setTimeout(function() {
+  	/*setTimeout(function() {
 	  	chart.arrange('grid', arr[1], {fit: true, animate: true, tightness : 10});
-	  	}, 2000);
+	  	}, 2000);*/
   	/*setTimeout(function() {
 	  	var arr = [[10,14,16,12,15,17,18,19], [13,22,21,20,26,23,24,25]];
 	  	

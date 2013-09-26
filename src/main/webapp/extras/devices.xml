@@ -1,0 +1,19 @@
+XML for Creation of Device(s):
+URL: 10.10.1.148:8080/networkvisualizer/devices/createDevices
+URL: 10.10.1.148:8080/networkvisualizer/devices/updateDevices
+
+<?xml version="1.0" encoding="UTF-8"?>
+<devices>
+    <device>
+       <deviceName>Device1</deviceName>
+       <deviceType>Router</deviceType>
+       <cpuUtilization>99</cpuUtilization>
+       <numberOfSessions>325</numberOfSessions>
+    </device>
+    <device>
+       <deviceName>Device2</deviceName>
+       <deviceType>Virtual Machine</deviceType>
+       <cpuUtilization>55</cpuUtilization>
+       <numberOfSessions>200</numberOfSessions>
+    </device>
+</devices>

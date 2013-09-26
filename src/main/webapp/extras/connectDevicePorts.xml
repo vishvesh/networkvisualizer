@@ -1,0 +1,52 @@
+XML for Connecting PORTS:
+URL: 10.10.1.148:8080 /networkvisualizer/ports/connectDevicePorts
+
+<?xml version="1.0" encoding="UTF-8"?>
+  <connectDevicePorts>
+      <connections>
+         <sourceDevice>
+            <deviceName>Device1</deviceName>
+            <hasPort>
+                <port>
+                    <portName>em0</portName>
+                </port>
+            </hasPort>
+         </sourceDevice>
+         <destinationDevice>
+            <deviceName>Device2</deviceName>
+            <hasPort>
+                <port>
+                    <portName>em10</portName>
+                </port>
+            </hasPort>
+          </destinationDevice>
+          <connectionProperties>
+              <linkCapacity>5723467234</linkCapacity>
+              <availableBandwidth>2131</availableBandwidth>
+              <latency>59</latency>
+          </connectionProperties>
+      </connections>
+     <connections>
+         <sourceDevice>
+            <deviceName>Device1</deviceName>
+            <hasPort>
+                <port>
+                    <portName>em4</portName>
+                </port>
+            </hasPort>
+         </sourceDevice>
+         <destinationDevice>
+            <deviceName>Device2</deviceName>
+            <hasPort>
+                <port>
+                    <portName>em10</portName>
+                </port>
+            </hasPort>
+          </destinationDevice>
+          <connectionProperties>
+              <linkCapacity>1000</linkCapacity>
+              <availableBandwidth>1024</availableBandwidth>
+              <latency>99</latency>
+          </connectionProperties>
+      </connections>
+</connectDevicePorts>
