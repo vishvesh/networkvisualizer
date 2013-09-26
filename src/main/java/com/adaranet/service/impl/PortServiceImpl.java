@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.adaranet.model.Port;
+import com.adaranet.relationships.ConnectsToPort;
 import com.adaranet.repository.PortRepository;
 import com.adaranet.service.PortService;
 
@@ -44,6 +45,11 @@ public class PortServiceImpl implements PortService {
 	@Transactional
 	public Port findPortByPortName(String portName) {
 		return portRepository.findPortByPortName(portName);
+	}
+
+	@Transactional
+	public ConnectsToPort findConnectsToRelationshipByPortNames(String sourcePortName, String destPortName) {
+		return portRepository.findConnectsToRelationshipByPortNames(sourcePortName, destPortName);
 	}
 
 

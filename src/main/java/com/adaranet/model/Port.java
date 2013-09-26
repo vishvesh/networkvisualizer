@@ -32,11 +32,37 @@ public class Port {
     private String bitsIn;
     private String bitsOut;
     
+    /*@Query(type = QueryType.Cypher, value = "START root = node({self}) " +
+			"MATCH (root) - [relationship:CONNECTS_TO_PORT] -> port " +
+			"RETURN relationship")
+    private Iterable<ConnectsToPort> connectedToPorts;
+    
+    @Autowired
+    private transient PortService portService;*/
+    
     @RelatedToVia(type = RelationshipTypes.CONNECTS_TO_PORT, direction = Direction.OUTGOING, elementClass = ConnectsToPort.class)
     private Set<ConnectsToPort> connectedPorts = new HashSet<ConnectsToPort>();
     
     public void connectsToPort(Port destPort, String linkCapacity, String availableBandwidth, String latency) {
     	//ConnectsToPort connectsToPort = new ConnectsToPort(this, destPort);
+    	
+    	for (ConnectsToPort connection : connectedPorts) {
+    		System.out.println("CONNECTEDPORTS=========");
+    		System.out.println(connection.getSourcePort().getPortName());
+    		System.out.println(connection.getDestPort().getPortName());
+    		System.out.println(connection.getAvailableBandwidth());
+    		System.out.println(connection.getLatency());
+    		System.out.println(connection.getLinkCapacity());
+    		
+    		if(connection.getDestPort().getPortName().equals(destPort.getPortName())) {
+    			System.out.println("FOUND Connection : "+connection.getAvailableBandwidth());
+    			this.connectedPorts.remove(connection);
+    			System.out.println("ConnectedPorts HasSet Size After Removal : "+connectedPorts.size());
+    		} else {
+    			System.out.println("Connection NOT Found!");
+    		}
+    	}
+
     	ConnectsToPort connectsToPort = new ConnectsToPort(this, destPort, linkCapacity, availableBandwidth, latency);
     	this.connectedPorts.add(connectsToPort);
     	System.out.println("Connected Ports HashSet Size : "+connectedPorts.size());
