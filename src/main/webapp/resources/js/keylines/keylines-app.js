@@ -1,4 +1,12 @@
 
+console.isDebug = true;
+
+window.console.real = window.console.log;
+window.console.log = function(stuff) {
+	if(this.isDebug)
+		this.real(stuff);
+};
+
 var chart; //Global Chart Object!
 
 /************************************/
@@ -6,6 +14,14 @@ var chart; //Global Chart Object!
 /************************************/
 
 $(window).load(function () {
+	
+	
+	if("WebSocket" in window) {
+		console.log("WebSocket is Available!");	
+	} else {
+		console.log("WebSocket is NOT Available!");
+	}
+	
   //KeyLines.mode(readCookie('mode') || 'auto');
   //KeyLines.setCanvasPaths('assets/');
   //KeyLines.setFlashPaths('public/keylines.swf', 'vendor/swfobject.js', 'vendor/expressInstall.swf');
