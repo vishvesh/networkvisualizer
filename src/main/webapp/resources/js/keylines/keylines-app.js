@@ -14,14 +14,7 @@ var chart; //Global Chart Object!
 /************************************/
 
 $(window).load(function () {
-	
-	
-	if("WebSocket" in window) {
-		console.log("WebSocket is Available!");	
-	} else {
-		console.log("WebSocket is NOT Available!");
-	}
-	
+
   //KeyLines.mode(readCookie('mode') || 'auto');
   //KeyLines.setCanvasPaths('assets/');
   //KeyLines.setFlashPaths('public/keylines.swf', 'vendor/swfobject.js', 'vendor/expressInstall.swf');
@@ -60,12 +53,29 @@ function afterChartCreated(err, loadedChart) {
   chart.load({type: 'LinkChart', items: items}, function() {
   	chart.zoom('fit', {}, applyStandardLayout);
   	
+  	//setTimeout(function() {
+	  	
+  	//}, 1000);
+  	
+  	chart.bind('viewchange', function(change) {
+  		chart.arrange('grid', [521,522], {fit: true, animate: true, tightness: 20});
+  		/*console.log("Triggers! : "+change);
+  		if(change == 'layout') {
+  			chart.each({type:'node'}, function (item) {
+			  console.log(item.t);
+		      if (item.w && item.h) {
+		        return chart.contains(item);
+		      }
+			});
+  		}*/
+    });
+  	
   	//var arr = [[10,14,16,12,15,17,18,19], [13,22,21,20,26,23,24,25]];
-  	var arr = [522, 521];
+  	/*var arr = [522, 521];
   	setTimeout(function() {
 	  	
 	  	chart.arrange('grid', arr, {fit: true, animate: true, tightness : 10});
-  	}, 1000);
+  	}, 1000);*/
   	/*setTimeout(function() {
 	  	chart.arrange('grid', arr[1], {fit: true, animate: true, tightness : 10});
 	  	}, 2000);*/
@@ -76,6 +86,7 @@ function afterChartCreated(err, loadedChart) {
   	}, 1000);*/
   	
   	/*setTimeout(function() {
+
 	  	chart.combo().combine(
 		{
 			ids: combineArr,
@@ -98,6 +109,15 @@ function afterChartCreated(err, loadedChart) {
 	  //chart.arrange('grid', arr[0], {fit: true, animate: true, tightness : 10});
 	  //chart.arrange('grid', arr[1], {fit: true, animate: true, tightness : 10});
   	}, 400);*/
+  });
+  
+  chart.bind('dragstart', function (dragtype, id) {
+    if (dragtype === 'move') {
+      var item = chart.getItem(id);
+      if (item.w && item.h) {
+        return chart.contains(item);
+      }
+    }
   });
   
   //callCypher(ratingsQuery, true);
@@ -295,7 +315,7 @@ function parseLink(portConnections, type) {
 			    id: sourcePortId + '-' + connectedPortId,
 			    //t: labelDictionary[item.type],
 			    //t: 'Port Type: '+sourcePort.portType,
-			    t: 'connects_to',
+			    t: 'em0-em10'+'\n1000000\n300\n1.725%',
 			    a1: true,
 			    a2: true,
 			    c: 'rgb(55, 55, 255)',
@@ -439,13 +459,12 @@ function calculateShortestPaths(id1, id2, opts) {
 	}
 }
 
-
 function applyStandardLayout() {
-  chart.layout('standard', {fit: true, animate: true, tidy: true});
+  chart.layout('standard', {animate: true});
 }
 
 function applyHierarchyLayout() {
-  chart.layout('hierarchy', {fit: true, animate: true, tidy: true});
+  chart.layout('hierarchy', {fit: true, animate: true});
 }
 
 function applyRadialLayout() { 
