@@ -10,10 +10,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.adaranet.model.Device;
-import com.adaranet.model.Port;
 import com.adaranet.model.Ports;
 import com.adaranet.service.DeviceService;
-import com.adaranet.service.PortService;
+import com.adaranet.service.PortsService;
 
 @Controller
 public class PortController {
@@ -21,9 +20,9 @@ public class PortController {
 	protected Logger logger = Logger.getLogger(getClass());
 
 	@Autowired
-	private DeviceService deviceService;	
+	private DeviceService deviceService;
 	@Autowired
-	private PortService portService;
+	private PortsService portsService;
 	@Autowired
 	private Neo4jTemplate template;
 
@@ -32,8 +31,8 @@ public class PortController {
     @Transactional
     public String deletePort(@RequestParam("portName") String portName) {
 		logger.info("Deleting Port with Port Name : "+portName);
-    	Port foundPort = portService.findPortByPortName(portName);
-    	portService.deleteEntity(foundPort);
+		Ports foundPort = portsService.findPortByPortName(portName);
+    	portsService.deleteEntity(foundPort);
         return "redirect:/listAllDevicesAndPorts";
     }
 	
@@ -42,14 +41,14 @@ public class PortController {
 	@Transactional
 	public String deleteAllPorts() throws Exception {
 		logger.info("Comes in inside deleteAllPorts()");
-		Iterable<Port> allPortsFromDb = portService.findAll();
+		Iterable<Ports> allPortsFromDb = portsService.findAll();
     	if(allPortsFromDb.iterator().hasNext()) {
     		logger.info("Deleting all the Ports from Neo4j");
-    		portService.deleteAll(); //TODO: Need to Delete this....		
+    		portsService.deleteAll(); //TODO: Need to Delete this....		
     		logger.info("Deleted all the Ports from Neo4j.");   		
     	} else {
     		logger.info("No Ports Found/Persisted in Neo4j that are to be deleted!");
-    	} 	
+    	}
 		return "redirect:/listAllDevicesAndPorts";
 	}
 	
