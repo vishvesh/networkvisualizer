@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.adaranet.model.Device;
 import com.adaranet.model.Port;
-import com.adaranet.relationships.HasPort;
+import com.adaranet.model.Ports;
 import com.adaranet.service.DeviceService;
 import com.adaranet.service.PortService;
 
@@ -64,17 +64,25 @@ public class PortController {
 	    	logger.info("Unique Device Port Name : "+uniqueDevicePortName);
 	    	
 	    	Device device = deviceService.findDeviceByDeviceName(deviceName);
-	    	Port checkIfPortExists = portService.findPortByPortName(uniqueDevicePortName);
+	    	//Port checkIfPortExists = portService.findPortByPortName(uniqueDevicePortName);
+	    	Ports checkIfPortExists = null;
+	    	if(device != null) {
+	    		logger.info("Found Device : "+deviceName);
+		    	for (Ports port : device.getHasPorts()) {
+					if(port.getPortName().equals(uniqueDevicePortName)) {
+						checkIfPortExists = port;
+					}
+				}
+	    	} else {
+	    		logger.info("Device IS NULL! : "+deviceName);
+	    	}
 	    	
 	    	if(device != null && checkIfPortExists == null) {
 	    		logger.info("Found the device.. Also, Port does not exist already in the DB, so processing further!!!!!");
-	    		Port newPort = new Port(uniqueDevicePortName, "Ethernet");
-	    		template.save(newPort);
-	    		HasPort hasPort = new HasPort();
-	    		hasPort.setStartDevice(device);
-	    		hasPort.setConnectedPort(newPort);
-	    		template.save(hasPort);
-		    	//portService.saveEntity(newPort);
+	    		Ports newPort = new Ports();
+	    		newPort.setPortName(uniqueDevicePortName);
+	    		device.getHasPorts().add(newPort);
+	    		template.save(device);
 		    	logger.info("Persisted New Port in the DB & Associated it with the Device.");
 	    	} else {
 	    		logger.info("Port already exists in Neo4j : With Port Name : "+uniqueDevicePortName);

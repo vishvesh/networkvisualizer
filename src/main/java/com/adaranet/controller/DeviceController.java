@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.neo4j.helpers.collection.IteratorUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.support.Neo4jTemplate;
@@ -18,17 +17,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.adaranet.dto.DeviceDto;
-import com.adaranet.dto.PortDto;
-import com.adaranet.jsonBeans.DevicePortJsonBeanMapper;
-import com.adaranet.jsonBeans.DevicesJsonBean;
-import com.adaranet.jsonBeans.PortsJsonBean;
 import com.adaranet.model.Device;
 import com.adaranet.model.Port;
-import com.adaranet.relationships.HasPort;
+import com.adaranet.model.Ports;
 import com.adaranet.service.DeviceService;
 import com.adaranet.service.PortService;
 
@@ -56,7 +49,12 @@ public class DeviceController {
 		List<Device> devices = (List<Device>) IteratorUtil.asCollection(deviceService.findAll());
 		model.put("devices", devices);
 		
-    	List<Port> ports = (List<Port>) IteratorUtil.asCollection(portService.findAll());
+		Set<Ports> ports = new HashSet<Ports>();
+		for (Device device : devices) {
+			ports.addAll(device.getHasPorts());
+		}
+		System.out.println("Ports size : "+ports.size());
+    	//List<Port> ports = (List<Port>) IteratorUtil.asCollection(portService.findAll());
     	model.put("ports", ports);
 		return new ModelAndView("devicesList", model);
 	}
@@ -93,7 +91,7 @@ public class DeviceController {
 		if(deviceName != null && !deviceName.isEmpty() && !deviceName.equals("")) {		
 	    	logger.info("Adding few dummy devices in the neo4j-graph-db");  	
 	    	//Device newDevice = template.save(new Device(deviceName));
-	    	Device newDevice = new Device(deviceName);    		
+	    	Device newDevice = new Device(deviceName);
 	    	deviceService.saveEntity(newDevice);	    	
 	    	Iterable<Device> devices = deviceService.findAll();    	
 	    	if(devices.iterator().hasNext()) {
@@ -111,6 +109,7 @@ public class DeviceController {
     }
 
 	
+	@SuppressWarnings("unused")
 	@RequestMapping(value = "/connectDevicesViaPorts", method = RequestMethod.POST)
 	@Transactional
 	public String connectDevices(@RequestParam("startNode") String startNode, @RequestParam("endNode") String endNode,
@@ -131,7 +130,7 @@ public class DeviceController {
     		Port sourcePort = null;
     		Port destPort = null;
     		
-    		Set<Port> startDeviceHasPort = startDevice.getOutgoingConnectingPortsFromDevice();
+    		/*Set<Port> startDeviceHasPort = startDevice.getOutgoingConnectingPortsFromDevice();
     		logger.info("Start Device Has Port Set Size : "+startDeviceHasPort.size());
     		for (Port port : startDeviceHasPort) {
 				logger.info("Outgoing Connecting Port for Start Device : "+port.getPortName().toLowerCase() +" : Start Port Name : "+startPort);
@@ -149,7 +148,7 @@ public class DeviceController {
 					destPort = port;
 					break;
 				}
-			}
+			}*/
 
     		//Object reference comparison(Not object itself).
     		if(sourcePort != null && destPort != null) { 

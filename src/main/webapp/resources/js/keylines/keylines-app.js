@@ -57,9 +57,9 @@ function afterChartCreated(err, loadedChart) {
 	  	
   	//}, 1000);
   	
-  	chart.bind('viewchange', function(change) {
+  	/*chart.bind('viewchange', function(change) {
   		chart.arrange('grid', [521,522], {fit: true, animate: true, tightness: 20});
-  		/*console.log("Triggers! : "+change);
+  		console.log("Triggers! : "+change);
   		if(change == 'layout') {
   			chart.each({type:'node'}, function (item) {
 			  console.log(item.t);
@@ -67,8 +67,8 @@ function afterChartCreated(err, loadedChart) {
 		        return chart.contains(item);
 		      }
 			});
-  		}*/
-    });
+  		}
+    });*/
   	
   	//var arr = [[10,14,16,12,15,17,18,19], [13,22,21,20,26,23,24,25]];
   	/*var arr = [522, 521];

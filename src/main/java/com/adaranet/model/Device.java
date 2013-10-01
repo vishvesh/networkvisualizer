@@ -3,15 +3,11 @@ package com.adaranet.model;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.neo4j.graphdb.Direction;
+import org.springframework.data.neo4j.annotation.Fetch;
 import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.Indexed;
 import org.springframework.data.neo4j.annotation.NodeEntity;
-import org.springframework.data.neo4j.annotation.RelatedToVia;
 import org.springframework.data.neo4j.support.index.IndexType;
-
-import com.adaranet.relationships.HasPort;
-import com.adaranet.util.RelationshipTypes;
 //import com.adaranet.relationships.ConnectsToDevice;
 //import javax.persistence.GeneratedValue;
 
@@ -31,11 +27,21 @@ public class Device {
     private String cpuUtilization;
     private String numberOfSessions;
     
+    @Fetch
+    private Set<Ports> hasPorts = new HashSet<Ports>();
+    
+    public void setHasPorts(Set<Ports> test) {
+		this.hasPorts = test;
+	}
+    public Set<Ports> getHasPorts() {
+		return hasPorts;
+	}
+    
     private Set<Port> deviceHasPortsSetMappedByXml = new HashSet<Port>();
     
     //@Fetch
-    @RelatedToVia(type = RelationshipTypes.HAS_PORT, elementClass = HasPort.class, direction = Direction.OUTGOING)
-    private Set<HasPort> hasPorts = new HashSet<HasPort>();
+    /*@RelatedToVia(type = RelationshipTypes.HAS_PORT, elementClass = HasPort.class, direction = Direction.OUTGOING)
+    private Set<HasPort> hasPorts = new HashSet<HasPort>();*/
 
     public Device() {
     	
@@ -102,7 +108,7 @@ public class Device {
 		return deviceType;
 	}
     
-    public Set<HasPort> getHasPorts() {
+    /*public Set<HasPort> getHasPorts() {
 		return hasPorts;
 	}
 
@@ -112,7 +118,7 @@ public class Device {
 			outGoingConnectingPortsSet.add(hasPort.getConnectedPort());
 		}
 		return outGoingConnectingPortsSet;
-	}
+	}*/
     
     /*public Set<Port> getIncomingConnectingPortsToDevice() {
     	Set<Port> incomingConnectingPortsSet = new HashSet<Port>();

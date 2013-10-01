@@ -23,6 +23,7 @@ import com.adaranet.jsonBeans.DevicesJsonBean;
 import com.adaranet.jsonBeans.PortsJsonBean;
 import com.adaranet.model.Device;
 import com.adaranet.model.Port;
+import com.adaranet.model.Ports;
 import com.adaranet.service.DeviceService;
 import com.adaranet.service.PortService;
 
@@ -100,19 +101,24 @@ public class HomeController {
 	    	for (Device device : allDevices) {
 	    		DevicesJsonBean devicesJsonBean = new DevicesJsonBean();
 	    		
+	    		for (Ports t : device.getHasPorts()) {
+	    			logger.info("TEST SIZEEEEEEEEEEEE : "+device.getHasPorts().size());
+					logger.info("Ports : "+t.getPortName());
+				}
+	    		
 	    		DeviceDto deviceDto = new DeviceDto();
 	    		deviceDto.setDeviceName(device.getDeviceName());
 	    		deviceDto.setDeviceType(device.getDeviceType());
 	    		deviceDto.setId(device.getId());
 	    		
 	    		Set<PortDto> hasPorts = new HashSet<PortDto>();
-	    		for (Port port : device.getOutgoingConnectingPortsFromDevice()) {
+	    		/*for (Port port : device.getOutgoingConnectingPortsFromDevice()) {
 	    			PortDto portDto = new PortDto();
 	        		portDto.setId(port.getId());
 	        		portDto.setPortName(port.getPortName());
 	        		portDto.setPortType(port.getPortType());
 	        		hasPorts.add(portDto);
-				}
+				}*/
 
 	    		devicesJsonBean.setParentDevice(deviceDto);
 	    		devicesJsonBean.setHasPorts(hasPorts);
