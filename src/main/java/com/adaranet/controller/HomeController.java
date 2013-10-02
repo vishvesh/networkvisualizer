@@ -24,6 +24,7 @@ import com.adaranet.jsonBeans.PortsJsonBean;
 import com.adaranet.model.Device;
 import com.adaranet.model.Port;
 import com.adaranet.model.Ports;
+import com.adaranet.relationships.ConnectedToDevice;
 import com.adaranet.service.DeviceService;
 import com.adaranet.service.PortService;
 
@@ -71,7 +72,7 @@ public class HomeController {
 		}
 	 
 	 
-	 @RequestMapping(value = "/json", method = RequestMethod.GET, produces = "application/json")
+	 /*@RequestMapping(value = "/json", method = RequestMethod.GET, produces = "application/json")
 	    public @ResponseBody DevicePortJsonBeanMapper getGraphAsJSON(Model model) throws Exception { 
 	    	return getWholeGraph();
 	    }
@@ -79,9 +80,9 @@ public class HomeController {
 	 @RequestMapping(value = "/xml", method = RequestMethod.GET, produces = "application/xml")
 	    public @ResponseBody DevicePortJsonBeanMapper getGraphAsXML(Model model) throws Exception { 
 	    	return getWholeGraph();
-	    }
+	    }*/
 
-	    private DevicePortJsonBeanMapper getWholeGraph() throws Exception {
+	    private List<DevicesJsonBean> getWholeGraph() throws Exception {
 	    	long startTime = System.currentTimeMillis();
 
 	    	Iterable<Device> allDevices = deviceService.findAll();
@@ -89,14 +90,14 @@ public class HomeController {
 	    	//List<Device> allDevices = (List<Device>) IteratorUtil.asCollection(deviceService.findAll());
 	    	//logger.info("Graph-Device Size : "+allDevices.size());
 	    	
-	    	Iterable<Port> allPorts = portService.findAll();
-	    	logger.info("Graph-Port Size : "+portService.count());
+	    	//Iterable<Port> allPorts = portService.findAll();
+	    	//logger.info("Graph-Port Size : "+portService.count());
 	    	//List<Port> allPorts = (List<Port>) IteratorUtil.asCollection(portService.findAll());
 	    	//logger.info("Graph-Port Size : "+allPorts.size());
 	    	
-	    	DevicePortJsonBeanMapper devicePortJsonBeanMapper = new DevicePortJsonBeanMapper();
+	    	//DevicePortJsonBeanMapper devicePortJsonBeanMapper = new DevicePortJsonBeanMapper();
 	    	List<DevicesJsonBean> devicesJsonBeanList = new ArrayList<DevicesJsonBean>();
-	    	List<PortsJsonBean> portsJsonBeanList = new ArrayList<PortsJsonBean>();
+	    	//List<PortsJsonBean> portsJsonBeanList = new ArrayList<PortsJsonBean>();
 	    	
 	    	for (Device device : allDevices) {
 	    		DevicesJsonBean devicesJsonBean = new DevicesJsonBean();
@@ -111,7 +112,15 @@ public class HomeController {
 	    		deviceDto.setDeviceType(device.getDeviceType());
 	    		deviceDto.setId(device.getId());
 	    		
-	    		Set<PortDto> hasPorts = new HashSet<PortDto>();
+	    		Set<DeviceDto> connectedDevices = new HashSet<DeviceDto>();
+	    		for(Device destDevice : device.getDeviceConnections()) {
+	    			DeviceDto dto = new DeviceDto();
+	    			dto.setId(destDevice.getId());
+	    			dto.setDeviceName(destDevice.getDeviceName());
+	    			dto.setDeviceType(destDevice.getDeviceType());
+	    			connectedDevices.add(dto);
+	    		}
+	    		//Set<PortDto> hasPorts = new HashSet<PortDto>();
 	    		/*for (Port port : device.getOutgoingConnectingPortsFromDevice()) {
 	    			PortDto portDto = new PortDto();
 	        		portDto.setId(port.getId());
@@ -121,12 +130,13 @@ public class HomeController {
 				}*/
 
 	    		devicesJsonBean.setParentDevice(deviceDto);
-	    		devicesJsonBean.setHasPorts(hasPorts);
+	    		devicesJsonBean.setConnectedDevices(connectedDevices);
+	    		//devicesJsonBean.setHasPorts(hasPorts);
 	    		
 	    		devicesJsonBeanList.add(devicesJsonBean);
 			}
 	    	
-	    	for (Port port : allPorts) {
+	    	/*for (Port port : allPorts) {
 				PortsJsonBean portsJsonBean = new PortsJsonBean();
 				
 				PortDto portDto = new PortDto();
@@ -147,16 +157,17 @@ public class HomeController {
 				portsJsonBean.setConnectedPorts(connectedPorts);
 				
 				portsJsonBeanList.add(portsJsonBean);
-			}
+			}*/
 	    	
-	    	devicePortJsonBeanMapper.setDevicesJsonBean(devicesJsonBeanList);
-	    	devicePortJsonBeanMapper.setPortsJsonBean(portsJsonBeanList);
+	    	//devicePortJsonBeanMapper.setDevicesJsonBean(devicesJsonBeanList);
+	    	//devicePortJsonBeanMapper.setPortsJsonBean(portsJsonBeanList);
 	    	
 	    	long endTime   = System.currentTimeMillis();
 	    	long totalTime = endTime - startTime;
 	    	logger.info("TIME TOOK FOR THE METHOD TO COMPLETE : "+totalTime+" : milli seconds");
 	    	
-	    	return devicePortJsonBeanMapper;
+	    	//return devicePortJsonBeanMapper;
+	    	return devicesJsonBeanList;
 	    }
 	 
 }

@@ -9,7 +9,8 @@ import com.adaranet.dto.PortDto;
 public class DevicesJsonBean {
 	
 	private DeviceDto parentDevice;
-	private Set<PortDto> hasPorts = new HashSet<PortDto>();
+	//private Set<PortDto> hasPorts = new HashSet<PortDto>();
+	private Set<DeviceDto> connectedDevices = new HashSet<DeviceDto>();
 	
 	public void setParentDevice(DeviceDto parentDevice) {
 		this.parentDevice = parentDevice;
@@ -19,13 +20,21 @@ public class DevicesJsonBean {
 		return parentDevice;
 	}
 	
-	public void setHasPorts(Set<PortDto> hasPorts) {
+	public void setConnectedDevices(Set<DeviceDto> connectedDevices) {
+		this.connectedDevices = connectedDevices;
+	}
+	
+	public Set<DeviceDto> getConnectedDevices() {
+		return connectedDevices;
+	}
+	
+	/*public void setHasPorts(Set<PortDto> hasPorts) {
 		this.hasPorts = hasPorts;
 	}
 	
 	public Set<PortDto> getHasPorts() {
 		return hasPorts;
-	}
+	}*/
 	
 	/*
 	public void setIncomingDevices(Set<DeviceDto> incomingDevices) {

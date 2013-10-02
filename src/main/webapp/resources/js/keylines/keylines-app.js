@@ -302,7 +302,8 @@ function parseLink(portConnections, type) {
 		  portConnectedLinks.push(link);
 		}
 	} else {
-		var sourcePort = portConnections.sourcePort;
+		console.log("Line number 305.. Comes in Else Part!");
+		/*var sourcePort = portConnections.sourcePort;
 		var sourcePortId = sourcePort.id;
 		var connectedPorts = portConnections.connectedPorts;
 		for(var i in connectedPorts) {
@@ -322,18 +323,14 @@ function parseLink(portConnections, type) {
 			    w: 2,
 			    d: {
 			      baseType: 'Link - Connects_To'  //This can be used to calculate weighted shorted paths b/n nodes
-			    }/*,
-			    g: linkGlyph(item),
-			    d: {
-			      type: outgoingDevices[i].cost  //This can be used to calculate weighted shorted paths b/n nodes
-			    }*/
+			    }
 			  };
 		  if(!arrayContains(combineArr, sourcePortId))
 		  	combineArr.push(sourcePortId);
 		  if(!arrayContains(combineArr, connectedPortId))
 		  	combineArr.push(connectedPortId);
 		  portConnectedLinks.push(link);
-		}
+		}*/
 	 }
 	return portConnectedLinks;
 }
@@ -342,9 +339,9 @@ function parseLink(portConnections, type) {
 function parseJson(data) {
 	console.log("Parsing JSON");
 	var json = data;
-	
-	var devices = json.devicesJsonBean;
-	var ports = json.portsJsonBean;
+	//console.log(JSON.stringify(json));
+	//var devices = json.devicesJsonBean;
+	//var ports = json.portsJsonBean;
 	
 	//console.log("Devices Size : "+devices.length+" : Ports Size : "+ports.length);
 	//console.log("Devices : "+JSON.stringify(json.devicesJsonBean));
@@ -359,16 +356,16 @@ function parseJson(data) {
 		
 		items.push(parseDevice(device));
 		
-		for(var x = 0; x < hasPorts.length; x++) {
+		/*for(var x = 0; x < hasPorts.length; x++) {
 			items.push(parsePort(hasPorts[x]));
 			
 			var has_ports = parseLink(device, 'has_port');
-			/**
+			*//**
 			 * Have to iterate over "has_ports" array
 			 * as keylines doesn't support addition
 			 * of the complete array. It can only 
 			 * recognize individual Nodes/Links.
-			 */
+			 *//*
 			for(var h in has_ports) {				
 				items.push(has_ports[h]);
 			}
@@ -379,15 +376,15 @@ function parseJson(data) {
 		var portConnections = ports[j];
 		
 		var connections = parseLink(portConnections);
-		   /**
+		   *//**
 			 * Have to iterate over "connections" array
 			 * as keylines doesn't support addition
 			 * of the complete array. It can only 
 			 * recognize individual Nodes/Links.
-			 */
+			 *//*
 		for(var i in connections)
 			items.push(connections[i]);
-	}
+	}*/
 	
 	return items || null;
 }

@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.adaranet.model.Device;
+import com.adaranet.model.Port;
 import com.adaranet.model.Ports;
 import com.adaranet.service.DeviceService;
+import com.adaranet.service.PortService;
 import com.adaranet.service.PortsService;
 
 @Controller
@@ -21,6 +23,8 @@ public class PortController {
 
 	@Autowired
 	private DeviceService deviceService;
+	@Autowired
+	private PortService portService;
 	@Autowired
 	private PortsService portsService;
 	@Autowired
@@ -41,6 +45,15 @@ public class PortController {
 	@Transactional
 	public String deleteAllPorts() throws Exception {
 		logger.info("Comes in inside deleteAllPorts()");
+		
+		Iterable<Port> allPortssFromDb = portService.findAll();
+		if(allPortssFromDb.iterator().hasNext()) {
+			portService.deleteAll();
+		logger.info("Deleted all the Ports from Neo4j.");   		
+    	} else {
+    		logger.info("No Ports Found/Persisted in Neo4j that are to be deleted!");
+    	}
+		
 		Iterable<Ports> allPortsFromDb = portsService.findAll();
     	if(allPortsFromDb.iterator().hasNext()) {
     		logger.info("Deleting all the Ports from Neo4j");

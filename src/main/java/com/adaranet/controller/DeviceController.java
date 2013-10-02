@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.adaranet.model.Device;
-import com.adaranet.model.Port;
 import com.adaranet.model.Ports;
+import com.adaranet.relationships.ConnectedToDevice;
 import com.adaranet.service.DeviceService;
 import com.adaranet.service.PortService;
 
@@ -109,15 +109,15 @@ public class DeviceController {
     }
 
 	
-	@SuppressWarnings("unused")
 	@RequestMapping(value = "/connectDevicesViaPorts", method = RequestMethod.POST)
 	@Transactional
 	public String connectDevices(@RequestParam("startNode") String startNode, @RequestParam("endNode") String endNode,
 								 @RequestParam("startPort") String startPort, @RequestParam("endPort") String endPort,
-								 @RequestParam("linkCapacity") String linkCapacity, @RequestParam("availableBandwidth") String availableBandwidth,
-								 @RequestParam("latency") String latency) throws Exception {
-		Device startDevice = deviceService.findDeviceByDeviceName(startNode); //searchDeviceByDeviceName(startNode);		
-		Device endDevice = deviceService.findDeviceByDeviceName(endNode); //searchDeviceByDeviceName(endNode);		
+								 @RequestParam(value = "linkCapacity", required = false) String linkCapacity, 
+								 @RequestParam(value = "availableBandwidth", required = false) String availableBandwidth,
+								 @RequestParam(value = "latency", required = false) String latency) throws Exception {
+		Device startDevice = deviceService.findDeviceByDeviceName(startNode);		
+		Device endDevice = deviceService.findDeviceByDeviceName(endNode);
     	if(startDevice != null && endDevice != null) {
     		logger.info("");
     		logger.info("*******************************************************************************************************************");
@@ -127,8 +127,28 @@ public class DeviceController {
 
     		//startDevice.setConnectedDevices(connectedDevices);
     		//listAllDevicesAndPortservice.saveEntity(startDevice);
-    		Port sourcePort = null;
-    		Port destPort = null;
+    		Ports sourcePort = null;
+    		Ports destPort = null;
+    		
+    		Set<Ports> startDeviceHasPort = startDevice.getHasPorts();
+    		logger.info("Start Device Has Port Set Size : "+startDeviceHasPort.size());
+    		for (Ports port : startDeviceHasPort) {
+				logger.info("Outgoing Connecting Port for Start Device : "+port.getPortName().toLowerCase() +" : Start Port Name : "+startPort);
+				if((port.getPortName().toLowerCase()).equals(startPort.toLowerCase())) {
+					sourcePort = port;
+					break;
+				}
+			}
+    		
+    		Set<Ports> endDeviceHasPort = endDevice.getHasPorts();
+    		logger.info("End Device Has Port Set Size : "+endDeviceHasPort.size());
+    		for (Ports port : endDeviceHasPort) {
+    			logger.info("Outgoing Connecting Port for End Device : "+port.getPortName().toLowerCase() +" : End Port Name : "+endPort);
+				if((port.getPortName().toLowerCase()).equals(endPort.toLowerCase())) {
+					destPort = port;
+					break;
+				}
+			}
     		
     		/*Set<Port> startDeviceHasPort = startDevice.getOutgoingConnectingPortsFromDevice();
     		logger.info("Start Device Has Port Set Size : "+startDeviceHasPort.size());
@@ -154,8 +174,9 @@ public class DeviceController {
     		if(sourcePort != null && destPort != null) { 
     			logger.info("Found both the ports for both the devices. Therefore, connecting Two Ports.");
     			//sourcePort.connectsToPort(destPort);
-    			sourcePort.connectsToPort(destPort, linkCapacity, availableBandwidth, latency);
-    			template.save(sourcePort);
+    			//sourcePort.connectsToPort(destPort, linkCapacity, availableBandwidth, latency);
+    			ConnectedToDevice connectedToDevice = startDevice.connectsToDevice(endDevice, sourcePort, destPort, "55", "100", "20");
+    			template.save(connectedToDevice);
     			logger.info("Saved the 'ConnectsToPort' relationship in neo4j.");
     		} else {
     			logger.info("Source Port Or Dest. Port is null. Therefore, we can not save/connect the two ports.");
