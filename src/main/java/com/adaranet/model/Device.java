@@ -1,6 +1,8 @@
 package com.adaranet.model;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.neo4j.graphdb.Direction;
@@ -141,8 +143,8 @@ public class Device {
 		return connectsToDevice;
 	}
     
-    public Set<Device> getDeviceConnections() {
-    	Set<Device> outGoingConnectingDevicesSet = new HashSet<Device>();
+    public List<Device> getDeviceConnections() {
+    	List<Device> outGoingConnectingDevicesSet = new ArrayList<Device>();
     	for (ConnectedToDevice connectedToDevice : connectsToDevice) {
     		outGoingConnectingDevicesSet.add(connectedToDevice.getDestinationDevice());
 		}

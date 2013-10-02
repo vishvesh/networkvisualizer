@@ -1,16 +1,14 @@
 package com.adaranet.jsonBeans;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.adaranet.dto.DeviceDto;
-import com.adaranet.dto.PortDto;
 
 public class DevicesJsonBean {
 	
 	private DeviceDto parentDevice;
-	//private Set<PortDto> hasPorts = new HashSet<PortDto>();
-	private Set<DeviceDto> connectedDevices = new HashSet<DeviceDto>();
+	private List<DeviceDto> connectedDevices = new ArrayList<DeviceDto>();
 	
 	public void setParentDevice(DeviceDto parentDevice) {
 		this.parentDevice = parentDevice;
@@ -20,38 +18,11 @@ public class DevicesJsonBean {
 		return parentDevice;
 	}
 	
-	public void setConnectedDevices(Set<DeviceDto> connectedDevices) {
+	public void setConnectedDevices(List<DeviceDto> connectedDevices) {
 		this.connectedDevices = connectedDevices;
 	}
 	
-	public Set<DeviceDto> getConnectedDevices() {
+	public List<DeviceDto> getConnectedDevices() {
 		return connectedDevices;
 	}
-	
-	/*public void setHasPorts(Set<PortDto> hasPorts) {
-		this.hasPorts = hasPorts;
-	}
-	
-	public Set<PortDto> getHasPorts() {
-		return hasPorts;
-	}*/
-	
-	/*
-	public void setIncomingDevices(Set<DeviceDto> incomingDevices) {
-		this.incomingDevices = incomingDevices;
-	}
-	
-	public Set<DeviceDto> getIncomingDevices() {
-		return incomingDevices;
-	}
-	
-	public Set<DeviceDto> getOutgoingDevices() {
-		return outgoingDevices;
-	}
-	
-	public void setOutgoingDevices(Set<DeviceDto> outgoingDevices) {
-		this.outgoingDevices = outgoingDevices;
-	}	
-	*/
-	
 }

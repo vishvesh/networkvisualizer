@@ -303,6 +303,32 @@ function parseLink(portConnections, type) {
 		}
 	} else {
 		console.log("Line number 305.. Comes in Else Part!");
+		var device = portConnections;
+		var connectedDevices = portConnections.connectedDevices;
+		console.log("Connected Devices Lenght : "+connectedDevices.length);
+		
+		for(var i in connectedDevices) {
+			var connectedDevice = connectedDevices[i];
+			var id = connectedDevice.id;
+			var link = {
+			    type: 'link',
+			    id1: device.parentDevice.id,
+			    id2: id,
+			    id: (device.parentDevice.id)+i+ '-' + id, //TODO: Need to FIX this GUY!
+			    //t: labelDictionary[item.type],
+			    //t: 'Port Type: '+sourcePort.portType,
+			    t: 'em0-em10'+'\n1000000\n300\n1.725%',
+			    a1: true,
+			    a2: true,
+			    c: 'rgb(55, 55, 255)',
+			    w: 2,
+			    d: {
+			      baseType: 'Link - Connects_To'  //This can be used to calculate weighted shorted paths b/n nodes
+			    }
+			  };
+			portConnectedLinks.push(link);
+		}
+		
 		/*var sourcePort = portConnections.sourcePort;
 		var sourcePortId = sourcePort.id;
 		var connectedPorts = portConnections.connectedPorts;
@@ -339,7 +365,8 @@ function parseLink(portConnections, type) {
 function parseJson(data) {
 	console.log("Parsing JSON");
 	var json = data;
-	//console.log(JSON.stringify(json));
+	console.log(JSON.stringify(json));
+	console.log(json.length);
 	//var devices = json.devicesJsonBean;
 	//var ports = json.portsJsonBean;
 	
@@ -349,13 +376,19 @@ function parseJson(data) {
 	
 	var items = [];
 	
-	for(var i = 0; i < devices.length; i++) {
-		var device = devices[i];
-		var hasPorts = device.hasPorts;
-		console.log("Device Name : From Json : "+device.parentDevice.deviceName+" : Has Ports Length : "+hasPorts.length);
+	for(var i = 0; i < json.length; i++) {
+		var device = json[i];
+		//var hasPorts = device.hasPorts;
+		//console.log("Device Name : From Json : "+device.parentDevice.deviceName+" : Has Ports Length : "+hasPorts.length);
 		
 		items.push(parseDevice(device));
 		
+		var links = parseLink(device);
+		for(var link in links) {
+			console.log(links[link]);
+			items.push(links[link]);
+		}
+	 }	
 		/*for(var x = 0; x < hasPorts.length; x++) {
 			items.push(parsePort(hasPorts[x]));
 			

@@ -1,9 +1,7 @@
 package com.adaranet.controller;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -14,17 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.adaranet.dto.DeviceDto;
-import com.adaranet.dto.PortDto;
-import com.adaranet.jsonBeans.DevicePortJsonBeanMapper;
 import com.adaranet.jsonBeans.DevicesJsonBean;
-import com.adaranet.jsonBeans.PortsJsonBean;
 import com.adaranet.model.Device;
-import com.adaranet.model.Port;
 import com.adaranet.model.Ports;
-import com.adaranet.relationships.ConnectedToDevice;
 import com.adaranet.service.DeviceService;
 import com.adaranet.service.PortService;
 
@@ -87,17 +79,7 @@ public class HomeController {
 
 	    	Iterable<Device> allDevices = deviceService.findAll();
 	    	logger.info("Graph-Device Size : "+deviceService.count());
-	    	//List<Device> allDevices = (List<Device>) IteratorUtil.asCollection(deviceService.findAll());
-	    	//logger.info("Graph-Device Size : "+allDevices.size());
-	    	
-	    	//Iterable<Port> allPorts = portService.findAll();
-	    	//logger.info("Graph-Port Size : "+portService.count());
-	    	//List<Port> allPorts = (List<Port>) IteratorUtil.asCollection(portService.findAll());
-	    	//logger.info("Graph-Port Size : "+allPorts.size());
-	    	
-	    	//DevicePortJsonBeanMapper devicePortJsonBeanMapper = new DevicePortJsonBeanMapper();
 	    	List<DevicesJsonBean> devicesJsonBeanList = new ArrayList<DevicesJsonBean>();
-	    	//List<PortsJsonBean> portsJsonBeanList = new ArrayList<PortsJsonBean>();
 	    	
 	    	for (Device device : allDevices) {
 	    		DevicesJsonBean devicesJsonBean = new DevicesJsonBean();
@@ -112,7 +94,7 @@ public class HomeController {
 	    		deviceDto.setDeviceType(device.getDeviceType());
 	    		deviceDto.setId(device.getId());
 	    		
-	    		Set<DeviceDto> connectedDevices = new HashSet<DeviceDto>();
+	    		List<DeviceDto> connectedDevices = new ArrayList<DeviceDto>();
 	    		for(Device destDevice : device.getDeviceConnections()) {
 	    			DeviceDto dto = new DeviceDto();
 	    			dto.setId(destDevice.getId());
