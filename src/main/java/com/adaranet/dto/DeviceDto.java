@@ -20,10 +20,28 @@ public class DeviceDto implements Serializable {
     private String deviceType;
     private String value;
 	private String cost;
+	private Long portId;
 	private String latency;
 	private String linkCapacity;
 	private String connectedPorts;
 	private String availableBandwidth;
+	private String originalPortNames;
+	
+	public void setOriginalPortNames(String originalPortNames) {
+		this.originalPortNames = originalPortNames;
+	}
+	
+	public String getOriginalPortNames() {
+		return originalPortNames;
+	}
+	
+	public void setPortId(Long portId) {
+		this.portId = portId;
+	}
+	
+	public Long getPortId() {
+		return portId;
+	}
 	
 	public String getConnectedPorts() {
 		return connectedPorts;

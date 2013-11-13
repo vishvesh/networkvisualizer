@@ -6,11 +6,14 @@ import java.util.List;
 import java.util.Set;
 
 import org.neo4j.graphdb.Direction;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.neo4j.annotation.Fetch;
 import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.Indexed;
 import org.springframework.data.neo4j.annotation.NodeEntity;
 import org.springframework.data.neo4j.annotation.RelatedToVia;
+import org.springframework.data.neo4j.support.Neo4jTemplate;
 import org.springframework.data.neo4j.support.index.IndexType;
 
 import com.adaranet.relationships.ConnectedToDevice;
@@ -31,6 +34,10 @@ public class Device {
     private String cpuUtilization;
     private String numberOfSessions;
     
+    @Autowired
+    @Transient
+	private transient Neo4jTemplate template;
+    
     @Fetch
     private Set<Ports> hasPorts = new HashSet<Ports>();
 
@@ -40,7 +47,7 @@ public class Device {
     @RelatedToVia(type = RelationshipTypes.CONNECTED_TO_DEVICE, elementClass = ConnectedToDevice.class, direction = Direction.OUTGOING)
     private Set<ConnectedToDevice> connectsToDevice = new HashSet<ConnectedToDevice>();
     
-    public ConnectedToDevice connectsToDevice(Device destDevice, Ports sourcePort, Ports destPort, String linkCapacity, String availableBandwidth, String latency) {
+    public ConnectedToDevice connectsToDevice(Device destDevice, Ports sourcePort, Ports destPort, String originalPortNames, String linkCapacity, String availableBandwidth, String latency) {
     	
     	String portConnection = sourcePort.getPortName()+'-'+destPort.getPortName();
     	
@@ -51,7 +58,7 @@ public class Device {
     		System.out.println(connection.getLinkCapacity());
     		
     		if(connection.getConnectedPorts().equals(portConnection)) {
-    			System.out.println("FOUND Connection : "+connection.getAvailableBandwidth());
+    			System.out.println("FOUND Connection : "+connection.getAvailableBandwidth()+" : Passed in BW : "+availableBandwidth);
     			this.connectsToDevice.remove(connection);
     			System.out.println("ConnectsToDevice HashSet Size After Removal : "+connectsToDevice.size());
     		} else {
@@ -59,7 +66,7 @@ public class Device {
     		}
     	}
 
-    	ConnectedToDevice connectedToDevice = new ConnectedToDevice(this, destDevice, portConnection, linkCapacity, availableBandwidth, latency);
+    	ConnectedToDevice connectedToDevice = new ConnectedToDevice(this, destDevice, portConnection, originalPortNames, linkCapacity, availableBandwidth, latency);
     	this.connectsToDevice.add(connectedToDevice);
     	System.out.println("ConnectsToDevice HashSet Size After!! : "+connectsToDevice.size());
     	

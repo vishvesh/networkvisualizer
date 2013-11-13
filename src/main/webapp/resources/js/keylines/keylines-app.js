@@ -232,6 +232,15 @@ function getSubStringAfterLastIndexOfChar(str, char) {
   return str.substring(str.lastIndexOf(char) + 1);
 }
 
+/*function filterPortNames(ports) {
+	var filteredName;
+	if(ports) {
+		console.log("Port name : Inside filterPortNames() : "+ports);
+		filteredName = ports.replace(new RegExp("Device", "g"), "");
+	}
+	return filteredName;
+}*/
+
 /**
  * Instead of extending the Array prototype,
  * it's good to create a separate function,
@@ -321,10 +330,13 @@ function parseLink(portConnections, type) {
 			    id1: device.parentDevice.id,
 			    id2: id,
 			    //id: (device.parentDevice.id)+i+ '-' + id, //TODO: Need to FIX this GUY!
-			    id: uniqueLinkId,
+			    //id: uniqueLinkId,
+			    id: connectedDevice.portId,
 			    //t: labelDictionary[item.type],
 			    //t: 'Port Type: '+sourcePort.portType,
-			    t: 'Ports: '+uniqueLinkId+'\nBandwidth: '+availableBandwidth+'\nLatency: '+latency+'\nLink Capacity: '+linkCapacity,
+			    //t: 'Ports: '+uniqueLinkId+'\nBandwidth: '+availableBandwidth+'\nLatency: '+latency+'\nLink Capacity: '+linkCapacity,
+			    //t: 'Ports: '+filterPortNames(uniqueLinkId),
+			    t: 'Ports: '+connectedDevice.originalPortNames,
 			    //a1: true,
 			    //a2: true,
 			    //c: 'rgb(55, 55, 255)',

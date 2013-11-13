@@ -179,9 +179,12 @@ public class DeviceController {
     			logger.info("Found both the ports for both the devices. Therefore, connecting Two Ports.");
     			//sourcePort.connectsToPort(destPort);
     			//sourcePort.connectsToPort(destPort, linkCapacity, availableBandwidth, latency);
+    			String originalPortNames = AppUtils.replacePorts(sourcePort.getPortName())+'-'+AppUtils.replacePorts(destPort.getPortName());
+    			logger.info("Original Port Names : "+originalPortNames);
     			ConnectedToDevice connectedToDevice = startDevice.connectsToDevice(endDevice,
 															    					sourcePort,
 															    					destPort,
+															    					originalPortNames,
 															    					Integer.toString(AppUtils.generateRandomInt(100)),
 															    					Integer.toString(AppUtils.generateRandomInt(100)),
 															    					Integer.toString(AppUtils.generateRandomInt(100)));

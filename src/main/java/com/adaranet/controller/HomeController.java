@@ -113,10 +113,12 @@ public class HomeController {
 	    			dto.setDeviceName(destDevice.getDeviceName());
 	    			logger.info("CONNECTED DEVICE NAME : "+destDevice.getDeviceName()+" : For Device : "+device.getDeviceName());
 	    			dto.setDeviceType(destDevice.getDeviceType());
+	    			dto.setPortId(connectedToDevice.getId());
 	    			dto.setAvailableBandwidth(connectedToDevice.getAvailableBandwidth());
 	    			dto.setConnectedPorts(connectedToDevice.getConnectedPorts());
 	    			dto.setLatency(connectedToDevice.getLatency());
 	    			dto.setLinkCapacity(connectedToDevice.getLinkCapacity());
+	    			dto.setOriginalPortNames(connectedToDevice.getOriginalPortNames());
 	    			connectedDevices.add(dto);
 	    		}
 	    		//Set<PortDto> hasPorts = new HashSet<PortDto>();

@@ -22,7 +22,7 @@ public class ConnectedToDevice {
 	
 	@Fetch
 	@EndNode
-	@Indexed(unique = true)
+	//@Indexed(unique = true)
 	private Device destinationDevice;
 	
 	@Indexed
@@ -31,6 +31,7 @@ public class ConnectedToDevice {
 	private String linkCapacity;
 	private String availableBandwidth;
 	private String latency;
+	private String originalPortNames;
 	
 	public ConnectedToDevice() {
 		
@@ -42,14 +43,23 @@ public class ConnectedToDevice {
 		this.destinationDevice = destinationDevice;
 	}
 	
-	public ConnectedToDevice(Device sourceDevice, Device destinationDevice, String connectedPorts, String linkCapacity, String availableBandwidth, String latency) {
+	public ConnectedToDevice(Device sourceDevice, Device destinationDevice, String connectedPorts, String originalPortNames, String linkCapacity, String availableBandwidth, String latency) {
 		super();
 		this.sourceDevice = sourceDevice;
 		this.destinationDevice = destinationDevice;
 		this.connectedPorts = connectedPorts;
+		this.originalPortNames = originalPortNames;
 		this.linkCapacity = linkCapacity;
 		this.availableBandwidth = availableBandwidth;
 		this.latency = latency;
+	}
+	
+	public void setOriginalPortNames(String originalPortNames) {
+		this.originalPortNames = originalPortNames;
+	}
+	
+	public String getOriginalPortNames() {
+		return originalPortNames;
 	}
 	
 	public String getConnectedPorts() {
