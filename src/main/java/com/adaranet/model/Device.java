@@ -37,7 +37,7 @@ public class Device {
     private Set<Port> deviceHasPortsSetMappedByXml = new HashSet<Port>();
     
     @Fetch
-    @RelatedToVia(type = RelationshipTypes.CONNECTED_TO_DEVICE, elementClass = ConnectedToDevice.class, direction = Direction.BOTH)
+    @RelatedToVia(type = RelationshipTypes.CONNECTED_TO_DEVICE, elementClass = ConnectedToDevice.class, direction = Direction.OUTGOING)
     private Set<ConnectedToDevice> connectsToDevice = new HashSet<ConnectedToDevice>();
     
     public ConnectedToDevice connectsToDevice(Device destDevice, Ports sourcePort, Ports destPort, String linkCapacity, String availableBandwidth, String latency) {

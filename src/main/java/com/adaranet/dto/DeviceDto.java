@@ -20,6 +20,42 @@ public class DeviceDto implements Serializable {
     private String deviceType;
     private String value;
 	private String cost;
+	private String latency;
+	private String linkCapacity;
+	private String connectedPorts;
+	private String availableBandwidth;
+	
+	public String getConnectedPorts() {
+		return connectedPorts;
+	}
+
+	public void setConnectedPorts(String connectedPorts) {
+		this.connectedPorts = connectedPorts;
+	}
+
+	public String getLinkCapacity() {
+		return linkCapacity;
+	}
+
+	public void setLinkCapacity(String linkCapacity) {
+		this.linkCapacity = linkCapacity;
+	}
+
+	public String getAvailableBandwidth() {
+		return availableBandwidth;
+	}
+
+	public void setAvailableBandwidth(String availableBandwidth) {
+		this.availableBandwidth = availableBandwidth;
+	}
+
+	public String getLatency() {
+		return latency;
+	}
+
+	public void setLatency(String latency) {
+		this.latency = latency;
+	}
 
 	public void setValue(String value) {
 		this.value = value;

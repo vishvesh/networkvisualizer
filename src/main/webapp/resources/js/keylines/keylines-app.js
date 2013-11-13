@@ -310,18 +310,26 @@ function parseLink(portConnections, type) {
 		for(var i in connectedDevices) {
 			var connectedDevice = connectedDevices[i];
 			var id = connectedDevice.id;
+			var uniqueLinkId = connectedDevice.connectedPorts;
+			var latency = connectedDevice.latency;
+			var availableBandwidth = connectedDevice.availableBandwidth;
+			var linkCapacity = connectedDevice.linkCapacity;
+			console.log("uniqueLinkId : "+uniqueLinkId+" : latency : "+latency+ " : availableBandwidth : "+availableBandwidth+" : linkCapacity : "+linkCapacity);
+			
 			var link = {
 			    type: 'link',
 			    id1: device.parentDevice.id,
 			    id2: id,
-			    id: (device.parentDevice.id)+i+ '-' + id, //TODO: Need to FIX this GUY!
+			    //id: (device.parentDevice.id)+i+ '-' + id, //TODO: Need to FIX this GUY!
+			    id: uniqueLinkId,
 			    //t: labelDictionary[item.type],
 			    //t: 'Port Type: '+sourcePort.portType,
-			    t: 'em0-em10'+'\n1000000\n300\n1.725%',
-			    a1: true,
-			    a2: true,
-			    c: 'rgb(55, 55, 255)',
-			    w: 2,
+			    t: 'Ports: '+uniqueLinkId+'\nBandwidth: '+availableBandwidth+'\nLatency: '+latency+'\nLink Capacity: '+linkCapacity,
+			    //a1: true,
+			    //a2: true,
+			    //c: 'rgb(55, 55, 255)',
+			    c: getLinkColorByBandwidthValue(availableBandwidth),
+			    w: getBandwidthLinkSizeByBandwidthValue(availableBandwidth),
 			    d: {
 			      baseType: 'Link - Connects_To'  //This can be used to calculate weighted shorted paths b/n nodes
 			    }
@@ -577,6 +585,36 @@ var labelDictionary = {
   'ACTS_IN'  : 'acts in',
   'DIRECTED' : 'directed'
 };
+
+function getBandwidthLinkSizeByBandwidthValue(bandwidth) {
+	var returnSize = 2;
+	if(bandwidth >= 0 && bandwidth < 25) {
+		returnSize = 2;
+	} else if(bandwidth >= 25 && bandwidth < 50) {
+		returnSize = 4;
+	} else if(bandwidth >= 50 && bandwidth < 75) {
+		returnSize = 6;
+	} else if(bandwidth >= 75 && bandwidth < 100) {
+		returnSize = 10;
+	}
+	console.log("Bandwidth Value : "+bandwidth+ " : Return Size : "+returnSize);
+	return returnSize;
+}
+
+function getLinkColorByBandwidthValue(bandwidth) {
+	var returnColor = 'rgb(55, 55, 255)';
+	if(bandwidth >= 0 && bandwidth < 25) {
+		returnColor = 'rgb(55, 55, 255)';
+	} else if(bandwidth >= 25 && bandwidth < 50) {
+		returnColor = 'green';
+	} else if(bandwidth >= 50 && bandwidth < 75) {
+		returnColor = 'orange';
+	} else if(bandwidth >= 75 && bandwidth < 100) {
+		returnColor = 'red';
+	}
+	console.log("Bandwidth Value : "+bandwidth+ " : Return Color : "+returnColor);
+	return returnColor;
+}
 
 function nodeIcon(type) {
   var icon = nodeIcons[type];

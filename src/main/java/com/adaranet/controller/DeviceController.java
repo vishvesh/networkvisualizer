@@ -24,6 +24,7 @@ import com.adaranet.model.Ports;
 import com.adaranet.relationships.ConnectedToDevice;
 import com.adaranet.service.DeviceService;
 import com.adaranet.service.PortService;
+import com.adaranet.util.AppUtils;
 
 @Controller
 public class DeviceController {
@@ -130,6 +131,7 @@ public class DeviceController {
     		Ports sourcePort = null;
     		Ports destPort = null;
     		
+    		//Remember to pass : port name similar to : 'Device1-em0'.... 
     		Set<Ports> startDeviceHasPort = startDevice.getHasPorts();
     		logger.info("Start Device Has Port Set Size : "+startDeviceHasPort.size());
     		for (Ports port : startDeviceHasPort) {
@@ -149,6 +151,8 @@ public class DeviceController {
 					break;
 				}
 			}
+    		
+    		logger.info("Source Port : "+sourcePort+ " : Dest Port : "+destPort);
     		
     		/*Set<Port> startDeviceHasPort = startDevice.getOutgoingConnectingPortsFromDevice();
     		logger.info("Start Device Has Port Set Size : "+startDeviceHasPort.size());
@@ -175,7 +179,12 @@ public class DeviceController {
     			logger.info("Found both the ports for both the devices. Therefore, connecting Two Ports.");
     			//sourcePort.connectsToPort(destPort);
     			//sourcePort.connectsToPort(destPort, linkCapacity, availableBandwidth, latency);
-    			ConnectedToDevice connectedToDevice = startDevice.connectsToDevice(endDevice, sourcePort, destPort, "55", "100", "20");
+    			ConnectedToDevice connectedToDevice = startDevice.connectsToDevice(endDevice,
+															    					sourcePort,
+															    					destPort,
+															    					Integer.toString(AppUtils.generateRandomInt(100)),
+															    					Integer.toString(AppUtils.generateRandomInt(100)),
+															    					Integer.toString(AppUtils.generateRandomInt(100)));
     			template.save(connectedToDevice);
     			logger.info("Saved the 'ConnectsToPort' relationship in neo4j.");
     		} else {

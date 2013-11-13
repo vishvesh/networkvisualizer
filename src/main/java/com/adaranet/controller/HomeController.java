@@ -17,6 +17,7 @@ import com.adaranet.dto.DeviceDto;
 import com.adaranet.jsonBeans.DevicesJsonBean;
 import com.adaranet.model.Device;
 import com.adaranet.model.Ports;
+import com.adaranet.relationships.ConnectedToDevice;
 import com.adaranet.service.DeviceService;
 import com.adaranet.service.PortService;
 
@@ -94,12 +95,28 @@ public class HomeController {
 	    		deviceDto.setDeviceType(device.getDeviceType());
 	    		deviceDto.setId(device.getId());
 	    		
-	    		List<DeviceDto> connectedDevices = new ArrayList<DeviceDto>();
+	    		/*List<DeviceDto> connectedDevices = new ArrayList<DeviceDto>();
 	    		for(Device destDevice : device.getDeviceConnections()) {
 	    			DeviceDto dto = new DeviceDto();
 	    			dto.setId(destDevice.getId());
 	    			dto.setDeviceName(destDevice.getDeviceName());
+	    			logger.info("CONNECTED DEVICE NAME : "+destDevice.getDeviceName()+" : For Device : "+device.getDeviceName());
 	    			dto.setDeviceType(destDevice.getDeviceType());
+	    			connectedDevices.add(dto);
+	    		}*/
+	    		
+	    		List<DeviceDto> connectedDevices = new ArrayList<DeviceDto>();
+	    		for(ConnectedToDevice connectedToDevice : device.getConnectsToDevice()) {
+	    			Device destDevice = connectedToDevice.getDestinationDevice();
+	    			DeviceDto dto = new DeviceDto();
+	    			dto.setId(destDevice.getId());
+	    			dto.setDeviceName(destDevice.getDeviceName());
+	    			logger.info("CONNECTED DEVICE NAME : "+destDevice.getDeviceName()+" : For Device : "+device.getDeviceName());
+	    			dto.setDeviceType(destDevice.getDeviceType());
+	    			dto.setAvailableBandwidth(connectedToDevice.getAvailableBandwidth());
+	    			dto.setConnectedPorts(connectedToDevice.getConnectedPorts());
+	    			dto.setLatency(connectedToDevice.getLatency());
+	    			dto.setLinkCapacity(connectedToDevice.getLinkCapacity());
 	    			connectedDevices.add(dto);
 	    		}
 	    		//Set<PortDto> hasPorts = new HashSet<PortDto>();
