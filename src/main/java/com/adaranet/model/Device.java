@@ -50,20 +50,32 @@ public class Device {
     public ConnectedToDevice connectsToDevice(Device destDevice, Ports sourcePort, Ports destPort, String originalPortNames, String linkCapacity, String availableBandwidth, String latency) {
     	
     	String portConnection = sourcePort.getPortName()+'-'+destPort.getPortName();
+    	ConnectedToDevice foundConnection = null;
+    	System.out.println("ConnectsToDevice Initial Size : Before Adding/Deleting : "+this.connectsToDevice.size());
     	
     	for (ConnectedToDevice connection : connectsToDevice) {
     		System.out.println("CONNECTED-Devices-Ports=========");
+    		System.out.println(connection.getId());
     		System.out.println(connection.getAvailableBandwidth());
     		System.out.println(connection.getLatency());
     		System.out.println(connection.getLinkCapacity());
     		
     		if(connection.getConnectedPorts().equals(portConnection)) {
-    			System.out.println("FOUND Connection : "+connection.getAvailableBandwidth()+" : Passed in BW : "+availableBandwidth);
-    			this.connectsToDevice.remove(connection);
-    			System.out.println("ConnectsToDevice HashSet Size After Removal : "+connectsToDevice.size());
+    			System.out.println("FOUND Connection : "+connection.getAvailableBandwidth()+ " : ID : "+connection.getId());
+    			foundConnection = connection;
     		} else {
     			System.out.println("Connection NOT Found!");
     		}
+    	}
+    	
+    	if(foundConnection != null) {
+    		//template.getRelationship(foundConnection.getId()).delete();
+    		System.out.println("FOUND CONNECTION ID : "+foundConnection.getId());
+    		this.connectsToDevice.remove(foundConnection);
+    		System.out.println("foundConnection != null : ConnectsToDevice HashSet Size After Removal : "+this.connectsToDevice.size());
+    		for (ConnectedToDevice connection : connectsToDevice) {
+    			System.out.println("How is it possible? : "+connection.getAvailableBandwidth() + " : ID : "+connection.getId());
+			}
     	}
 
     	ConnectedToDevice connectedToDevice = new ConnectedToDevice(this, destDevice, portConnection, originalPortNames, linkCapacity, availableBandwidth, latency);

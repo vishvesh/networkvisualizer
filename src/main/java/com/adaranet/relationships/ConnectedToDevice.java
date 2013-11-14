@@ -22,10 +22,9 @@ public class ConnectedToDevice {
 	
 	@Fetch
 	@EndNode
-	//@Indexed(unique = true)
 	private Device destinationDevice;
 	
-	@Indexed
+	@Indexed(unique=true)
 	private String connectedPorts;
 	
 	private String linkCapacity;
