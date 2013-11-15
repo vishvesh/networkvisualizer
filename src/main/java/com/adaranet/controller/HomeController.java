@@ -42,6 +42,14 @@ public class HomeController {
 	    }
 	 
 	 
+	 @RequestMapping(value = "/view", method = RequestMethod.GET)
+	    //@Transactional
+	    public String viewGraphInViewport() throws Exception {
+	    	logger.info("Routing user to VIEW page : With EXTJS - 4.2.1-GPL!");
+	        return "view";
+	    }
+	 
+	 
 	 @RequestMapping("/visualize")
 		@Transactional
 		public String visualize(Model model) throws Exception {
