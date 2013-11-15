@@ -45,6 +45,7 @@
 		 <li><a href="deleteAllPorts">Delete All Ports</a></li>
 		 <li><a href="listAllDevicesAndPorts">Show All Devices & Ports</a></li>
 		 <li><a href="visualize">Visualize Graph</a></li>
+		 <li><a href="view">Visualize Graph with EXTJS</a></li>
 	 </div>
  
  <fieldset>
