@@ -7,11 +7,14 @@ import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.support.Neo4jTemplate;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.view.InternalResourceView;
 
 import com.adaranet.dto.DeviceDto;
 import com.adaranet.jsonBeans.DevicesJsonBean;
@@ -47,6 +50,13 @@ public class HomeController {
 	    public String viewGraphInViewport() throws Exception {
 	    	logger.info("Routing user to VIEW page : With EXTJS - 4.2.1-GPL!");
 	        return "view";
+	    }
+	 
+	 
+	 @RequestMapping(value = "/getTreeNodes", method = RequestMethod.GET)
+	    public String getTreeNodes() throws Exception {
+	    	logger.info("Inside getTreeNodes() : Fetching file treeData.json!");
+	        return "redirect:/getTreeNodes/treeData.json";
 	    }
 	 
 	 

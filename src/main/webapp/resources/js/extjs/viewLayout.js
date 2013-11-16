@@ -1,19 +1,28 @@
 Ext.require(['*']);
 
-var treeStore = Ext.create('Ext.data.TreeStore', {
+var ADARA = {};
+ADARA.Visualizer = {};
+ADARA.Visualizer.Stores = {};
+ADARA.Visualizer.Panels = {};
+
+ADARA.Visualizer.Stores.treeStore = Ext.create('Ext.data.TreeStore', {
     /*proxy: {
         type: 'ajax',
-        url: 'data/treeData.json'
+        url: 'getTreeNodes'
+    },
+    root: {
+        text: 'Categories',
+        id: 'root',
+        expanded: true
     }*/
 	root: {
         expanded: true, 
         children: [{
             text: "Network Topology",
-            expanded: true/*,
-            children:[
-                { id: 'item01', text: "Full Topology", leaf: true },
-                { id: 'item02', text: "item2", leaf: true }
-            ]*/
+            expanded: true,
+            children: [
+                { id: 'item50', text: "Entire Network", leaf: true, cls: "topology" }
+            ]
         }, {
             text: "Devices",
             expanded: false,
@@ -47,9 +56,9 @@ var treeStore = Ext.create('Ext.data.TreeStore', {
     }
 });
 
-var treePanel = new Ext.create('Ext.tree.Panel', {
+ADARA.Visualizer.Panels.treePanel = new Ext.create('Ext.tree.Panel', {
         id: 'west-panel',
-        store: treeStore,
+        store: ADARA.Visualizer.Stores.treeStore,
         width: 200,
         split: true,
         region: 'west',
@@ -62,8 +71,16 @@ var treePanel = new Ext.create('Ext.tree.Panel', {
 		collapsible: false,
         animCollapse: true,
 		useArrows: true,
-		margins:'0 0 5 5'
+		margins:'0 0 5 5',
+		listeners: {
+	        itemclick: function(s,r) {
+        		//console.log(s);
+        		console.log(r);
+                console.log("Clicked on : "+r.data.text);
+	        }
+        }
     });
+
 
 Ext.onReady(function() {
 
@@ -140,48 +157,13 @@ Ext.onReady(function() {
                         "borderWidth": 1
                     }
                 })]
-        }, treePanel,
-        /*{
-            id: 'west',
-            store: treeStore,
-            xtype: 'treepanel',
-            width: 200,
-	        split: true,
-            //height: 100,
-            region: 'west',
-            title: 'West Region',
-            collapsible: true,
-            rootVisible: false,
-            autoScroll: true,
-    		animate: true
-        },*/
-        /*{
-            region: 'west',
-            stateId: 'navigation-panel',
-            id: 'west-panel', // see Ext.getCmp() below
-            title: 'West',
-            split: true,
-            width: 200,
-            minWidth: 175,
-            maxWidth: 400,
-            collapsible: false,
-            animCollapse: true,
-            margins: '0 0 0 5',
-            layout: 'accordion',
-            items: [{
-                contentEl: 'west',
-                title: 'Navigation',
-                iconCls: 'nav' // see the HEAD section for style used
-            }, {
-                title: 'Settings',
-                html: '<p>Some settings in here.</p>',
-                iconCls: 'settings'
-            }, {
-                title: 'Information',
-                html: '<p>Some info in here.</p>',
-                iconCls: 'info'
-            }]
-        },*/
+        }, 
+        /**
+         * Adding the TreePanel in
+         * the 'west' region.
+         */
+        ADARA.Visualizer.Panels.treePanel,
+        
         // in this instance the TabPanel is not wrapped by another panel
         // since no title is needed, this Panel is added directly
         // as a Container
