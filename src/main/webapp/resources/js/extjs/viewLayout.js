@@ -1,6 +1,6 @@
 Ext.require(['*']);
 
-var ADARA = {};
+var ADARA = ADARA || {};
 ADARA.Utils = {};
 ADARA.Visualizer = {};
 ADARA.Visualizer.Stores = {};
@@ -59,21 +59,22 @@ ADARA.Visualizer.Stores.treeStore = Ext.create('Ext.data.TreeStore', {
 
 
 ADARA.Visualizer.Panels.treePanel = new Ext.create('Ext.tree.Panel', {
-        id: 'west-panel',
-        store: ADARA.Visualizer.Stores.treeStore,
-        width: 200,
-        split: true,
-        region: 'west',
-        title: 'Select Type To View',
-        rootVisible: false,
-        stateId: 'navigation-panel',
-        autoScroll: true,
-		animate: true,
-		containerScroll: true,
-		collapsible: false,
-        animCollapse: true,
-		useArrows: true
-    });
+    id: 'west-panel',
+    store: ADARA.Visualizer.Stores.treeStore,
+    width: 200,
+    split: true,
+    region: 'west',
+    title: 'Select Type To View',
+    rootVisible: false,
+    stateId: 'navigation-panel',
+    autoScroll: true,
+	animate: true,
+	containerScroll: true,
+	collapsible: false,
+    animCollapse: true,
+	useArrows: true,
+	margins: '0 0 0 5'
+});
     
 
 // in this instance the TabPanel is not wrapped by another panel
