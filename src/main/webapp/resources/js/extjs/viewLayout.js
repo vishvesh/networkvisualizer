@@ -1,6 +1,7 @@
 Ext.require(['*']);
 
 var ADARA = {};
+ADARA.Utils = {};
 ADARA.Visualizer = {};
 ADARA.Visualizer.Stores = {};
 ADARA.Visualizer.Panels = {};
@@ -108,15 +109,48 @@ ADARA.Visualizer.Panels.tabPanel = Ext.create('Ext.tab.Panel', {
 });
 
 
+/**
+ * Utility Function to Print out all the Function Names 
+ * of a JS Object with their Content.
+ * @param {} obj
+ * @return {}
+ */
+ADARA.Utils.getMethodsOfJSObject = function (obj) {
+  var result = [];
+  for (var id in obj) {
+    try {
+      if (typeof(obj[id]) == "function") {
+        //result.push(id + ": " + obj[id].toString()); //This guy will push Function Name: And Complete Function Content.
+        result.push(id); //This guy will push only the Function names!
+      }
+    } catch (err) {
+      result.push(id + ": inaccessible");
+    }
+  }
+  return result.join("\n");
+}
+
+
 Ext.onReady(function() {
 
     Ext.QuickTips.init();
     console.log("Extjs Initialized!");
     
     // Add a listener to the tree to do something when a node is clicked.
-    ADARA.Visualizer.Panels.treePanel.addListener('itemclick', function (node, event) {
-		console.log(node);
-		console.log(event);
+    ADARA.Visualizer.Panels.treePanel.addListener('itemclick', function (n, r) {
+		//console.log(n);
+		//console.log(r);
+		//console.log("Methods of N : \n"+ADARA.Utils.getMethodsOfJSObject(n));
+		//console.log("Methods of R : \n"+ADARA.Utils.getMethodsOfJSObject(r));
+		if(!r.isLeaf()) {
+			if(!r.isExpanded()) {
+				r.expand();
+			} else {
+				r.collapse();
+			}
+		} else {
+			console.log("Leaf Node Clicked : "+r.data.text);
+		}
 	});
 
 

@@ -5,7 +5,7 @@
   <!-- <link rel="stylesheet" href="resources/css/bootstrap.css" />
   <link rel="stylesheet" href="resources/js/keylines/fonts/stylesheet.css"/> -->
   <link rel="stylesheet" href="resources/css/list.css" /> 
-  <link rel="stylesheet" href="resources/css/extjs/ext-all.css" />
+  <link rel="stylesheet" href="resources/css/extjs/ext-all-debug.css" />
   <!-- <link rel="stylesheet" href="resources/css/extjs/ext-all-neptune.css" /> -->
   
   <script type="text/javascript" src="resources/js/jquery/jquery-1.10.1.min.js"></script>
