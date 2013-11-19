@@ -16,6 +16,15 @@ canvas {
 	width: 1000px !important; */
 }
 
+#userText {
+	padding: 10px;
+	vertical-align: middle;
+}
+
+#logoutUrl {
+	vertical-align: middle;
+}
+
 body {
 	margin: 0 auto;
 }

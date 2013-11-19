@@ -1,11 +1,11 @@
 
-console.isDebug = true;
+/*console.isDebug = true;
 
 window.console.real = window.console.log;
 window.console.log = function(stuff) {
 	if(this.isDebug)
 		this.real(stuff);
-};
+};*/
 
 var chart; //Global Chart Object!
 
@@ -24,7 +24,7 @@ $(window).load(function () {
   //Set the canvas asset path if using 'auto' or 'canvas'
   KeyLines.setCanvasPaths('resources/js/keylines/assets/');
   KeyLines.createChart('network-graph', 
-						  1250, 
+						  1200, 
 						  800,  
 						  afterChartCreated);
 });
@@ -43,7 +43,9 @@ function afterChartCreated(err, loadedChart) {
   chart.bind('click', handleClickEvent);
   chart.interactionOptions({handMode:true});
   
-  var data = jsonData;
+  getJson(null, true);
+  
+  /*var data = jsonData;
   console.log("data : "+data);
   
   var items = parseJson(data);
@@ -52,6 +54,8 @@ function afterChartCreated(err, loadedChart) {
   
   chart.load({type: 'LinkChart', items: items}, function() {
   	chart.zoom('fit', {}, applyStandardLayout);
+  	
+   });*/
   	
   	//setTimeout(function() {
 	  	
@@ -109,7 +113,7 @@ function afterChartCreated(err, loadedChart) {
 	  //chart.arrange('grid', arr[0], {fit: true, animate: true, tightness : 10});
 	  //chart.arrange('grid', arr[1], {fit: true, animate: true, tightness : 10});
   	}, 400);*/
-  });
+  //});
   
   chart.bind('dragstart', function (dragtype, id) {
     if (dragtype === 'move') {
@@ -138,6 +142,39 @@ function afterChartCreated(err, loadedChart) {
   	
   }, 3000);*/
 
+}
+
+
+/*************************************/
+/* Calling Neo4j to get data */
+/*************************************/ 
+function getJson(queryString, firstTime) {
+
+  $.ajax({
+    type: 'GET',
+    url:'/networkvisualizer/json',
+    //data: JSON.stringify({query: queryString, params: {}}),
+    dataType: 'json',
+    contentType: 'application/json',
+    success: function (json) {
+      var data = json;
+	  console.log("data : "+data);
+		  
+	  var items = parseJson(data);
+	  
+      if (firstTime) {
+		chart.load({type: 'LinkChart', items: items}, function() {
+			chart.zoom('fit', {}, applyStandardLayout);
+      	});
+      }
+      else {
+        chart.expand(items);
+      }
+    },
+    error: function (xhr) {
+      console.log(xhr);
+    }
+  });
 }
 
 
@@ -528,43 +565,6 @@ function applyStructuralLayout() {
 function fullScreenMode() {
 	console.log("Full Screen");
 	KeyLines.toggleFullScreen(document.getElementById('wrapper'), '');
-}
-
-
-/*************************************/
-/* Calling Neo4j to get data */
-/*************************************/ 
-
-
-function callCypher(queryString, firstTime) {
-
-  //$('#cypherquery').text(queryString);
-
-  $.ajax({
-    type: 'POST',
-    url:'/cypher',   //this is the standard cypher end point which by default is at http://localhost:7474/db/data/cypher 
-    data: JSON.stringify({query: queryString, params: {}}),
-    dataType: 'json',
-    contentType: 'application/json',
-    success: function (json) {
-
-      var items = parseResult(json);
-
-      if (firstTime) {
-        chart.load({type: 'LinkChart', items: items}, function() {
-          chart.zoom('fit', {}, applyStandardLayout);
-        });
-      }
-      else {
-        chart.expand(items);
-      }
-
-    },
-    error: function (xhr) {
-      console.log(xhr);
-    }
-  });
-
 }
 
 function validNode(item) {

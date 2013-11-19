@@ -1,20 +1,21 @@
 package com.adaranet.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.support.Neo4jTemplate;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.View;
-import org.springframework.web.servlet.view.InternalResourceView;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.adaranet.dto.DeviceDto;
 import com.adaranet.jsonBeans.DevicesJsonBean;
@@ -62,8 +63,32 @@ public class HomeController {
 	 
 	 @RequestMapping("/visualize")
 		@Transactional
-		public String visualize(Model model) throws Exception {
+		public ModelAndView visualize() throws Exception {
 			logger.info("Comes inside visualize");
+			Map<String, Object> model = new HashMap<String, Object>();
+			
+			ObjectMapper mapper = new ObjectMapper();
+	    	String json = "";
+	    	try {
+	    		json = mapper.writeValueAsString(getWholeGraph());
+	     
+	    		logger.info("Printing the JSON");
+	    		logger.info(json);
+	    		
+	    		model.put("jsonData", json);
+	     
+	    	} catch (Exception e) {
+	    		e.printStackTrace();
+	    	}
+	    	
+	    	return new ModelAndView("visualize", model);
+		}
+	 
+	 
+	 @RequestMapping(value = "/getJson", method = RequestMethod.GET, produces = "application/json")
+		@Transactional
+		public @ResponseBody Model getJson(Model model) throws Exception {
+			logger.info("Comes inside getJson()!");
 			
 			ObjectMapper mapper = new ObjectMapper();
 	    	String json = "";
@@ -79,16 +104,16 @@ public class HomeController {
 	    		e.printStackTrace();
 	    	}
 	    	
-	    	return "visualize";
+	    	return model;
 		}
 	 
 	 
-	 /*@RequestMapping(value = "/json", method = RequestMethod.GET, produces = "application/json")
-	    public @ResponseBody DevicePortJsonBeanMapper getGraphAsJSON(Model model) throws Exception { 
+	 @RequestMapping(value = "/json", method = RequestMethod.GET, produces = "application/json")
+	    public @ResponseBody List<DevicesJsonBean> getGraphAsJSON(Model model) throws Exception {
 	    	return getWholeGraph();
 	    }
 	 
-	 @RequestMapping(value = "/xml", method = RequestMethod.GET, produces = "application/xml")
+	 /*@RequestMapping(value = "/xml", method = RequestMethod.GET, produces = "application/xml")
 	    public @ResponseBody DevicePortJsonBeanMapper getGraphAsXML(Model model) throws Exception { 
 	    	return getWholeGraph();
 	    }*/

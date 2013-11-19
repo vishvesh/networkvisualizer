@@ -56,6 +56,7 @@ ADARA.Visualizer.Stores.treeStore = Ext.create('Ext.data.TreeStore', {
     }
 });
 
+
 ADARA.Visualizer.Panels.treePanel = new Ext.create('Ext.tree.Panel', {
         id: 'west-panel',
         store: ADARA.Visualizer.Stores.treeStore,
@@ -70,22 +71,54 @@ ADARA.Visualizer.Panels.treePanel = new Ext.create('Ext.tree.Panel', {
 		containerScroll: true,
 		collapsible: false,
         animCollapse: true,
-		useArrows: true,
-		margins:'0 0 5 5',
-		listeners: {
-	        itemclick: function(s,r) {
-        		//console.log(s);
-        		console.log(r);
-                console.log("Clicked on : "+r.data.text);
-	        }
-        }
+		useArrows: false
     });
+    
+
+// in this instance the TabPanel is not wrapped by another panel
+// since no title is needed, this Panel is added directly
+// as t.a Container
+ADARA.Visualizer.Panels.tabPanel = Ext.create('Ext.tab.Panel', {
+    region: 'center', // a center region is ALWAYS required for border layout
+    deferredRender: false,
+    activeTab: 0,     // first tab initially active
+    items: [/*{
+        contentEl: 'center1',
+        title: 'Close Me',
+        closable: true,
+        autoScroll: true
+    },*/{
+         contentEl: 'network-graph',
+         title: 'Topology',
+         autoScroll: true/*,
+         loader: {
+    	 contentType: 'html',
+            url: '/networkvisualizer/visualize',
+            autoLoad: true,
+            renderer: 'component',
+            loadMask: true,
+            scripts: true
+        }*//*,
+        listeners: {
+            activate: function(tab) {
+                tab.loader.load();
+            }
+        }*/
+    }]
+});
 
 
 Ext.onReady(function() {
 
     Ext.QuickTips.init();
     console.log("Extjs Initialized!");
+    
+    // Add a listener to the tree to do something when a node is clicked.
+    ADARA.Visualizer.Panels.treePanel.addListener('itemclick', function (node, event) {
+		console.log(node);
+		console.log(event);
+	});
+
 
     // NOTE: This is an example showing simple state management. During development,
     // it is generally best to disable state management as dynamically-generated ids
@@ -100,10 +133,15 @@ Ext.onReady(function() {
         // create instance immediately
         Ext.create('Ext.Component', {
             region: 'north',
-            height: 32, // give north and south regions a height
+            height: 50, // give north and south regions a height
             autoEl: {
                 tag: 'div',
-                html:'<div style="text-align: center; font-size: 14px; padding: 7px; color: navy;">ADARA SDN Visualizer</div>'
+                /*html:'<div id="adara-header" style="text-align: right; width: 100%; ' +
+                		'height: 100%; font-size: 14px; padding: 7px; color: navy;"><span id="userText">Welcome User</span>' +
+                		'<span id="logoutUrl"><a href="/networkvisualizer/listAllDevicesAndPorts">Home</a></span>' +
+                		'</div>'*/
+                html: '<div style="text-align: center; width: 100%; ' +
+                		'height: 100%; font-size: 14px; color: navy; margin-top: 15px;">ADARA SDN Visualizer</div>'
             }
         }), {
             // lazily created panel (xtype:'panel' is default)
@@ -164,23 +202,10 @@ Ext.onReady(function() {
          */
         ADARA.Visualizer.Panels.treePanel,
         
-        // in this instance the TabPanel is not wrapped by another panel
-        // since no title is needed, this Panel is added directly
-        // as a Container
-        Ext.create('Ext.tab.Panel', {
-            region: 'center', // a center region is ALWAYS required for border layout
-            deferredRender: false,
-            activeTab: 0,     // first tab initially active
-            items: [/*{
-                contentEl: 'center1',
-                title: 'Close Me',
-                closable: true,
-                autoScroll: true
-            },*/ {
-                contentEl: 'center',
-                title: 'Topology',
-                autoScroll: true
-            }]
-        })]
+        /**
+         * Adding the TabPanel in
+         * the 'center' region.
+         */
+        ADARA.Visualizer.Panels.tabPanel ]
     });
 });
