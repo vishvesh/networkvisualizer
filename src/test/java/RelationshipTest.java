@@ -12,7 +12,7 @@ import com.adaranet.repository.DeviceRepository;
 //import org.springframework.data.neo4j.transaction.Neo4jTransactional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath:applicationContext*.xml" })
+@ContextConfiguration(locations = { "classpath:springConfig/applicationContext*.xml" })
 public class RelationshipTest {
 
 	@Autowired
@@ -91,9 +91,9 @@ public class RelationshipTest {
 		
 		System.out.println("After executing all the tests!");
 		
-		Device theDevice = deviceRepository.findByPropertyValue("deviceName", "One");
+		/*Device theDevice = deviceRepository.findByPropertyValue("deviceName", "One");
 		if(theDevice != null)
-			System.out.println("FOUND THE DEVICE : "+theDevice.getDeviceName());
+			System.out.println("FOUND THE DEVICE : "+theDevice.getDeviceName());*/
 				
 		//System.out.println("Test Start");
 		//logger.info("Initiating test for Relationship.");
