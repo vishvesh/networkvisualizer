@@ -72,7 +72,7 @@ ADARA.Visualizer.Panels.treePanel = new Ext.create('Ext.tree.Panel', {
 		containerScroll: true,
 		collapsible: false,
         animCollapse: true,
-		useArrows: false
+		useArrows: true
     });
     
 
