@@ -26,6 +26,14 @@ public class Ports implements Serializable {
     private String bitsIn;
     private String bitsOut;
     
+    public Ports(String portName) {
+    	this.portName = portName;
+	}
+    
+    public Ports() {
+    	
+	}
+    
 	public Long getId() {
 		return id;
 	}

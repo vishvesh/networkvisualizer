@@ -200,7 +200,23 @@ Ext.onReady(function() {
                 items: [ '->', {
                    xtype: 'button',
                    text: 'test',
-                   tooltip: 'Test Button'
+                   tooltip: 'Test Button',
+                   listeners: {
+                   	click: function() {
+                   		console.log("Clicked!");
+                   		Ext.Ajax.request({
+							url: '/networkvisualizer/simulateNetwork',
+							params: {
+								noOfDevices: 50,
+								noOfPorts: 4
+							},
+							success: function(response) {
+								var text = response.responseText;
+								console.log("SERVER RESPONSE : "+text);
+							}
+                   		});
+                   	  }
+                    }
                 }]
             }],
             animCollapse: true,
