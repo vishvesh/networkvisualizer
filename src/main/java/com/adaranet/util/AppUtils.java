@@ -35,6 +35,10 @@ public class AppUtils {
 	    // nextInt is normally exclusive of the top value, so add 1 to make it inclusive
 		int randomNum = 0;
 		try {
+			if(max <= 0) {
+				logger.info("Max == 0 .. Returning 0 : Max Value : "+max);
+				return 0;
+			}
 			randomNum = new Random().nextInt(max - 0) + 1;
 		} catch (Exception e) {
 			e.printStackTrace();

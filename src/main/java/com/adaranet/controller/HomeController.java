@@ -215,8 +215,8 @@ public class HomeController {
 					Object[] endDevicePorts = endDevicePortsList.toArray();
 					System.out.println("Length : "+startDevicePortsList.size()+" : "+startDevicePorts.length+" : "+endDevicePorts.length);
 					//for(int j = 0; j < startDevicePorts.length; j ++) {
-					Ports startPort = (Ports) startDevicePorts[0];
-					Ports endPort = (Ports) endDevicePorts[0];
+					Ports startPort = (Ports) startDevicePorts[AppUtils.generateRandomInt(startDevicePorts.length - 1)];
+					Ports endPort = (Ports) endDevicePorts[AppUtils.generateRandomInt(endDevicePorts.length - 1)];
 					String startPortName = startPort.getPortName();
 					String endPortName = endPort.getPortName();
 					String originalPortNames = AppUtils.replacePorts(startPortName)+'-'+AppUtils.replacePorts(endPortName);

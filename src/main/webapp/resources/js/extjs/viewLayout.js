@@ -208,7 +208,7 @@ Ext.onReady(function() {
 							url: '/networkvisualizer/simulateNetwork',
 							params: {
 								noOfDevices: 50,
-								noOfPorts: 4
+								noOfPorts: 5
 							},
 							success: function(response) {
 								var text = response.responseText;
