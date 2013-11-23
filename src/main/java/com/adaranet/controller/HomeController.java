@@ -113,33 +113,8 @@ public class HomeController {
 	    	
 	    	return model;
 		}
-	 
-	 /*private static int NUMBER_OF_DEVICES = 25;
-		private static int NUMBER_OF_PORTS = 3;*/
-		//private static Logger logger = Logger.getLogger(getClass());
-		
-		private static final int NUM_CHARS = 20;
-		private static String chars = "abcdefghijklmonpqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-		private static Random random = new Random();
-		//private static Map<Integer, String> deviceMap = new HashMap<Integer, String>();
-		
-		public static String getUniqueID() {
-			char[] buf = new char[NUM_CHARS];
-			for (int i = 0; i < buf.length; i++) {
-				buf[i] = chars.charAt(random.nextInt(chars.length()));
-			}
-			return new String(buf);
-		}
-		
-		/*@Rollback(false)
-	    @BeforeTransaction
-	    public void cleanUpGraph() {
-			System.out.println("***** Cleaning Neo4jDatabase! *****");
-	        Neo4jHelper.cleanDb(template);
-	        System.out.println("***** Cleaned Neo4jDatabase! *****");
-	    }*/ 
 
-		
+	 
 		@Transactional
 		public void beforeLoad() {
 		try {
@@ -214,26 +189,26 @@ public class HomeController {
 					Object[] startDevicePorts =  startDevicePortsList.toArray();
 					Object[] endDevicePorts = endDevicePortsList.toArray();
 					System.out.println("Length : "+startDevicePortsList.size()+" : "+startDevicePorts.length+" : "+endDevicePorts.length);
-					//for(int j = 0; j < startDevicePorts.length; j ++) {
-					Ports startPort = (Ports) startDevicePorts[AppUtils.generateRandomInt(startDevicePorts.length - 1)];
-					Ports endPort = (Ports) endDevicePorts[AppUtils.generateRandomInt(endDevicePorts.length - 1)];
-					String startPortName = startPort.getPortName();
-					String endPortName = endPort.getPortName();
-					String originalPortNames = AppUtils.replacePorts(startPortName)+'-'+AppUtils.replacePorts(endPortName);
-					ConnectedToDevice connectedToDevice = startDevice.connectsToDevice(endDevice,
-																					startPort,
-																					endPort,
-															    					originalPortNames,
-															    					Integer.toString(AppUtils.generateRandomInt(100)),
-															    					Integer.toString(AppUtils.generateRandomInt(100)),
-															    					Integer.toString(AppUtils.generateRandomInt(100)));
-					template.save(connectedToDevice);
-					System.out.println("Connected Relationship Successfully!");
-					System.out.println("Start Device : "+startDeviceName+
-										" : Start Port : "+startPortName+
-										" : End Device : "+endDeviceName+
-										" : End Port : "+endPortName);
-					//}
+					for(int j = 0; j < startDevicePorts.length; j ++) {
+						Ports startPort = (Ports) startDevicePorts[AppUtils.generateRandomInt(startDevicePorts.length - 1)];
+						Ports endPort = (Ports) endDevicePorts[AppUtils.generateRandomInt(endDevicePorts.length - 1)];
+						String startPortName = startPort.getPortName();
+						String endPortName = endPort.getPortName();
+						String originalPortNames = AppUtils.replacePorts(startPortName)+'-'+AppUtils.replacePorts(endPortName);
+						ConnectedToDevice connectedToDevice = startDevice.connectsToDevice(endDevice,
+																						startPort,
+																						endPort,
+																    					originalPortNames,
+																    					Integer.toString(AppUtils.generateRandomInt(100)),
+																    					Integer.toString(AppUtils.generateRandomInt(100)),
+																    					Integer.toString(AppUtils.generateRandomInt(100)));
+						template.save(connectedToDevice);
+						System.out.println("Connected Relationship Successfully!");
+						System.out.println("Start Device : "+startDeviceName+
+											" : Start Port : "+startPortName+
+											" : End Device : "+endDeviceName+
+											" : End Port : "+endPortName);
+					}
 				}
 			}
 			System.out.println("Connection Completed Sucessfully!");
@@ -260,6 +235,9 @@ public class HomeController {
 			this.createDevices(noOfDevices, noOfPorts);
 			this.connectPorts();
 			this.showDevices();
+			System.out.println("Relationship Count from DB : "+template.count(ConnectedToDevice.class)
+					+ " : Count for Ports : "+template.count(Ports.class)
+					+ " : Count for Devices : "+template.count(Device.class));
 	    	return "success";
 	    }
 	 

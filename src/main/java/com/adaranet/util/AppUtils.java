@@ -11,6 +11,12 @@ import com.adaranet.service.PortsService;
 
 public class AppUtils {
 
+	private static Logger logger = Logger.getLogger(AppUtils.class);
+	
+	private static final int NUM_CHARS = 20;
+	private static String chars = "abcdefghijklmonpqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+	private static Random random = new Random();
+	
 	@Autowired
 	private static Neo4jTemplate template;
 	@Autowired
@@ -18,7 +24,19 @@ public class AppUtils {
 	@Autowired
 	private static PortsService portsService;
 	
-	private static Logger logger = Logger.getLogger(AppUtils.class);
+	/**
+	 * Method which takes in number of chars.(length of new unique string),
+	 * and the chars String.. with all the alphabets.. upper/lower case and numbers.
+	 * Generates a random string using the char string length!
+	 * @return unique string
+	 */
+	public static String getUniqueID() {
+		char[] buf = new char[NUM_CHARS];
+		for (int i = 0; i < buf.length; i++) {
+			buf[i] = chars.charAt(random.nextInt(chars.length()));
+		}
+		return new String(buf);
+	}
 	
 	/**
 	 * Returns a psuedo-random number between min and max, inclusive.
@@ -39,7 +57,7 @@ public class AppUtils {
 				logger.info("Max == 0 .. Returning 0 : Max Value : "+max);
 				return 0;
 			}
-			randomNum = new Random().nextInt(max - 0) + 1;
+			randomNum = random.nextInt(max - 0) + 1;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
