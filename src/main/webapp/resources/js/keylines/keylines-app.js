@@ -217,8 +217,8 @@ function parseDevice(device) {
 	    h: 120,
 	    //t: nodeLabel(basetype, item),
 	    //u: nodeIcon(icontype)/*,
-	    d: {
-	      baseType: 'Device' //store the type of the item for later - will be used for subsequent queries
+	    d: {  //store the type of the item for later - will be used for subsequent queries
+	      baseType: 'Device'
 	    }
      };
   return deviceNode;
@@ -338,11 +338,11 @@ function parseLink(portConnections, type) {
 			    c: 'rgb(55, 55, 255)',
 			    w: 2,
 			    d: {
-			      baseType: 'Link - Has_Port'  //This can be used to calculate weighted shorted paths b/n nodes
+			      baseType: 'Link - Has_Port'
 			    }/*,
-			    g: linkGlyph(item),
+			    //g: linkGlyph(device),
 			    d: {
-			      type: outgoingDevices[i].cost  //This can be used to calculate weighted shorted paths b/n nodes
+			      type: outgoingDevices[i].cost  //This can be used to calculate weighted shortest paths b/n nodes.
 			    }*/
 			  };
 		  portConnectedLinks.push(link);
@@ -377,10 +377,14 @@ function parseLink(portConnections, type) {
 			    //a1: true,
 			    //a2: true,
 			    //c: 'rgb(55, 55, 255)',
+			    //g: linkGlyph(device),
 			    c: getLinkColorByBandwidthValue(availableBandwidth),
 			    w: getBandwidthLinkSizeByBandwidthValue(availableBandwidth),
-			    d: {
-			      baseType: 'Link - Connects_To'  //This can be used to calculate weighted shorted paths b/n nodes
+			    d: { //This can be used to calculate weighted shorted paths b/n nodes
+			      baseType: 'Link - Connects_To',
+			      latency: latency,
+			      availableBandwidth: availableBandwidth,
+			      linkCapacity: linkCapacity
 			    }
 			  };
 			portConnectedLinks.push(link);
@@ -486,11 +490,22 @@ function handleClickEvent(clickedID, x, y) {
 	var item = chart.getItem(clickedID);
 	var itemBaseType = item.d.baseType;
 	console.log(item);
+	console.log("Item Base Type : "+itemBaseType);
 	$('#baseType').html(itemBaseType);
-	/*if(item.type == 'node') {
-		console.log(item.d.baseType);
-		$('#baseType').html(item.d.baseType);
-	}*/
+	if(item.type == 'node') {
+		//console.log(item.d.baseType);
+		//$('#baseType').html(itemBaseType);
+	} else if(item.type = 'link') {
+		var baseTypeSpan = $('#baseType');
+		var latency = item.d.latency;
+		var availableBW = item.d.availableBandwidth;
+		var linkCapacity = item.d.linkCapacity;
+		console.log(latency+" : "+availableBW+" : "+linkCapacity);
+		baseTypeSpan.append('<div style="margin-top: 5px; text-decoration: underline;">Connection Details:</div>');
+		baseTypeSpan.append('<div>Latency: '+latency+'</div>');
+		baseTypeSpan.append('<div>Available Bandwidth: '+availableBW+'</div>');
+		baseTypeSpan.append('<div>Link Capacity: '+linkCapacity+'</div>');
+	}
 		
 	/*chart.combo().combine(
 		{
@@ -534,7 +549,7 @@ function calculateShortestPaths(id1, id2, opts) {
 	console.log("PATH ITEMS: "+paths.items);
 	
 	//Need to reverse the array here, since we want to animate 'from' to 'to' connection/device. 
-	for(item in (paths.items).reverse()) { 
+	for(item in (paths.items).reverse()) {
 		
 		var theItem = paths.items[item];
 		console.log("Item : "+theItem);
@@ -547,11 +562,11 @@ function calculateShortestPaths(id1, id2, opts) {
 }
 
 function applyStandardLayout() {
-  chart.layout('standard', {animate: true});
+  chart.layout('standard', {fit: true, animate: true, tidy: true});
 }
 
 function applyHierarchyLayout() {
-  chart.layout('hierarchy', {fit: true, animate: true});
+  chart.layout('hierarchy', {fit: true, animate: true, tidy: true});
 }
 
 function applyRadialLayout() { 
@@ -634,9 +649,10 @@ function nodeIcon(type) {
   return icon;
 }
 
-function linkGlyph(item) {
-  if (item.type === 'RATED') {
+function linkGlyph(device) {
+  /*if (item.type === 'RATED') {
     return [{c: 'rgb(50, 50, 10)', t: item.data.stars}];
   }
-  return null; //other links do not have a glyph
+  return null; //other links do not have a glyph*/
+  return [{c: 'rgb(50, 50, 10)', t: device.parentDevice.id}];
 }

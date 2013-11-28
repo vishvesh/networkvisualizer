@@ -29,9 +29,9 @@ body {
 	margin: 0 auto;
 }
 
-#baseType {
+/* #baseType {
 	margin-left: 3px;
-}
+} */
 
 #typeWrapper {
 	font-size: 1.5em;
@@ -64,6 +64,7 @@ body {
 
 
 #links a {
+	color: #0069d6;
 	border-left: 1px solid;
 	padding-left: 4px;
 }

@@ -4,13 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.junit.Test;
 import org.neo4j.helpers.collection.IteratorUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.support.Neo4jTemplate;
@@ -28,6 +26,7 @@ import com.adaranet.jsonBeans.DevicesJsonBean;
 import com.adaranet.model.Device;
 import com.adaranet.model.Ports;
 import com.adaranet.relationships.ConnectedToDevice;
+import com.adaranet.service.ConnectedToDeviceRelationshipService;
 import com.adaranet.service.DeviceService;
 import com.adaranet.service.PortService;
 import com.adaranet.util.AppUtils;
@@ -43,6 +42,8 @@ public class HomeController {
 	private PortService portService;
 	@Autowired
 	private Neo4jTemplate template;
+	@Autowired
+	private ConnectedToDeviceRelationshipService connectedToDeviceRelationshipService;
 	
 
 	 @RequestMapping(value = "", method = RequestMethod.GET)
@@ -113,6 +114,30 @@ public class HomeController {
 	    	
 	    	return model;
 		}
+	 
+	 
+	 @RequestMapping(value = "/updateRandomEdges", method = RequestMethod.GET)
+	 @Transactional
+	 	public @ResponseBody String updateRandomDeviceRelationshipEdges() throws Exception {
+	 		try {
+	 			logger.info("Inside Method : updateRandomDeviceRelationshipEdges()!");
+ 				List<ConnectedToDevice> connections = (ArrayList<ConnectedToDevice>) IteratorUtil.asCollection(connectedToDeviceRelationshipService.findAll());
+ 				//Collections.shuffle(connections);
+ 				logger.info("Device Connections Size : "+connections.size());
+	 			for(int i = 0; i < 50; i++) {
+	 				ConnectedToDevice connection = connections.get((AppUtils.generateRandomInt(connections.size() - 1)));
+	 				connection.setAvailableBandwidth(Integer.toString(AppUtils.generateRandomInt(100)));
+	 				connection.setLatency(Integer.toString(AppUtils.generateRandomInt(100)));
+	 				connection.setLinkCapacity(Integer.toString(AppUtils.generateRandomInt(100)));
+	 				connectedToDeviceRelationshipService.saveEntity(connection);
+	 			}
+	 			logger.info("Randomly Updated the Network!");
+	 			
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+	 		return "success";
+	 	}
 
 	 
 		@Transactional
@@ -189,7 +214,7 @@ public class HomeController {
 					Object[] startDevicePorts =  startDevicePortsList.toArray();
 					Object[] endDevicePorts = endDevicePortsList.toArray();
 					System.out.println("Length : "+startDevicePortsList.size()+" : "+startDevicePorts.length+" : "+endDevicePorts.length);
-					for(int j = 0; j < startDevicePorts.length; j ++) {
+					//for(int j = 0; j < startDevicePorts.length; j ++) {
 						Ports startPort = (Ports) startDevicePorts[AppUtils.generateRandomInt(startDevicePorts.length - 1)];
 						Ports endPort = (Ports) endDevicePorts[AppUtils.generateRandomInt(endDevicePorts.length - 1)];
 						String startPortName = startPort.getPortName();
@@ -208,7 +233,7 @@ public class HomeController {
 											" : Start Port : "+startPortName+
 											" : End Device : "+endDeviceName+
 											" : End Port : "+endPortName);
-					}
+					//}
 				}
 			}
 			System.out.println("Connection Completed Sucessfully!");

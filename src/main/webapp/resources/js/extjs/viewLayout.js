@@ -181,13 +181,13 @@ Ext.onReady(function() {
         }), {
             // lazily created panel (xtype:'panel' is default)
             region: 'south',
-            //contentEl: 'south',
+            contentEl: 'links',
             split: true,
-            height: 100,
-            minSize: 100,
+            height: 50,
+            minSize: 50,
             maxSize: 200,
             collapsible: true,
-            collapsed: true,
+            collapsed: false,
             title: 'South',
             margins: '0 0 0 0'
         }, {
@@ -199,16 +199,16 @@ Ext.onReady(function() {
                 xtype: 'toolbar',
                 items: [ '->', {
                    xtype: 'button',
-                   text: 'test',
-                   tooltip: 'Test Button',
+                   text: 'Simulate Network',
+                   tooltip: 'Create',
                    listeners: {
                    	click: function() {
-                   		console.log("Clicked!");
+                   		console.log("Clicked Simulate Network!");
                    		Ext.Ajax.request({
 							url: '/networkvisualizer/simulateNetwork',
 							params: {
 								noOfDevices: 50,
-								noOfPorts: 5
+								noOfPorts: 10
 							},
 							success: function(response) {
 								var text = response.responseText;
@@ -217,20 +217,53 @@ Ext.onReady(function() {
                    		});
                    	  }
                     }
+                },
+                {
+                   xtype: 'button',
+                   text: 'Update Network',
+                   tooltip: 'Update',
+                   listeners: {
+                   	click: function() {
+                   		console.log("Clicked Update Network!");
+                   		setInterval(function() {
+                   			Ext.Ajax.request({
+								url: '/networkvisualizer/updateRandomEdges',
+								success: function(response) {
+									var text = response.responseText;
+									console.log("SERVER RESPONSE : "+text);
+								}
+	                   	    });
+                   		}, 3000);
+                   	  }
+                    }
+                },
+                {
+                   xtype: 'button',
+                   text: 'Update Graph',
+                   tooltip: 'Update',
+                   listeners: {
+                   	click: function() {
+                   		console.log("Clicked Update Graph!");
+                   		setInterval(function() {
+                   			getJson(null, false);
+                   		}, 3000);
+                   	  }
+                    }
                 }]
             }],
             animCollapse: true,
             collapsible: false,
             split: true,
-            width: 225, // give east and west regions a width
+            width: 275, // give east and west regions a width
             minSize: 175,
             maxSize: 400,
             margins: '0 5 0 0',
-            activeTab: 1,
+            activeTab: 0,
             tabPosition: 'bottom',
             items: [{
-                html: '<p>A TabPanel component can be a region.</p>',
-                title: 'A Tab',
+                //html: '<p>A TabPanel component can be a region.</p>',
+            	contentEl: 'east-description-panel',
+                title: 'Device Properties',
                 autoScroll: true
             }, Ext.create('Ext.grid.PropertyGrid', {
                     title: 'Property Grid',
