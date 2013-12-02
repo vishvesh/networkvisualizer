@@ -207,6 +207,7 @@ function parseDevice(device) {
 	var parentDevice = device.parentDevice;
 	var deviceId = parentDevice.id;
 	var deviceName = parentDevice.deviceName;
+	var deviceType = parentDevice.deviceType;
 	
 	var deviceNode = {
 	    id: deviceId,
@@ -218,7 +219,7 @@ function parseDevice(device) {
 	    //t: nodeLabel(basetype, item),
 	    //u: nodeIcon(icontype)/*,
 	    d: {  //store the type of the item for later - will be used for subsequent queries
-	      baseType: 'Device'
+	      baseType: deviceType
 	    }
      };
   return deviceNode;

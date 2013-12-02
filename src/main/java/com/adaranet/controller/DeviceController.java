@@ -24,6 +24,7 @@ import com.adaranet.model.Ports;
 import com.adaranet.relationships.ConnectedToDevice;
 import com.adaranet.service.DeviceService;
 import com.adaranet.service.PortService;
+import com.adaranet.util.AppConstants;
 import com.adaranet.util.AppUtils;
 
 @Controller
@@ -92,8 +93,8 @@ public class DeviceController {
 		if(deviceName != null && !deviceName.isEmpty() && !deviceName.equals("")) {		
 	    	logger.info("Adding few dummy devices in the neo4j-graph-db");  	
 	    	//Device newDevice = template.save(new Device(deviceName));
-	    	Device newDevice = new Device(deviceName);
-	    	deviceService.saveEntity(newDevice);	    	
+	    	Device newDevice = new Device(deviceName, AppConstants.DEVICE_TYPE__DEVICE);
+	    	deviceService.saveEntity(newDevice);
 	    	Iterable<Device> devices = deviceService.findAll();    	
 	    	if(devices.iterator().hasNext()) {
 	    		for (Device device : devices) {

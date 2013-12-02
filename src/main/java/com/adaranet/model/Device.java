@@ -94,6 +94,12 @@ public class Device {
 		this.deviceName = deviceName;
 	}
     
+    public Device(String deviceName, String deviceType) {
+    	super();
+		this.deviceName = deviceName;
+    	this.deviceType = deviceType;
+    }
+    
     public Device(String deviceName, String deviceType, String cpuUtilization, String numberOfSessions) {
 		super();
 		this.deviceName = deviceName;

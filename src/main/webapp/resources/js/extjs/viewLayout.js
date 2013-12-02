@@ -207,8 +207,8 @@ Ext.onReady(function() {
                    		Ext.Ajax.request({
 							url: '/networkvisualizer/simulateNetwork',
 							params: {
-								noOfDevices: 50,
-								noOfPorts: 10
+								noOfDevices: 20,
+								noOfPorts: 5
 							},
 							success: function(response) {
 								var text = response.responseText;

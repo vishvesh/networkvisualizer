@@ -29,6 +29,7 @@ import com.adaranet.relationships.ConnectedToDevice;
 import com.adaranet.service.ConnectedToDeviceRelationshipService;
 import com.adaranet.service.DeviceService;
 import com.adaranet.service.PortService;
+import com.adaranet.util.AppConstants;
 import com.adaranet.util.AppUtils;
 
 @Controller
@@ -178,7 +179,7 @@ public class HomeController {
 									" : Replaced UUID : "+UUID.randomUUID().toString().replaceAll("-", ""));
 				
 				//Device device = deviceService.saveEntity(new Device(uniqueId));
-				Device device = new Device(uniqueId);
+				Device device = new Device(uniqueId, AppConstants.DEVICE_TYPE__DEVICE);
 				template.save(device);
 				//deviceService.saveEntity(device);
 				//Thread.sleep(1 * 200);
