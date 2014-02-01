@@ -4,8 +4,6 @@ import java.io.Serializable;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.codehaus.jackson.annotate.JsonAutoDetect;
-
 @XmlRootElement
 public class DeviceDto implements Serializable {
 
@@ -26,6 +24,24 @@ public class DeviceDto implements Serializable {
 	private String connectedPorts;
 	private String availableBandwidth;
 	private String originalPortNames;
+	private String cpuUtilization;
+    private String numberOfSessions;
+    
+    public void setCpuUtilization(String cpuUtilization) {
+		this.cpuUtilization = cpuUtilization;
+	}
+    
+    public String getCpuUtilization() {
+		return cpuUtilization;
+	}
+    
+    public void setNumberOfSessions(String numberOfSessions) {
+		this.numberOfSessions = numberOfSessions;
+	}
+    
+    public String getNumberOfSessions() {
+		return numberOfSessions;
+	}
 	
 	public void setOriginalPortNames(String originalPortNames) {
 		this.originalPortNames = originalPortNames;

@@ -116,20 +116,42 @@ ADARA.Visualizer.Panels.tabPanel = Ext.create('Ext.tab.Panel', {
  * @param {} obj
  * @return {}
  */
-ADARA.Utils.getMethodsOfJSObject = function (obj) {
-  var result = [];
-  for (var id in obj) {
-    try {
-      if (typeof(obj[id]) == "function") {
-        //result.push(id + ": " + obj[id].toString()); //This guy will push Function Name: And Complete Function Content.
-        result.push(id); //This guy will push only the Function names!
-      }
-    } catch (err) {
-      result.push(id + ": inaccessible");
+ADARA.Utils.getMethodsOfJSObject = function (obj, printCompleteMethod, objName) {
+	  var result = [];
+	  if(!printCompleteMethod) {
+	  	 var printCompleteMethod = false;
+	  }
+	  for (var id in obj) {
+	  	if(obj.hasOwnProperty(id)) {
+		    try {
+		      if (typeof(obj[id]) == "function") {
+		      	if(printCompleteMethod == false) {
+		      		if(objName) {
+		      			result.push("ParameterizedObject." + objName + "." + id); //Will just push the object.methodName
+		      		} else {
+		        		result.push("ParameterizedObject." +id); //This guy will push only the object.methodName name!
+		      		}
+		      	} else {
+		      		if(objName) {
+		      			result.push("ParameterizedObject." + objName + "." + id + ": "+obj[id].toString()+"\n"); //This guy will push Function Name: And Complete Function Content.
+		      		} else {
+		        		result.push("ParameterizedObject." + id + ": "+obj[id].toString()+"\n"); //This guy will push Function Name: And Complete Function Content.
+		      		}
+		      	}
+		      }
+		      else if(typeof(obj[id]) == "object") {
+			  	ADARA.Utils.getMethodsOfJSObject(obj[id], printCompleteMethod, id);
+	      	  }
+		    } catch (err) {
+		      result.push(id + ": inaccessible");
+		    }
+		  } else {
+		  	console.log("!obj.hasOwnProperty(id) : "+id)
+		  }
+		}
+	  console.log(result.join("\n"));
+	  return result.join("\n");
     }
-  }
-  return result.join("\n");
-}
 
 
 Ext.onReady(function() {

@@ -86,7 +86,7 @@
         <field name="startDevice" type="com.adaranet.model.Device">
             <bind-xml name="devices" node="element"/>
         </field>       
-         <field name="connectedPort" type="com.adaranet.model.Port">
+         <field name="connectedPort" type="com.adaranet.model.Ports">
             <bind-xml name="port" node="element"/>
         </field>        
         <field name="value" type="string">

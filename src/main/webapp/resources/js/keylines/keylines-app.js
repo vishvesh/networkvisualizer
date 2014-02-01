@@ -201,21 +201,95 @@ function uncombineNodes() {
 	console.log("Chart expanded");
 }
 
+/**
+ * A couple of helper methods
+ * @param {} url
+ * @return {}
+ */
+function cleanURL(url) {
+  return url.substring(url.lastIndexOf('/')+1);
+}
+
+/**
+ * Helper function to return the substring'd
+ * part of the string, which comes after the 'char + 1'
+ * passed in as the parameter.
+ * @param {} str
+ * @param {} char
+ * @return {} substring'd str
+ */
+function getSubStringAfterLastIndexOfChar(str, char) {
+  return str.substring(str.lastIndexOf(char) + 1);
+}
+
+/*function filterPortNames(ports) {
+	var filteredName;
+	if(ports) {
+		console.log("Port name : Inside filterPortNames() : "+ports);
+		filteredName = ports.replace(new RegExp("Device", "g"), "");
+	}
+	return filteredName;
+}*/
+
+/**
+ * Array which holds the (DOM)ID's
+ * which are to be combined/clustered
+ * after the graph is rendered or maybe,
+ * we can use this for an event triggered.
+ * @type Array 
+ */
+var combineArr = [];
+
+var clusteredIds = [];
+
+/**
+ * Instead of extending the Array prototype,
+ * it's good to create a separate function,
+ * since we add extra property when we
+ *  extend the Array's prototype.
+ */
+function arrayContains(array, item) {
+	console.log("Inside Array Contains Custom Method : Array : "+array+" : Item : "+item);
+	if(Array.indexOf) { //This guy will be present only for Modern Browsers.
+		if(array.indexOf(item) == -1) {
+			return true;
+		} else {
+		return false;
+	  }
+	} else {
+		var i = array.length;
+	    while (i--) {
+	       if (array[i] === item) {
+	           return true;
+	       }
+	    }
+	    return false;
+	}
+}
 
 function parseDevice(device) {
 
-	var parentDevice = device.parentDevice;
-	var deviceId = parentDevice.id;
-	var deviceName = parentDevice.deviceName;
-	var deviceType = parentDevice.deviceType;
+	//var parentDevice = device.parentDevice;
+	//var parentDevice = device;
+	var deviceId = device.id;
+	var deviceName = device.deviceName;
+	var deviceType = device.deviceType;
+	console.log("Inside Parse Device : Device Type : "+deviceType);
+	var width = 300;
+	var height = 120;
+	
+	if(deviceType == "Virtual Machine") {
+		width = 100;
+		height = 80;
+	}
 	
 	var deviceNode = {
 	    id: deviceId,
 	    type: 'node',
 	    t: deviceName,
-	    u: nodeIcon('device'),
-	    w: 300,
-	    h: 120,
+	    u: nodeIcon(deviceType),
+	    w: width,
+	    h: height,
 	    //t: nodeLabel(basetype, item),
 	    //u: nodeIcon(icontype)/*,
 	    d: {  //store the type of the item for later - will be used for subsequent queries
@@ -249,81 +323,15 @@ function parsePort(port) {
     return portNode;
 }
 
-/**
- * A couple of helper methods
- * @param {} url
- * @return {}
- */
-function cleanURL(url) {
-  return url.substring(url.lastIndexOf('/')+1);
-}
-
-/**
- * Helper function to return the substring'd
- * part of the string, which comes after the 'char + 1'
- * passed in as the parameter.
- * @param {} str
- * @param {} char
- * @return {} substring'd str
- */
-function getSubStringAfterLastIndexOfChar(str, char) {
-  return str.substring(str.lastIndexOf(char) + 1);
-}
-
-/*function filterPortNames(ports) {
-	var filteredName;
-	if(ports) {
-		console.log("Port name : Inside filterPortNames() : "+ports);
-		filteredName = ports.replace(new RegExp("Device", "g"), "");
-	}
-	return filteredName;
-}*/
-
-/**
- * Instead of extending the Array prototype,
- * it's good to create a separate function,
- * since we add extra property when we
- *  extend the Array's prototype.
- */
-function arrayContains(array, item) {
-	console.log("Inside Array Contains Custom Method : Array : "+array+" : Item : "+item);
-	if(Array.indexOf) { //This guy will be present only for Modern Browsers.
-		if(array.indexOf(item) == -1) {
-			return true;
-		} else {
-		return false;
-	  }
-	} else {
-		var i = array.length;
-	    while (i--) {
-	       if (array[i] === item) {
-	           return true;
-	       }
-	    }
-	    return false;
-	}
-}
-
-/**
- * Array which holds the (DOM)ID's
- * which are to be combined/clustered
- * after the graph is rendered or maybe, 
- * we can use this for an event triggered. 
- * @type Array 
- */
-var combineArr = [];
-
-var clusteredIds = [];
-
-function parseLink(portConnections, type) {
-	var portConnectedLinks = [];
+function parseLink(connections, type) {
+	var connectedLinks = [];
+	var device = connections;
 	
 	if(type && type == 'has_port') {
-		var device = portConnections;
 		var parentDevice = device.parentDevice;
 		var deviceId = parentDevice.id;
 		//var deviceName = parentDevice.deviceName;
-		var hasPorts = portConnections.hasPorts;
+		var hasPorts = device.hasPorts;
 		for(var i in hasPorts) {
 			var hasPort = hasPorts[i];
 			var link = {
@@ -346,12 +354,44 @@ function parseLink(portConnections, type) {
 			      type: outgoingDevices[i].cost  //This can be used to calculate weighted shortest paths b/n nodes.
 			    }*/
 			  };
-		  portConnectedLinks.push(link);
+		  connectedLinks.push(link);
+		}
+	} else if (type && type == 'has_vm') {
+		var deviceId = device.parentDevice.id;
+		//var deviceName = parentDevice.deviceName;
+		var hasVms = device.hasVirtualMachines;
+		console.log("Type == 'has_vm' : hasVm's length : "+hasVms.length);
+		for(var i in hasVms) {
+			var hasVM = hasVms[i];
+			console.log("HAS VIRTUAL MACHINEEEEEEEEEEEEEEE : ");
+			console.log(hasVM);
+			var link = {
+			    type: 'link',
+			    id1: deviceId,
+			    id2: hasVM.id,
+			    id: deviceId + '-' + hasVM.id,
+			    //t: labelDictionary[item.type],
+			    //t: 'has_port',
+			    a2: true,
+			    //b1: 0,
+			    //b2: 0,
+			    c: 'rgb(55, 55, 255)',
+			    w: 2,
+			    d: {
+			      baseType: 'Link - Has_VM'
+			    }/*,
+			    //g: linkGlyph(device),
+			    d: {
+			      type: outgoingDevices[i].cost  //This can be used to calculate weighted shortest paths b/n nodes.
+			    }*/
+			  };
+			  console.log("HAS VIRTUAL MACHINE LINK : ");
+			  console.log(link);
+		  connectedLinks.push(link);
 		}
 	} else {
 		console.log("Line number 305.. Comes in Else Part!");
-		var device = portConnections;
-		var connectedDevices = portConnections.connectedDevices;
+		var connectedDevices = connections.connectedDevices;
 		console.log("Connected Devices Lenght : "+connectedDevices.length);
 		
 		for(var i in connectedDevices) {
@@ -388,7 +428,7 @@ function parseLink(portConnections, type) {
 			      linkCapacity: linkCapacity
 			    }
 			  };
-			portConnectedLinks.push(link);
+			connectedLinks.push(link);
 		}
 		
 		/*var sourcePort = portConnections.sourcePort;
@@ -420,7 +460,7 @@ function parseLink(portConnections, type) {
 		  portConnectedLinks.push(link);
 		}*/
 	 }
-	return portConnectedLinks;
+	return connectedLinks;
 }
 
 
@@ -440,17 +480,61 @@ function parseJson(data) {
 	
 	for(var i = 0; i < json.length; i++) {
 		var device = json[i];
+		var parentDevice = device.parentDevice;
+		var hasVirtualMachines = device.hasVirtualMachines;
+		console.log("Has VM Length : "+device.hasVirtualMachines.length);
 		//var hasPorts = device.hasPorts;
 		//console.log("Device Name : From Json : "+device.parentDevice.deviceName+" : Has Ports Length : "+hasPorts.length);
 		
-		items.push(parseDevice(device));
+		console.log("Device type == Device : "+device.deviceType +" : Parent Device : "+JSON.stringify(parentDevice));
 		
-		var links = parseLink(device);
-		for(var link in links) {
-			console.log(links[link]);
-			items.push(links[link]);
+		if(parentDevice.deviceType == "Device") {
+			items.push(parseDevice(parentDevice));
+			var links = parseLink(device);
+			for(var link in links) {
+				console.log(links[link]);
+				items.push(links[link]);
+			}
+			if(hasVirtualMachines.length > 0) {
+				console.log("Has VM SIZE : > 0 : "+hasVirtualMachines.length)
+				for(var x = 0; x < hasVirtualMachines.length; x++) {
+					items.push(parseDevice(hasVirtualMachines[x]));
+					var hasVmLinks = parseLink(device, 'has_vm');
+					console.log("HAS VM LINKS : LENGTH : "+hasVmLinks.length);
+					for(var vm in hasVmLinks) {
+						items.push(hasVmLinks[vm]);
+					}
+				}
+			}
 		}
-	 }	
+		
+		/*if(parentDevice.deviceType == "Virtual Machine") {
+			items.push(parseDevice(parentDevice));
+		}*/
+		
+		//items.push(parseDevice(device));
+		/*var hasVmLinks = parseLink(device, 'has_vm');
+		for(var vm in hasVmLinks) {
+			items.push(hasVmLinks[vm]);
+		}*/
+		
+		/*var hasVmLinks = parseLink(device, 'has_vm');
+		for(var vm in hasVmLinks) {
+			items.push(hasVmLinks[vm]);
+		}*/
+	 }
+	 //console.log(JSON.stringify(items));
+	 
+	 /*for(var i = 0; i < json.length; i++) {
+	 	 var device = json[i];
+		 if(device.deviceType == "Device") {
+			var hasVmLinks = parseLink(device, 'has_vm');
+			for(var vm in hasVmLinks) {
+				items.push(hasVmLinks[vm]);
+			}
+		}
+	 }*/
+	 
 		/*for(var x = 0; x < hasPorts.length; x++) {
 			items.push(parsePort(hasPorts[x]));
 			
@@ -481,7 +565,7 @@ function parseJson(data) {
 			items.push(connections[i]);
 	}*/
 	
-	return items || null;
+	return ((items != null || items.length !== 0) ? items : null);
 }
 
 function handleClickEvent(clickedID, x, y) {
@@ -497,16 +581,20 @@ function handleClickEvent(clickedID, x, y) {
 		//console.log(item.d.baseType);
 		//$('#baseType').html(itemBaseType);
 	} else if(item.type = 'link') {
-		var baseTypeSpan = $('#baseType');
-		var latency = item.d.latency;
-		var availableBW = item.d.availableBandwidth;
-		var linkCapacity = item.d.linkCapacity;
-		console.log(latency+" : "+availableBW+" : "+linkCapacity);
-		baseTypeSpan.append('<div style="margin-top: 5px; text-decoration: underline;">Connection Details:</div>');
-		baseTypeSpan.append('<div>Latency: '+latency+'</div>');
-		baseTypeSpan.append('<div>Available Bandwidth: '+availableBW+'</div>');
-		baseTypeSpan.append('<div>Link Capacity: '+linkCapacity+'</div>');
+		if(itemBaseType != 'Link - Has_VM') {
+			var baseTypeSpan = $('#baseType');
+			var latency = item.d.latency;
+			var availableBW = item.d.availableBandwidth;
+			var linkCapacity = item.d.linkCapacity;
+			console.log(latency+" : "+availableBW+" : "+linkCapacity);
+			baseTypeSpan.append('<div style="margin-top: 5px; text-decoration: underline;">Connection Details:</div>');
+			baseTypeSpan.append('<div>Latency: '+latency+'</div>');
+			baseTypeSpan.append('<div>Available Bandwidth: '+availableBW+'</div>');
+			baseTypeSpan.append('<div>Link Capacity: '+linkCapacity+'</div>');
+		}
 	}
+	
+	console.log("Methods of Chart : \n"+ADARA.Utils.getMethodsOfJSObject(chart, true));
 		
 	/*chart.combo().combine(
 		{
@@ -603,9 +691,10 @@ function nodeLabel(type, item) {
 }
 
 var nodeIcons = {
-  'red': 'resources/images/red.png',
+  //'red': 'resources/images/red.png',
   //'device': 'resources/images/Axis_device_green.png'
-  'device': 'resources/images/Axis_device_green_Old.png'
+  'Device': 'resources/images/Axis_device_green_Old.png',
+  'Virtual Machine':  'resources/images/virtual_machine_48x48.png'
 };
 
 var labelDictionary = {

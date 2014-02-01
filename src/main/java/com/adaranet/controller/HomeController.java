@@ -2,6 +2,7 @@ package com.adaranet.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -191,6 +192,28 @@ public class HomeController {
 		    		template.save(device);
 				}
 			}
+			
+			List<Device> devices = (List<Device>) IteratorUtil.asCollection(deviceService.findAll());
+			System.out.println("Devices Found : After creating the Devices : Count : "+deviceService.count());
+			for (int i = 0; i < devices.size(); i++) {
+				String uniqueId = "VM"+i;
+				Device virtualMachine = new Device( uniqueId,
+													AppConstants.DEVICE_TYPE__VIRTUAL_MACHINE,
+													Integer.toString(AppUtils.generateRandomInt(100)),
+													Integer.toString(AppUtils.generateRandomInt(100))
+												  );
+				template.save(virtualMachine);
+				devices.get(i).getHasVirtualMachines().add(virtualMachine);
+				template.save(devices.get(i));
+				
+				for(int j = 0; j < 1; j++) {
+					Ports newPort = new Ports();
+					System.out.println("Port Name Created : "+(uniqueId+"-eth"+j));
+		    		newPort.setPortName(uniqueId+"-eth"+j);
+		    		virtualMachine.getHasPorts().add(newPort);
+		    		template.save(virtualMachine);
+				}
+			}			
 		}
 		
 		
@@ -206,35 +229,40 @@ public class HomeController {
 				Device endDevice = devices.get(AppUtils.generateRandomInt(devices.size() - 1));
 				String startDeviceName = startDevice.getDeviceName();
 				String endDeviceName = endDevice.getDeviceName();
-				if(startDeviceName == endDeviceName) {
-					System.out.println("Start Device == End Device. : Start Device : "+startDeviceName+" : End Device : "+endDeviceName);
+				if(startDevice.getDeviceType().equals(AppConstants.DEVICE_TYPE__DEVICE) && endDevice.getDeviceType().equals(AppConstants.DEVICE_TYPE__DEVICE)) {
+					if(startDeviceName == endDeviceName) {
+						System.out.println("Start Device == End Device. : Start Device : "+startDeviceName+" : End Device : "+endDeviceName);
+					} else {
+						System.out.println("Start Device != End Device. : Start Device : "+startDeviceName+" : End Device : "+endDeviceName);
+						Set<Ports> startDevicePortsList = (Set<Ports>) startDevice.getHasPorts();
+						Set<Ports> endDevicePortsList = (Set<Ports>) endDevice.getHasPorts();
+						Object[] startDevicePorts =  startDevicePortsList.toArray();
+						Object[] endDevicePorts = endDevicePortsList.toArray();
+						System.out.println("Length : "+startDevicePortsList.size()+" : "+startDevicePorts.length+" : "+endDevicePorts.length);
+						//for(int j = 0; j < startDevicePorts.length; j ++) {
+							Ports startPort = (Ports) startDevicePorts[AppUtils.generateRandomInt(startDevicePorts.length - 1)];
+							Ports endPort = (Ports) endDevicePorts[AppUtils.generateRandomInt(endDevicePorts.length - 1)];
+							String startPortName = startPort.getPortName();
+							String endPortName = endPort.getPortName();
+							String originalPortNames = AppUtils.replacePorts(startPortName)+'-'+AppUtils.replacePorts(endPortName);
+							ConnectedToDevice connectedToDevice = startDevice.connectsToDevice(endDevice,
+																							startPort,
+																							endPort,
+																	    					originalPortNames,
+																	    					Integer.toString(AppUtils.generateRandomInt(100)),
+																	    					Integer.toString(AppUtils.generateRandomInt(100)),
+																	    					Integer.toString(AppUtils.generateRandomInt(100)));
+							template.save(connectedToDevice);
+							System.out.println("Connected Relationship Successfully!");
+							System.out.println("Start Device : "+startDeviceName+
+												" : Start Port : "+startPortName+
+												" : End Device : "+endDeviceName+
+												" : End Port : "+endPortName);
+						//}
+					}
 				} else {
-					System.out.println("Start Device != End Device. : Start Device : "+startDeviceName+" : End Device : "+endDeviceName);
-					Set<Ports> startDevicePortsList = (Set<Ports>) startDevice.getHasPorts();
-					Set<Ports> endDevicePortsList = (Set<Ports>) endDevice.getHasPorts();
-					Object[] startDevicePorts =  startDevicePortsList.toArray();
-					Object[] endDevicePorts = endDevicePortsList.toArray();
-					System.out.println("Length : "+startDevicePortsList.size()+" : "+startDevicePorts.length+" : "+endDevicePorts.length);
-					//for(int j = 0; j < startDevicePorts.length; j ++) {
-						Ports startPort = (Ports) startDevicePorts[AppUtils.generateRandomInt(startDevicePorts.length - 1)];
-						Ports endPort = (Ports) endDevicePorts[AppUtils.generateRandomInt(endDevicePorts.length - 1)];
-						String startPortName = startPort.getPortName();
-						String endPortName = endPort.getPortName();
-						String originalPortNames = AppUtils.replacePorts(startPortName)+'-'+AppUtils.replacePorts(endPortName);
-						ConnectedToDevice connectedToDevice = startDevice.connectsToDevice(endDevice,
-																						startPort,
-																						endPort,
-																    					originalPortNames,
-																    					Integer.toString(AppUtils.generateRandomInt(100)),
-																    					Integer.toString(AppUtils.generateRandomInt(100)),
-																    					Integer.toString(AppUtils.generateRandomInt(100)));
-						template.save(connectedToDevice);
-						System.out.println("Connected Relationship Successfully!");
-						System.out.println("Start Device : "+startDeviceName+
-											" : Start Port : "+startPortName+
-											" : End Device : "+endDeviceName+
-											" : End Port : "+endPortName);
-					//}
+					logger.info("Start & End Device Types are : DEVICE_TYPE__VIRTUAL_MACHINE : So not connecting the ports!");
+					logger.info("Start Device Type : "+startDevice.getDeviceType() +" : End Device Type :  "+endDevice.getDeviceType());
 				}
 			}
 			System.out.println("Connection Completed Sucessfully!");
@@ -295,6 +323,8 @@ public class HomeController {
 	    		DeviceDto deviceDto = new DeviceDto();
 	    		deviceDto.setDeviceName(device.getDeviceName());
 	    		deviceDto.setDeviceType(device.getDeviceType());
+	    		deviceDto.setCpuUtilization(device.getCpuUtilization());
+	    		deviceDto.setNumberOfSessions(device.getNumberOfSessions());
 	    		deviceDto.setId(device.getId());
 	    		
 	    		/*List<DeviceDto> connectedDevices = new ArrayList<DeviceDto>();
@@ -307,7 +337,7 @@ public class HomeController {
 	    			connectedDevices.add(dto);
 	    		}*/
 	    		
-	    		List<DeviceDto> connectedDevices = new ArrayList<DeviceDto>();
+	    		Set<DeviceDto> connectedDevices = new HashSet<DeviceDto>();
 	    		for(ConnectedToDevice connectedToDevice : device.getConnectsToDevice()) {
 	    			Device destDevice = connectedToDevice.getDestinationDevice();
 	    			DeviceDto dto = new DeviceDto();
@@ -323,6 +353,18 @@ public class HomeController {
 	    			dto.setOriginalPortNames(connectedToDevice.getOriginalPortNames());
 	    			connectedDevices.add(dto);
 	    		}
+	    		
+	    		Set<DeviceDto> hasVirtualMachines = new HashSet<DeviceDto>();
+	    		for (Device vm : device.getHasVirtualMachines()) {
+	    			DeviceDto vmDeviceDto = new DeviceDto();
+	    			vmDeviceDto.setId(vm.getId());
+	    			vmDeviceDto.setDeviceName(vm.getDeviceName());
+	    			vmDeviceDto.setDeviceType(vm.getDeviceType());
+	    			vmDeviceDto.setCpuUtilization(vm.getCpuUtilization());
+	    			vmDeviceDto.setNumberOfSessions(vm.getNumberOfSessions());
+	    			hasVirtualMachines.add(vmDeviceDto);
+				}
+	    		
 	    		//Set<PortDto> hasPorts = new HashSet<PortDto>();
 	    		/*for (Port port : device.getOutgoingConnectingPortsFromDevice()) {
 	    			PortDto portDto = new PortDto();
@@ -334,6 +376,7 @@ public class HomeController {
 
 	    		devicesJsonBean.setParentDevice(deviceDto);
 	    		devicesJsonBean.setConnectedDevices(connectedDevices);
+	    		devicesJsonBean.setHasVirtualMachines(hasVirtualMachines);
 	    		//devicesJsonBean.setHasPorts(hasPorts);
 	    		
 	    		devicesJsonBeanList.add(devicesJsonBean);

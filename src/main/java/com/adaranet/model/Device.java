@@ -2,6 +2,7 @@ package com.adaranet.model;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -17,6 +18,7 @@ import org.springframework.data.neo4j.support.Neo4jTemplate;
 import org.springframework.data.neo4j.support.index.IndexType;
 
 import com.adaranet.relationships.ConnectedToDevice;
+import com.adaranet.relationships.HasPort;
 import com.adaranet.util.RelationshipTypes;
 
 @NodeEntity
@@ -34,16 +36,22 @@ public class Device {
     private String cpuUtilization;
     private String numberOfSessions;
     
-    @Autowired
+    /*@Autowired
     @Transient
-	private transient Neo4jTemplate template;
+	private transient Neo4jTemplate template;*/
     
     @Fetch
+    //@RelatedToVia(type = RelationshipTypes.HAS_PORT, elementClass = HasPort.class, direction = Direction.OUTGOING)
+    //private Set<Ports> hasPorts = new LinkedHashSet<Ports>(); //If the insertion/iteration order is important!
     private Set<Ports> hasPorts = new HashSet<Ports>();
+    
+    @Fetch
+    //private Set<Device> hasVirtualMachines = new LinkedHashSet<Device>(); //If the insertion/iteration order is important!
+    private Set<Device> hasVirtualMachines = new HashSet<Device>();
 
     private Set<Port> deviceHasPortsSetMappedByXml = new HashSet<Port>();
     
-    @Fetch
+    //@Fetch
     @RelatedToVia(type = RelationshipTypes.CONNECTED_TO_DEVICE, elementClass = ConnectedToDevice.class, direction = Direction.OUTGOING)
     private Set<ConnectedToDevice> connectsToDevice = new HashSet<ConnectedToDevice>();
     
@@ -106,6 +114,14 @@ public class Device {
 		this.deviceType = deviceType;
 		this.cpuUtilization = cpuUtilization;
 		this.numberOfSessions = numberOfSessions;
+	}
+    
+    public void setHasVirtualMachines(Set<Device> hasVirtualMachines) {
+		this.hasVirtualMachines = hasVirtualMachines;
+	}
+    
+    public Set<Device> getHasVirtualMachines() {
+		return hasVirtualMachines;
 	}
     
     public void setHasPorts(Set<Ports> test) {

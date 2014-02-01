@@ -8,7 +8,7 @@ import org.springframework.data.neo4j.annotation.RelationshipEntity;
 import org.springframework.data.neo4j.annotation.StartNode;
 
 import com.adaranet.model.Device;
-import com.adaranet.model.Port;
+import com.adaranet.model.Ports;
 import com.adaranet.util.RelationshipTypes;
 
 @RelationshipEntity(type = RelationshipTypes.HAS_PORT)
@@ -23,7 +23,7 @@ public class HasPort {
 	@Fetch
 	@EndNode
 	@Indexed(unique = true)
-	private Port connectedPort;
+	private Ports connectedPort;
 	
 	private String value;
 	private String cost;
@@ -32,7 +32,7 @@ public class HasPort {
 		
 	}
 	
-	public HasPort(Device startDevice, Port connectedPort) {
+	public HasPort(Device startDevice, Ports connectedPort) {
 		super();
 		this.startDevice = startDevice;
 		this.connectedPort = connectedPort;
@@ -50,10 +50,10 @@ public class HasPort {
 	public void setStartDevice(Device startDevice) {
 		this.startDevice = startDevice;
 	}
-	public Port getConnectedPort() {
+	public Ports getConnectedPort() {
 		return connectedPort;
 	}
-	public void setConnectedPort(Port connectedPort) {
+	public void setConnectedPort(Ports connectedPort) {
 		this.connectedPort = connectedPort;
 	}
 	public String getValue() {
