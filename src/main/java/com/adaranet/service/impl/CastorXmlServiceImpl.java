@@ -110,8 +110,8 @@ public class CastorXmlServiceImpl implements CastorXmlService {
 							logger.info("The Port with PortName : "+uniquePortName+" : DoesNotExist in Neo4j.. So, we can persist it.");
 							Port newPort = new Port(uniquePortName, port.getPortType(), port.getPacketsIn(), port.getPacketsOut(), port.getBitsIn(), port.getBitsOut());
 							template.save(newPort);
-							HasPort hasPort = new HasPort(foundDevice, newPort);
-							template.save(hasPort);
+							/*HasPort hasPort = new HasPort(foundDevice, newPort);
+							template.save(hasPort);*/
 							logger.info("Configured Port : "+port.getPortName()+" : for Device : "+device.getDeviceName()+" : with HAS_PORT Relationship Successfully!");
 						} else {
 							logger.info("The Port with PortName : "+uniquePortName+" : Already Exists in Neo4j.");
